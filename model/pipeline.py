@@ -13,7 +13,8 @@ class data:
         self.fare=fare
         self.cabin=cabin
         self.embarked=embarked
-        self.df=pd.DataFrame({"PassengerId":id,"Pclass":pclass,"Name":name,"Sex":sex,"Age":age,"SibSp":sibsp,"Parch":parch,"Ticket":ticket,"Fare":fare,"Cabin":cabin,"Embarked":embarked})
+        self.df=pd.DataFrame({"PassengerId":id,"Pclass":pclass,"Name":name,"Sex":sex,"Age":age,"SibSp":sibsp,"Parch":parch,"Ticket":ticket,"Fare":fare,"Cabin":cabin,"Embarked":embarked},index=[0])
+        
     def preproccessing(self):
         df = self.df
         df.loc[df.Fare == 0, 'Fare'] = np.nan
@@ -80,20 +81,20 @@ class data:
 
         deck_level = {'G': 1, 'F': 2, 'E': 3, 'D': 4, 'C': 5, 'B': 6, 'A': 7}
         df.Deck = df.Deck.replace(deck_level)
-        deck_people = df.Deck.value_counts().sort_index().to_dict()
-        escape_density = {}
-        for i in range(1, 8):
-            escape_density[i] = sum(deck_people.values())
-            del deck_people[i]
-        df['Escape_density'] = df.Deck.replace(escape_density)
-        df['Family_size'] = 1 + df.SibSp + df.Parch
-        
-        
-        
+        print(df.columns)
         
         
     def pipeline():
         
-        return     
+        return    
     
-            
+     
+def main():
+    #create a pipeline object
+    pipeline = data(id=1,pclass=3,name="Braund, Mr. Owen Harris",sex="male",age=22,sibsp=1,parch=0,ticket="A/5 21171",fare=7.25,cabin="",embarked="S")
+    #preprocess the data
+    pipeline.preproccessing()
+    
+if __name__ == '__main__':
+    main()
+         
