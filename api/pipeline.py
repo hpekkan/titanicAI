@@ -8,7 +8,7 @@ warnings.filterwarnings('ignore')
 #Common Model Helpers
 from sklearn.preprocessing import  LabelEncoder
 class data:
-    def __init__(self, Pass_id, pclass,name,sex,age,sibsp,parch,ticket,fare,cabin,embarked,train):
+    def __init__(self, Pass_id, pclass,name,sex,age,sibsp,parch,ticket,fare,cabin,embarked,train_age_median,train_embarked_mode,train_fare_median):
         self.id = Pass_id
         self.pclass = pclass
         self.name=name
@@ -21,16 +21,18 @@ class data:
         self.cabin=cabin
         self.embarked=embarked
         self.df=pd.DataFrame({"PassengerId":Pass_id,"Pclass":pclass,"Name":name,"Sex":sex,"Age":age,"SibSp":sibsp,"Parch":parch,"Ticket":ticket,"Fare":fare,"Cabin":cabin,"Embarked":embarked},index=[0])
-        self.data_raw = train
+        self.train_age_median = train_age_median
+        self.train_embarked_mode = train_embarked_mode
+        self.train_fare_median = train_fare_median
         
     def preproccessing(self):
         df = self.df
-        df['Age'].fillna(self.data_raw['Age'].median(), inplace = True)
+        df['Age'].fillna(self.train_age_median, inplace = True)
 
         #complete embarked with mode
-        df['Embarked'].fillna(self.data_raw["Embarked"].mode()[0], inplace = True)
+        df['Embarked'].fillna(self.train_embarked_mode, inplace = True)
         #complete missing fare with median
-        df['Fare'].fillna(self.data_raw['Fare'].median(), inplace = True)
+        df['Fare'].fillna(self.train_fare_median, inplace = True)
         drop_column = ['PassengerId','Cabin', 'Ticket']
         df.drop(columns=drop_column, axis=1, inplace = True)
         
