@@ -1,5 +1,7 @@
 import pickle
-import sys #access to system parameters https://docs.python.org/3/library/sys.html
+import sys
+
+from sklearn import gaussian_process #access to system parameters https://docs.python.org/3/library/sys.html
 print("Python version: {}". format(sys.version))
 
 import pandas as pd #collection of functions for data processing and analysis modeled after R dataframes with SQL like features
@@ -23,14 +25,12 @@ print('-'*25)
 
 
 #Common Model Algorithms
-from sklearn import svm, tree, linear_model, neighbors, naive_bayes, ensemble, discriminant_analysis, gaussian_process
+from sklearn import svm, linear_model, neighbors, naive_bayes, ensemble
 from xgboost import XGBClassifier
 
 #Common Model Helpers
-from sklearn.preprocessing import OneHotEncoder, LabelEncoder
-from sklearn import feature_selection
+from sklearn.preprocessing import  LabelEncoder
 from sklearn import model_selection
-from sklearn import metrics
 
 
 data_raw = pd.read_csv('data/train.csv')
@@ -153,7 +153,6 @@ vote_est = [
 ]
 
 
-print("model trained")
 #Hard Vote or majority rules w/Tuned Hyperparameters
 grid_hard = ensemble.VotingClassifier(estimators = vote_est , voting = 'hard')
 grid_hard_cv = model_selection.cross_validate(grid_hard, data1[data1_x_bin], data1[Target], cv  = cv_split, return_train_score=True)
@@ -163,6 +162,8 @@ print("Hard Voting w/Tuned Hyperparameters Training w/bin score mean: {:.2f}". f
 print("Hard Voting w/Tuned Hyperparameters Test w/bin score mean: {:.2f}". format(grid_hard_cv['test_score'].mean()*100))
 print("Hard Voting w/Tuned Hyperparameters Test w/bin score 3*std: +/- {:.2f}". format(grid_hard_cv['test_score'].std()*100*3))
 print('-'*10)
+
+print("model trained")
 
 
 
