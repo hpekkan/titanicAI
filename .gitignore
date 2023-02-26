@@ -8,8 +8,8 @@
 .vscode
 # testing
 /coverage
-*.ipynb_checkpoints
-*__pycache__
+.ipynb_checkpoints
+__pycache__
 # production
 /build
 # misc
