@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {event.loginSuccess=== false &&<Login event={event} updateEvent={updateEvent} />}
+        <Login></Login>
       </header>
     </div>
   );

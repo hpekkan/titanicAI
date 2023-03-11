@@ -37,7 +37,6 @@ input[type="password"] {
 }
 
 button[type="submit"] {
-  margin: 10px;
   width: 150px;
   height: 40px;
   border: none;
