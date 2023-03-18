@@ -1,12 +1,10 @@
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import Auth from "./Auth"
+import Auth from "./auth/Auth"
 var randomEmail = require("random-email");
 
 function Login({ event, updateEvent }) {
-  const [errorMessages, setErrorMessages] = useState({});
-const [isSubmitted, setIsSubmitted] = useState(false);
   function handleEmailChange(e) {
     updateEvent({ email: e.target.value });
   }

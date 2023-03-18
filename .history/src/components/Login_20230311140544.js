@@ -1,12 +1,7 @@
 import "../App.css";
-import "bootstrap/dist/css/bootstrap.min.css"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import Auth from "./Auth"
 var randomEmail = require("random-email");
 
 function Login({ event, updateEvent }) {
-  const [errorMessages, setErrorMessages] = useState({});
-const [isSubmitted, setIsSubmitted] = useState(false);
   function handleEmailChange(e) {
     updateEvent({ email: e.target.value });
   }
@@ -36,11 +31,26 @@ const [isSubmitted, setIsSubmitted] = useState(false);
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/auth" element={<Auth />} />
-      </Routes>
-    </BrowserRouter>
+    <form onSubmit={handleSubmit}>
+      <label>
+        Email:
+        <input type="email" value={event.email} onChange={handleEmailChange} />
+      </label>
+      <label>
+        Password:
+        <input
+          type={event.showPassword}
+          value={event.password}
+          onChange={handlePasswordChange}
+        />
+      </label>
+      <button type="submit">Log In</button>
+      <label>
+        <button type="submit" onClick={handleRandomLogin}>
+          Random Login
+        </button>
+      </label>
+    </form>
   );
 }
 
