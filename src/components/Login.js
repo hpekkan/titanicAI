@@ -13,7 +13,7 @@ async function loginUser(credentials) {
    .then(data => data.json())
 }
 
-export default function Login({ setToken }) {
+export default function Login({ setToken, setIsLogged }) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
@@ -24,6 +24,10 @@ export default function Login({ setToken }) {
       password
     });
     setToken(token);
+    setIsLogged(true);
+  }
+  function validateForm() {
+    return username.length > 0 && password.length > 0;
   }
 
   return(
