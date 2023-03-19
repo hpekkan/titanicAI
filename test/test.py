@@ -35,8 +35,8 @@ class TestAPI(unittest.TestCase):
 
     # Testing /login endpoint
     def test_login(self):
-        data = {"username": "test_user", "password": "test_password"}
-        expected_output = {"username": "test_user", "email": "test@test.com"}
+        data = {"username": "new_user", "password": "test_password"}
+        expected_output = {"username": "new_user", "email": "new_user@test.com"}
 
         response = client.post("/login", json=data)
         self.assertEqual(response.status_code, 200)
@@ -46,21 +46,21 @@ class TestAPI(unittest.TestCase):
     # Testing /prediction endpoint
     def test_prediction(self):
         data = {
-            "Pass_id": 1,
+            "passenger_id":45,
             "pclass": 3,
-            "name": "Braund, Mr. Owen Harris",
-            "sex": "M",
-            "age": 22,
-            "sibsp": 1,
+            "name": "Devaney, Miss. Margaret Delia",
+            "sex": "female",
+            "age": 19,
+            "sibsp": 0,
             "parch": 0,
-            "ticket": "A/5 21171",
-            "fare": 8.25,
+            "ticket": "330958",
+            "fare": 7.8792,
             "cabin": "",
-            "embarked": "S"
-        }
-        expected_output = {"data": {"prediction": "0"}}
+            "embarked": "Q"
+        }   
+        expected_output = {"data": {"prediction": "1"}}
 
-        response = client.get("/prediction", json=data)
+        response = client.post("/prediction", json=data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected_output)
 
