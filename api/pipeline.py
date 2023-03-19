@@ -8,8 +8,8 @@ warnings.filterwarnings('ignore')
 #Common Model Helpers
 from sklearn.preprocessing import  LabelEncoder
 class data:
-    def __init__(self, Pass_id, pclass,name,sex,age,sibsp,parch,ticket,fare,cabin,embarked,train_age_median,train_embarked_mode,train_fare_median):
-        self.id = Pass_id
+    def __init__(self, passenger_id, pclass,name,sex,age,sibsp,parch,ticket,fare,cabin,embarked,train_age_median,train_embarked_mode,train_fare_median):
+        self.id = passenger_id
         self.pclass = pclass
         self.name=name
         self.sex=sex
@@ -20,12 +20,12 @@ class data:
         self.fare=fare
         self.cabin=cabin
         self.embarked=embarked
-        self.df=pd.DataFrame({"PassengerId":Pass_id,"Pclass":pclass,"Name":name,"Sex":sex,"Age":age,"SibSp":sibsp,"Parch":parch,"Ticket":ticket,"Fare":fare,"Cabin":cabin,"Embarked":embarked},index=[0])
+        self.df=pd.DataFrame({"PassengerId":passenger_id,"Pclass":pclass,"Name":name,"Sex":sex,"Age":age,"SibSp":sibsp,"Parch":parch,"Ticket":ticket,"Fare":fare,"Cabin":cabin,"Embarked":embarked},index=[0])
         self.train_age_median = train_age_median
         self.train_embarked_mode = train_embarked_mode
         self.train_fare_median = train_fare_median
         
-    def preproccessing(self):
+    def preprocess(self):
         df = self.df
         df['Age'].fillna(self.train_age_median, inplace = True)
 

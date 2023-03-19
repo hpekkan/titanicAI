@@ -1,20 +1,22 @@
-import warnings
-import uvicorn
-import pickle
-from pydantic import BaseModel
-from fastapi import FastAPI, HTTPException,Request
-from fastapi.middleware.cors import CORSMiddleware
-import pandas as pd
-import os
 from typing import Optional
+import os
+import pickle
+import pandas as pd
 import pyodbc
+import uvicorn
+import warnings
 from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from pydantic import BaseModel
 
 from pipeline import data
 
 load_dotenv()
 warnings.filterwarnings('ignore')
-
 
  
 app = FastAPI()
@@ -114,38 +116,35 @@ train = pd.read_csv('../model/data/train.csv')
 train_age_median = train['Age'].median()
 train_embarked_mode = train['Embarked'].mode()[0]
 train_fare_median = train['Fare'].median()
-#print(model.predict(data.values.reshape(1, -1)))
 
 # Setting up the home route
 @app.get("/")
 def read_root():
-    return {"data": "Welcome to online employee hireability prediction model"}
+    return {"data": "Welcome to titanic prediction model"}
 
 class Ticket(BaseModel):
-    Pass_id=int
-    pclass=int
-    name=str
-    sex=str
-    age=int
-    sibsp=int
-    parch=int
-    ticket=str
-    fare=float
-    cabin=str
-    embarked=str
+    passenger_id: int
+    pclass: int
+    name: str
+    sex: str
+    age: int
+    sibsp: int
+    parch: int
+    ticket: str
+    fare: float
+    cabin: str
+    embarked: str
     
-# Setting up the prediction route
-@app.get("/prediction")
-async def get_predict(request: Request):
-    api_data = await request.json()
-    
-    pipeline = data(Pass_id=api_data["Pass_id"],pclass=api_data["pclass"],name=api_data["name"],sex=api_data["sex"],age=api_data["age"],sibsp=api_data["sibsp"],parch=api_data["parch"],ticket=api_data["ticket"],fare=api_data["fare"],cabin=api_data["cabin"],embarked=api_data["embarked"],train_age_median=train_age_median,train_embarked_mode=train_embarked_mode,train_fare_median=train_fare_median)
-    prepro_data = pipeline.preproccessing()
+@app.post("/prediction")
+async def get_predict(ticket: Ticket):
+    pipeline = data(passenger_id=ticket.passenger_id, pclass=ticket.pclass, name=ticket.name, sex=ticket.sex, age=ticket.age, sibsp=ticket.sibsp, parch=ticket.parch, ticket=ticket.ticket, fare=ticket.fare, cabin=ticket.cabin, embarked=ticket.embarked, train_age_median=train_age_median, train_embarked_mode=train_embarked_mode, train_fare_median=train_fare_median)
+    prepro_data = pipeline.preprocess()
     prediction = model.predict(prepro_data.values.reshape(1, -1))
     
     return {
         "data": {
-            'prediction': str(prediction[0]) }
+            'prediction': str(prediction[0])
+        }
     }
 
 # Configuring the server host and port
