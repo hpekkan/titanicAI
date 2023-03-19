@@ -2,10 +2,15 @@
 import uvicorn
 import pickle
 from pydantic import BaseModel
-from fastapi import Request,FastAPI
+from fastapi import Request,FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import json
+import os
+from typing import Optional
+import pyodbc
+from dotenv import load_dotenv
+load_dotenv()
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -35,6 +40,57 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+server = os.environ.get('DATABASE_URL')
+database = os.environ.get('DATABASE_NAME')
+username = os.environ.get('DATABASE_USERNAME')
+password = os.environ.get('PASSWORD')
+
+
+class User(BaseModel):
+    username: str
+    password: str
+    email: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone_number: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    zip_code: Optional[str] = None
+    
+def connect():
+    try:
+        return pyodbc.connect(
+            f'Driver={{ODBC Driver 18 for SQL Server}};Server=tcp:{server},1433;DATABASE={database};Uid={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+        )
+    except pyodbc.Error as e:
+        print(f"Error connecting to database: {e}")
+        raise HTTPException(status_code=500, detail="Server error")
+# Login endpoint
+@app.post("/login")
+async def login(user: User):
+    conn = connect()
+    cursor = conn.cursor()
+    query = "SELECT * FROM users WHERE username = %s AND password = %s"
+    cursor.execute(query, (user.username, user.password))
+    if row := cursor.fetchone():
+        # Return user data or JWT token
+        return {"username": row[1], "email": row[3]}
+    else:
+        raise HTTPException(status_code=401, detail="Incorrect username or password")
+    
+# Create user endpoint
+@app.post("/users")
+async def create_user(user: User):
+    conn = connect()
+    cursor = conn.cursor()
+    columns = ['username', 'password', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'city', 'state', 'zip_code']
+    values = [getattr(user, col) for col in columns]
+    columns_present = [col for col in columns if getattr(user, col) is not None]
+    query = f"INSERT INTO users ({', '.join(columns_present)}) VALUES ({', '.join(['%s']*len(columns_present))})"
+    cursor.execute(query, values[:len(columns_present)])
+    conn.commit()
+    return {"message": "User created successfully"}
 
 # Load the Model
 model = pickle.load(open('../model/model/titanic_model.pkl', 'rb'))
