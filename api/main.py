@@ -84,7 +84,7 @@ async def login(user: User):
     query = "SELECT * FROM passenger WHERE username = ? AND password = ?"
     cursor.execute(query, (user.username, user.password))
     if row := cursor.fetchone():
-        return {"username": row[1], "email": row[3]}
+        return {"username": row[1], "email": row[3], "token": "fake-jwt-token"}
     else:
         raise HTTPException(status_code=401, detail="Incorrect username or password")
     

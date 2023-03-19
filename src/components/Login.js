@@ -1,47 +1,51 @@
-import "../App.css";
-import "bootstrap/dist/css/bootstrap.min.css"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import Auth from "./Auth"
-var randomEmail = require("random-email");
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import '../App.css';
 
-function Login({ event, updateEvent }) {
-  const [errorMessages, setErrorMessages] = useState({});
-const [isSubmitted, setIsSubmitted] = useState(false);
-  function handleEmailChange(e) {
-    updateEvent({ email: e.target.value });
-  }
-
-  function handlePasswordChange(e) {
-    updateEvent({ password: e.target.value });
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    // TODO: handle login logic here
-  }
-  const generatePassword = () => {
-    // Create a random password
-    const randomPassword =
-      Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
-
-    // Set the generated password as state
-    return randomPassword;
-  };
-  function handleRandomLogin(e) {
-    e.preventDefault();
-    updateEvent({ email: randomEmail({ domain: "gmail.com" }) });
-    updateEvent({
-      password: generatePassword()
-    });
-  }
-
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/auth" element={<Auth />} />
-      </Routes>
-    </BrowserRouter>
-  );
+async function loginUser(credentials) {
+ return fetch('http://127.0.0.1:8000/login', {
+   method: 'POST',
+   headers: {
+     'Content-Type': 'application/json'
+   },
+   body: JSON.stringify(credentials)
+ })
+   .then(data => data.json())
 }
 
-export default Login;
+export default function Login({ setToken }) {
+  const [username, setUserName] = useState();
+  const [password, setPassword] = useState();
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const token = await loginUser({
+      username,
+      password
+    });
+    setToken(token);
+  }
+
+  return(
+    <div className="login-wrapper">
+      <h1>Please Log In</h1>
+      <form onSubmit={handleSubmit}>
+        <label>
+          <p>Username</p>
+          <input type="text" onChange={e => setUserName(e.target.value)} />
+        </label>
+        <label>
+          <p>Password</p>
+          <input type="password" onChange={e => setPassword(e.target.value)} />
+        </label>
+        <div>
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+Login.propTypes = {
+  setToken: PropTypes.func.isRequired
+};

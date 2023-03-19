@@ -1,23 +1,31 @@
 import './App.css';
-import {useReducer} from 'react';
+import Dashboard from './components/Dashboard';
+import Preferences from './components/Preferences';
+import useToken from './components/useToken';
 import Login from './components/Login';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
+
+
 function App() {
-  const [event, updateEvent] = useReducer(
-    (prev, next) => {
-      return { ...prev, ...next };
-    },
-    {
-      email: "",
-      password: "",
-      loginSuccess: false,
-      showPassword: "password",
-    }
-  );
+  const { token, setToken } = useToken();
+
+  if(!token) {
+    return <Login setToken={setToken} />
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        {event.loginSuccess=== false &&<Login event={event} updateEvent={updateEvent} />}
-      </header>
+    <div className="wrapper">
+      <h1>Application</h1>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/dashboard">
+            <Dashboard />
+          </Route>
+          <Route path="/preferences">
+            <Preferences />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </div>
   );
 }
