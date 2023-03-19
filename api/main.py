@@ -1,25 +1,21 @@
-# Importing necessary libraries
+import warnings
 import uvicorn
 import pickle
 from pydantic import BaseModel
-from fastapi import Request,FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException,Request
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
-import json
 import os
 from typing import Optional
 import pyodbc
 from dotenv import load_dotenv
-load_dotenv()
 
-import warnings
+from pipeline import data
+
+load_dotenv()
 warnings.filterwarnings('ignore')
 
 
-
-
- 
-from pipeline import data
  
 app = FastAPI()
 
@@ -40,11 +36,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-server = os.environ.get('DATABASE_URL')
-database = os.environ.get('DATABASE_NAME')
-username = os.environ.get('DATABASE_USERNAME')
-password = os.environ.get('PASSWORD')
+db_settings = {
+    'server': os.environ.get('DATABASE_URL'),
+    'database': os.environ.get('DATABASE_NAME'),
+    'username': os.environ.get('DATABASE_USERNAME'),
+    'password': os.environ.get('PASSWORD')
+}
 
+def connect():
+    try:
+        connection_str = (
+            f'Driver={{ODBC Driver 18 for SQL Server}};'
+            f'Server=tcp:{db_settings["server"]},1433;'
+            f'DATABASE={db_settings["database"]};'
+            f'Uid={db_settings["username"]};'
+            f'Pwd={db_settings["password"]};'
+            f'Encrypt=yes;'
+            f'TrustServerCertificate=no;'
+            f'Connection Timeout=30;'
+        )
+        return pyodbc.connect(connection_str)
+    except pyodbc.Error as e:
+        print(f"Error connecting to database: {e}")
+        raise HTTPException(status_code=500, detail="Server error")
+    
+    
 
 class User(BaseModel):
     username: str
@@ -58,36 +74,36 @@ class User(BaseModel):
     state: Optional[str] = None
     zip_code: Optional[str] = None
     
-def connect():
-    try:
-        return pyodbc.connect(
-            f'Driver={{ODBC Driver 18 for SQL Server}};Server=tcp:{server},1433;DATABASE={database};Uid={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
-        )
-    except pyodbc.Error as e:
-        print(f"Error connecting to database: {e}")
-        raise HTTPException(status_code=500, detail="Server error")
-# Login endpoint
+
 @app.post("/login")
 async def login(user: User):
     conn = connect()
     cursor = conn.cursor()
-    query = "SELECT * FROM users WHERE username = %s AND password = %s"
+    query = "SELECT * FROM passenger WHERE username = ? AND password = ?"
     cursor.execute(query, (user.username, user.password))
     if row := cursor.fetchone():
-        # Return user data or JWT token
         return {"username": row[1], "email": row[3]}
     else:
         raise HTTPException(status_code=401, detail="Incorrect username or password")
     
-# Create user endpoint
 @app.post("/users")
 async def create_user(user: User):
     conn = connect()
     cursor = conn.cursor()
+    username = user.username
+    email = user.email
+    
+    # Check if username or email already exists
+    cursor.execute("SELECT COUNT(*) FROM passenger WHERE username = ? OR email = ?", (username, email,))
+    result = cursor.fetchone()
+    if result and result[0] > 0:
+        return {"error": "Username or email already exists"}
+    
+    # Insert user into passenger table
     columns = ['username', 'password', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'city', 'state', 'zip_code']
     values = [getattr(user, col) for col in columns]
     columns_present = [col for col in columns if getattr(user, col) is not None]
-    query = f"INSERT INTO users ({', '.join(columns_present)}) VALUES ({', '.join(['%s']*len(columns_present))})"
+    query = f"INSERT INTO passenger ({', '.join(columns_present)}) VALUES ({', '.join(['?']*len(columns_present))})"
     cursor.execute(query, values[:len(columns_present)])
     conn.commit()
     return {"message": "User created successfully"}
