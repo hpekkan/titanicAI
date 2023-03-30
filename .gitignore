@@ -26,3 +26,6 @@ yarn-error.log*
 *.env
 .history
 *.history
+
+titanenv/
+titanenv
