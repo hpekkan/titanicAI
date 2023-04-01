@@ -13,18 +13,18 @@ async function loginUser(credentials) {
    .then(data => data.json())
 }
 
-export default function Login({ setToken, setIsLogged }) {
+export default function Login({ setToken }) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const token = await loginUser({
+    const userCrediantals = await loginUser({
       username,
       password
     });
-    setToken(token);
-    setIsLogged(true);
+    setToken(userCrediantals.token);
+    console.log(userCrediantals.token);
   }
   function validateForm() {
     return username.length > 0 && password.length > 0;

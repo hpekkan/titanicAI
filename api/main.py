@@ -1,16 +1,15 @@
+import datetime
 from typing import Optional
 import os
 import pickle
+import jwt
 import pandas as pd
 import pyodbc
 import uvicorn
 import warnings
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWTError, jwt
-from passlib.context import CryptContext
 from pydantic import BaseModel
 
 from pipeline import data
@@ -44,6 +43,7 @@ db_settings = {
     'username': os.environ.get('DATABASE_USERNAME'),
     'password': os.environ.get('PASSWORD')
 }
+secret_key = os.environ.get('SECRET_KEY')
 
 def connect():
     try:
@@ -83,12 +83,16 @@ async def login(user: User):
     cursor = conn.cursor()
     query = "SELECT * FROM passenger WHERE username = ? AND password = ?"
     cursor.execute(query, (user.username, user.password))
-    if row := cursor.fetchone():
-        return {"username": row[1], "email": row[3], "token": "fake-jwt-token"}
-    else:
+    if not (row := cursor.fetchone()):
         raise HTTPException(status_code=401, detail="Incorrect username or password")
-    
-@app.post("/users")
+    payload = {
+        "iss": "CLIENT_ID", # Replace this with your client ID
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=5) # Set the expiration time
+    }
+    token = jwt.encode(payload, secret_key, algorithm="HS256")
+    return {"username": row[1], "email": row[3], "token": token}
+
+@app.post("/register")
 async def create_user(user: User):
     conn = connect()
     cursor = conn.cursor()
