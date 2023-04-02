@@ -15,6 +15,10 @@ from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
+from server import connect
+from deps import get_current_user
+from schemas import User, UserOut,TokenSchema,Ticket
+
 from utils import  (
     get_hashed_password,
     create_access_token,
@@ -49,73 +53,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-db_settings = {
-    'server': os.environ.get('DATABASE_URL'),
-    'database': os.environ.get('DATABASE_NAME'),
-    'username': os.environ.get('DATABASE_USERNAME'),
-    'password': os.environ.get('PASSWORD')
-}
 secret_key = os.environ.get('SECRET_KEY')
 
-def connect():
-    try:
-        connection_str = (
-            f'Driver={{ODBC Driver 18 for SQL Server}};'
-            f'Server=tcp:{db_settings["server"]},1433;'
-            f'DATABASE={db_settings["database"]};'
-            f'Uid={db_settings["username"]};'
-            f'Pwd={db_settings["password"]};'
-            f'Encrypt=yes;'
-            f'TrustServerCertificate=no;'
-            f'Connection Timeout=30;'
-        )
-        return pyodbc.connect(connection_str)
-    except pyodbc.Error as e:
-        print(f"Error connecting to database: {e}")
-        raise HTTPException(status_code=500, detail="Server error")
-    
 
 
-class User(BaseModel):
-    username: str
-    password: str
-    email: Optional[str] = None
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    phone_number: Optional[str] = None
-    address: Optional[str] = None
-    city: Optional[str] = None
-    state: Optional[str] = None
-    zip_code: Optional[str] = None
-    
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-    
-class TokenData(BaseModel):
-    username: str | None = None
-    
+ 
 # Setting up the home route   
 @app.get("/")
 def read_root():
     return {"data": "Welcome to titanic prediction model"}
 
-class TokenSchema(BaseModel):
-    access_token: str
-    refresh_token: str
-    
+  
 @app.post("/signup")
 async def create_user(user: User):
     conn = connect()
     cursor = conn.cursor()
     username = user.username
     email = user.email
-    
     # Check if username or email already exists
     cursor.execute("SELECT COUNT(*) FROM passenger WHERE username = ? OR email = ?", (username, email))
     result = cursor.fetchone()
     if result and result[0] > 0:
-        return {"error": "Username or email already exists"}
+        raise HTTPException(status_code=400, detail="Username or email already exists")
     
     # Insert user into passenger table
     user.password = password_context.hash(user.password)
@@ -149,10 +108,13 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         )
     
     return {
-        "access_token": create_access_token(row['email']),
-        "refresh_token": create_refresh_token(row['email']),
+        "access_token": create_access_token(row['username']),
+        "refresh_token": create_refresh_token(row['username']),
     }
-
+    
+@app.get('/me', summary='Get details of currently logged in user', response_model=UserOut)
+async def get_me(user: UserOut = Depends(get_current_user)):
+    return user
 
 
 
@@ -164,19 +126,7 @@ train_age_median = train['Age'].median()
 train_embarked_mode = train['Embarked'].mode()[0]
 train_fare_median = train['Fare'].median()
 
-class Ticket(BaseModel):
-    passenger_id: int
-    pclass: int
-    name: str
-    sex: str
-    age: int
-    sibsp: int
-    parch: int
-    ticket: str
-    fare: float
-    cabin: str
-    embarked: str
-    
+
 @app.post("/prediction")
 async def get_predict(ticket: Ticket):
     pipeline = data(passenger_id=ticket.passenger_id, pclass=ticket.pclass, name=ticket.name, sex=ticket.sex, age=ticket.age, sibsp=ticket.sibsp, parch=ticket.parch, ticket=ticket.ticket, fare=ticket.fare, cabin=ticket.cabin, embarked=ticket.embarked, train_age_median=train_age_median, train_embarked_mode=train_embarked_mode, train_fare_median=train_fare_median)
