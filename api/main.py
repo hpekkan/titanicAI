@@ -8,7 +8,7 @@ import pandas as pd
 import pyodbc
 import uvicorn
 import warnings
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, status, HTTPException
 from fastapi.responses import RedirectResponse
@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 from server import connect
 from deps import get_current_user
-from schemas import User, UserOut,TokenSchema,Ticket
+from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket
 
 from utils import  (
     get_hashed_password,
@@ -54,7 +54,8 @@ app.add_middleware(
 )
 
 secret_key = os.environ.get('SECRET_KEY')
-
+refresh_key = os.environ.get('JWT_REFRESH_SECRET_KEY')
+ALGORITHM = "HS256"
 
 
  
@@ -98,8 +99,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     if not (row := cursor.fetchone()):
         raise HTTPException(status_code=401, detail="User not found")
     row = dict(zip([column[0] for column in cursor.description], row))
-    
-
     hashed_pass = row['password']
     if not verify_password(form_data.password, hashed_pass):
         raise HTTPException(
@@ -116,7 +115,35 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 async def get_me(user: UserOut = Depends(get_current_user)):
     return user
 
+@app.get('/refresh', summary='Refresh access token')
+async def refresh(refresh_token: str = Depends(oauth2_scheme)):
+    try:
+        if not refresh_token:
+            raise HTTPException(status_code=401, detail="Refresh token required")
+        payload = jwt.decode(
+                refresh_token, refresh_key, algorithms=[ALGORITHM]
+            )
+        token_data = TokenPayload(**payload)
+        if datetime.fromtimestamp(token_data.exp) < datetime.now():
+                raise HTTPException(
+                    status_code = status.HTTP_401_UNAUTHORIZED,
+                    detail="Refresh Token expired",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+        return {
+            "access_token": create_access_token(token_data.username),
+            "refresh_token": create_refresh_token(token_data.username),
+        }
+    except (jwt.JWTError, ValidationError) as e:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from e
+    
 
+        
+    
 
     
 # Load the Model
