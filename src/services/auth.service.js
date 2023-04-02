@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import UserService from "./user.service";
 const API_URL = "http://127.0.0.1:8000/";
 
 const register = (username, email, password) => {
@@ -9,36 +9,50 @@ const register = (username, email, password) => {
     password,
   });
 };
+const getToken = () => {
+  return JSON.parse(localStorage.getItem("tokens")).access_token;
+};
 
 const login = (username, password) => {
-    var formData = new FormData();
-    formData.append('username', username);
-    formData.append('password', password);
-    return axios
-    .post(API_URL + "login", formData)
-    .then((response) => {
-        if (response.data.access_token) {
-            localStorage.setItem("access_token", JSON.stringify(response.data.access_token));
-            localStorage.setItem("refresh_token", JSON.stringify(response.data.refresh_token));
-        }
-        return response.data;
-    });
+  var formData = new FormData();
+  formData.append("username", username);
+  formData.append("password", password);
+  return axios.post(API_URL + "login", formData).then((response) => {
+    console.log(response.data.access_token);
+    if (response.data.access_token) {
+      localStorage.setItem("tokens", JSON.stringify(response.data));
+    }
+    return response.data;
+  });
 };
-
+const refresh = (refresh_token) => {
+  var formData = new FormData();
+  formData.append("refresh", refresh_token);
+  return axios.post(API_URL + "refresh", formData).then((response) => {
+    if (response.data.access_token) {
+      localStorage.setItem("tokens", JSON.stringify(response.data));
+    }
+    return response.data;
+  });
+};
 const logout = () => {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("tokens");
+  localStorage.removeItem("user");
 };
 
-const getCurrentUser = () => {
-  return JSON.parse(localStorage.getItem("user"));
+const getCurrentUser =  async () => {
+  const user =  await UserService.getUser();
+  console.log(user.data);
+  return user.data;
 };
 
 const AuthService = {
   register,
   login,
   logout,
+  getToken,
   getCurrentUser,
+  refresh,
 };
 
 export default AuthService;

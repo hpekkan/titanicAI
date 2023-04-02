@@ -115,6 +115,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 async def get_me(user: UserOut = Depends(get_current_user)):
     return user
 
+
 @app.get('/refresh', summary='Refresh access token')
 async def refresh(refresh_token: str = Depends(oauth2_scheme)):
     try:
