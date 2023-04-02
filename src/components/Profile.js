@@ -9,7 +9,7 @@ const Profile = () => {
             setCurrentUser(await AuthService.getCurrentUser());
             setToken(await AuthService.getToken());
           }
-          fetchData();
+        fetchData();
         
     }, []);
 
