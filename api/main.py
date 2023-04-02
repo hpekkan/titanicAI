@@ -2,16 +2,26 @@ import datetime
 from typing import Optional
 import os
 import pickle
+from jose import JWTError
 import jwt
 import pandas as pd
 import pyodbc
 import uvicorn
 import warnings
-from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
+from dotenv import load_dotenv
+from fastapi import Depends, FastAPI, status, HTTPException
+from fastapi.responses import RedirectResponse
+from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
+from passlib.context import CryptContext
+from utils import  (
+    get_hashed_password,
+    create_access_token,
+    create_refresh_token,
+    verify_password
+)
+from uuid import uuid4
 from pipeline import data
 
 load_dotenv()
@@ -19,6 +29,8 @@ warnings.filterwarnings('ignore')
 
  
 app = FastAPI()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 origins = [
     "http://localhost.tiangolo.com",
@@ -62,7 +74,7 @@ def connect():
         print(f"Error connecting to database: {e}")
         raise HTTPException(status_code=500, detail="Server error")
     
-    
+
 
 class User(BaseModel):
     username: str
@@ -76,23 +88,23 @@ class User(BaseModel):
     state: Optional[str] = None
     zip_code: Optional[str] = None
     
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    
+class TokenData(BaseModel):
+    username: str | None = None
+    
+# Setting up the home route   
+@app.get("/")
+def read_root():
+    return {"data": "Welcome to titanic prediction model"}
 
-@app.post("/login")
-async def login(user: User):
-    conn = connect()
-    cursor = conn.cursor()
-    query = "SELECT * FROM passenger WHERE username = ? AND password = ?"
-    cursor.execute(query, (user.username, user.password))
-    if not (row := cursor.fetchone()):
-        raise HTTPException(status_code=401, detail="Incorrect username or password")
-    payload = {
-        "iss": "CLIENT_ID", # Replace this with your client ID
-        "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=5) # Set the expiration time
-    }
-    token = jwt.encode(payload, secret_key, algorithm="HS256")
-    return {"username": row[1], "email": row[3], "token": token}
-
-@app.post("/register")
+class TokenSchema(BaseModel):
+    access_token: str
+    refresh_token: str
+    
+@app.post("/signup")
 async def create_user(user: User):
     conn = connect()
     cursor = conn.cursor()
@@ -100,31 +112,57 @@ async def create_user(user: User):
     email = user.email
     
     # Check if username or email already exists
-    cursor.execute("SELECT COUNT(*) FROM passenger WHERE username = ? OR email = ?", (username, email,))
+    cursor.execute("SELECT COUNT(*) FROM passenger WHERE username = ? OR email = ?", (username, email))
     result = cursor.fetchone()
     if result and result[0] > 0:
         return {"error": "Username or email already exists"}
     
     # Insert user into passenger table
+    user.password = password_context.hash(user.password)
+    print(user.password)
     columns = ['username', 'password', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'city', 'state', 'zip_code']
     values = [getattr(user, col) for col in columns]
     columns_present = [col for col in columns if getattr(user, col) is not None]
+    
     query = f"INSERT INTO passenger ({', '.join(columns_present)}) VALUES ({', '.join(['?']*len(columns_present))})"
     cursor.execute(query, values[:len(columns_present)])
     conn.commit()
     return {"message": "User created successfully"}
 
+
+@app.post('/login', summary="Create access and refresh tokens for user", response_model=TokenSchema)
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    conn = connect()
+    cursor = conn.cursor()
+    query = "SELECT * FROM passenger WHERE username = ?"
+    cursor.execute(query, (form_data.username))
+    if not (row := cursor.fetchone()):
+        raise HTTPException(status_code=401, detail="User not found")
+    row = dict(zip([column[0] for column in cursor.description], row))
+    
+
+    hashed_pass = row['password']
+    if not verify_password(form_data.password, hashed_pass):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect password"
+        )
+    
+    return {
+        "access_token": create_access_token(row['email']),
+        "refresh_token": create_refresh_token(row['email']),
+    }
+
+
+
+
+    
 # Load the Model
 model = pickle.load(open('../model/model/titanic_model.pkl', 'rb'))
 train = pd.read_csv('../model/data/train.csv')
 train_age_median = train['Age'].median()
 train_embarked_mode = train['Embarked'].mode()[0]
 train_fare_median = train['Fare'].median()
-
-# Setting up the home route
-@app.get("/")
-def read_root():
-    return {"data": "Welcome to titanic prediction model"}
 
 class Ticket(BaseModel):
     passenger_id: int
