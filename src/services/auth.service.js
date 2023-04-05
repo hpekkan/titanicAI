@@ -39,7 +39,8 @@ const refresh = (refresh_token) => {
 };
 const logout = () => {
   localStorage.removeItem("tokens");
-  localStorage.removeItem("user");
+  localStorage.removeItem("currentUser");
+
 };
 
 const getCurrentUser = async () => {

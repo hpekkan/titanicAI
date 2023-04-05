@@ -10,7 +10,7 @@ import Register from "./components/Register";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
-
+import BoardAdmin from "./components/BoardAdmin";
 const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
 
@@ -47,8 +47,14 @@ const App = () => {
             </Link>
           </li>
 
-         
-          {currentUser && (
+          {
+            currentUser && currentUser.authority_level === "admin" && <li className="nav-item">
+              <Link to={"/admin"} className="nav-link">
+                Admin
+              </Link>
+            </li>
+          }
+          {currentUser && currentUser.authority_level === "user" &&(
             <li className="nav-item">
               <Link to={"/user"} className="nav-link">
                 User
@@ -95,6 +101,7 @@ const App = () => {
           <Route path="/register" element={<Register/>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/user" element={<BoardUser/>} />
+          <Route path="/admin" element={<BoardAdmin/>} />
         </Routes>
       </div>
     </div>
