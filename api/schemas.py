@@ -40,8 +40,11 @@ class User(BaseModel):
     city: Optional[str] = None
     state: Optional[str] = None
     zip_code: Optional[str] = None
+    authority_level: Optional[str] = None
     
 class UserOut(BaseModel):
     username: str
     email: Optional[str] = None
+    user_id: Optional[str] = None
+    authority_level: Optional[str] = None
       

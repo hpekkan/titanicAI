@@ -75,12 +75,12 @@ async def create_user(user: User):
     cursor.execute("SELECT COUNT(*) FROM passenger WHERE username = ? OR email = ?", (username, email))
     result = cursor.fetchone()
     if result and result[0] > 0:
-        raise HTTPException(status_code=400, detail="Username or email already exists")
+        raise HTTPException(status_code=403 , detail="Username or email already exists")
     
     # Insert user into passenger table
     user.password = password_context.hash(user.password)
     print(user.password)
-    columns = ['username', 'password', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'city', 'state', 'zip_code']
+    columns = ['username', 'password', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'city', 'state', 'zip_code', 'authority_level']
     values = [getattr(user, col) for col in columns]
     columns_present = [col for col in columns if getattr(user, col) is not None]
     

@@ -2,12 +2,14 @@ import axios from "axios";
 import UserService from "./user.service";
 const API_URL = "http://127.0.0.1:8000/";
 
-const register = (username, email, password) => {
-  return axios.post(API_URL + "signup", {
+const register = async (username, email, password) => {
+  const response =  axios.post(API_URL + "signup", {
     username,
     email,
     password,
   });
+  return response;
+  
 };
 const getToken = () => {
   return JSON.parse(localStorage.getItem("tokens")).access_token;
@@ -40,9 +42,8 @@ const logout = () => {
   localStorage.removeItem("user");
 };
 
-const getCurrentUser =  async () => {
-  const user =  await UserService.getUser();
-  console.log(user.data);
+const getCurrentUser = async () => {
+  const user = await UserService.getUser();
   return user.data;
 };
 

@@ -16,8 +16,16 @@ const required = (value) => {
   }
 };
 
-const Login = () => {
+const Login = ({token, setToken}) => {
   let navigate = useNavigate();
+  const localToken = localStorage.getItem("tokens");
+  if(localToken) {
+    const access_token = JSON.parse().access_token;
+    if (access_token) {
+      navigate("/");
+    }
+  }
+ 
 
   const form = useRef();
   const checkBtn = useRef();
@@ -48,7 +56,7 @@ const Login = () => {
     if (checkBtn.current.context._errors.length === 0) {
       AuthService.login(username, password).then(
         () => {
-          navigate("/profile");
+          navigate("/");
           window.location.reload();
         },
         (error) => {

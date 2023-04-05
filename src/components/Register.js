@@ -71,7 +71,7 @@ const Register = () => {
     setPassword(password);
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     setMessage("");
@@ -80,7 +80,7 @@ const Register = () => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      AuthService.register(username, email, password).then(
+      await AuthService.register(username, email, password).then(
         (response) => {
           setMessage(response.data.message);
           setSuccessful(true);
@@ -92,8 +92,20 @@ const Register = () => {
               error.response.data.message) ||
             error.message ||
             error.toString();
-
-          setMessage(resMessage);
+          if (
+            error !== undefined ||
+            error !== null ||
+            error.response !== undefined ||
+            error.response !== null ||
+            error.response.data !== undefined ||
+            error.response.data !== null ||
+            error.response.data.detail !== undefined ||
+            error.response.data.detail !== null
+          ) {
+            setMessage(error.response.data.detail);
+          } else {
+            setMessage(resMessage);
+          }
           setSuccessful(false);
         }
       );
@@ -157,7 +169,9 @@ const Register = () => {
           {message && (
             <div className="form-group">
               <div
-                className={ successful ? "alert alert-success" : "alert alert-danger" }
+                className={
+                  successful ? "alert alert-success" : "alert alert-danger"
+                }
                 role="alert"
               >
                 {message}
