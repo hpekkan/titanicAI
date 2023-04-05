@@ -20,7 +20,7 @@ const Login = ({token, setToken}) => {
   let navigate = useNavigate();
   const localToken = localStorage.getItem("tokens");
   if(localToken) {
-    const access_token = JSON.parse().access_token;
+    const access_token = JSON.parse(localToken).access_token;
     if (access_token) {
       navigate("/");
     }
