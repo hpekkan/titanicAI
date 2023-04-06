@@ -84,3 +84,96 @@ label {
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
+
+.gender-select {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.gender-select label {
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.gender-select input[type="radio"] {
+  margin-right: 5px;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+.jumbotron {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.gender-select {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.gender-select label {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.gender-select input[type="radio"] {
+  margin-right: 5px;
+}
+
+.alert-danger {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 4px;
+}
+Form{
+  width: auto;
+  margin: 0 auto;
+  width: 500px;
+  padding: 1em;
+  border: 1px solid #CCC;
+  border-radius: 1em;
+}
+.jumbotronHome {
+  text-align: center;
+}
+LeftBody{
+  width: 50%;
+  padding: 1em;
+  border: 1px solid #CCC;
+  border-radius: 1em;
+}
