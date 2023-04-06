@@ -130,8 +130,8 @@ const Home = () => {
 
   return (
     <div className="container">
-      <header className="jumbotron">
-      <div className="LeftBody"></div>
+      <header className="jumbotronHome">
+      <div className="LeftBody">a</div>
         <Form onSubmit={handleSubmit} ref={form}>
           <div className="form-group">
             <label htmlFor="Pass_id">Pass_id</label>
