@@ -158,15 +158,7 @@ label {
   padding: 15px;
   border-radius: 4px;
 }
-Form{
-  width: 30%;
-  margin: 10px;
-  width: 500px;
-  padding: 2em;
-  border: 1px solid #CCC;
-  border-radius: 1em;
-}
-.jumbotronHome {
+.jumbotronTickets {
   text-align: center;
   display: flex;
   flex-direction: row;
@@ -180,4 +172,37 @@ Form{
   padding: 1em;
   border: 1px solid #CCC;
   border-radius: 1em;
+}
+.ticketsPage Form{
+  color: #a94442;
+}
+
+.Home {
+  text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Home-header {
+  background-color: #282c34;
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
 }

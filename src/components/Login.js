@@ -77,7 +77,7 @@ const Login = ({token, setToken}) => {
   };
 
   return (
-    <div className="col-md-12">
+    <div className="LoginColumn col-md-12">
       <div className="card card-container">
         <img
           src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"

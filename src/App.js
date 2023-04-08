@@ -18,16 +18,14 @@ const App = () => {
     async function fetchData() {
       const data = await AuthService.getCurrentUser();
       setCurrentUser(data);
-      localStorage.setItem('currentUser', JSON.stringify(data));
+      localStorage.setItem("currentUser", JSON.stringify(data));
       return true;
     }
     const localToken = localStorage.getItem("tokens");
-    if(localToken){
+    if (localToken) {
       const access_token = JSON.parse(localToken).access_token;
-      if(access_token)
-        fetchData();
+      if (access_token) fetchData();
     }
-    
   }, []);
 
   const logOut = () => {
@@ -38,7 +36,7 @@ const App = () => {
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
         <Link to={"/"} className="navbar-brand">
-        TicTanic
+          TicTanic
         </Link>
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
@@ -47,17 +45,17 @@ const App = () => {
             </Link>
           </li>
 
-          {
-            currentUser && currentUser.authority_level === "admin" && <li className="nav-item">
+          {currentUser && currentUser.authority_level === "admin" && (
+            <li className="nav-item">
               <Link to={"/admin"} className="nav-link">
                 Admin
               </Link>
             </li>
-          }
-          {currentUser && currentUser.authority_level === "user" &&(
+          )}
+          {currentUser && currentUser.authority_level === "user" && (
             <li className="nav-item">
               <Link to={"/user"} className="nav-link">
-                User
+                Tickets
               </Link>
             </li>
           )}
@@ -95,13 +93,13 @@ const App = () => {
 
       <div className="container mt-12">
         <Routes>
-          <Route path="/" element={<Home/>} />
-          <Route path="/home" element={<Home/>} />
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register/>} />
+          <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/user" element={<BoardUser/>} />
-          <Route path="/admin" element={<BoardAdmin/>} />
+          <Route path="/user" element={<BoardUser />} />
+          <Route path="/admin" element={<BoardAdmin />} />
         </Routes>
       </div>
     </div>
