@@ -33,7 +33,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div className="App">
       <nav className="navbar navbar-expand navbar-dark bg-dark">
         <Link to={"/"} className="navbar-brand">
           TicTanic
@@ -54,8 +54,8 @@ const App = () => {
           )}
           {currentUser && currentUser.authority_level === "user" && (
             <li className="nav-item">
-              <Link to={"/user"} className="nav-link">
-                Tickets
+              <Link to={"/ticket"} className="nav-link">
+                Book a Ticket
               </Link>
             </li>
           )}
@@ -98,7 +98,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/user" element={<BoardUser />} />
+          <Route path="/ticket" element={<BoardUser />} />
           <Route path="/admin" element={<BoardAdmin />} />
         </Routes>
       </div>

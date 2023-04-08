@@ -38,7 +38,6 @@ label {
   color: rgb(34, 34, 34);
 }
 
-
 .wrapper {
   padding: 20px;
 }
@@ -48,9 +47,8 @@ label {
   flex-direction: column;
   align-items: center;
 }
-nav a{
+nav a {
   margin: 0 10px 0 10px;
-
 }
 label {
   display: block;
@@ -102,8 +100,26 @@ label {
 .gender-select input[type="radio"] {
   margin-right: 5px;
 }
+.App{
+  background-color: #282c34;
 
-.container {
+}
+.containerHome {
+  text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #282c34;
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
 .jumbotron {
@@ -164,26 +180,16 @@ label {
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
-
 }
-.LeftBody{
+.LeftBody {
   width: 70%;
   height: auto;
   padding: 1em;
-  border: 1px solid #CCC;
+  border: 1px solid #ccc;
   border-radius: 1em;
 }
-.ticketsPage Form{
+.ticketsPage Form {
   color: #a94442;
-}
-
-.Home {
-  text-align: center;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .Home-header {
@@ -199,7 +205,7 @@ label {
 
 button {
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 5px;

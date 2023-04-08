@@ -25,7 +25,6 @@ const Home = () => {
         access_token !== "undefined" &&
         access_token !== "null"
       ) {
-        navigate("/");
       } else {
         navigate("/login");
       }
@@ -35,10 +34,10 @@ const Home = () => {
   }, [localToken, access_token, navigate]);
 
   const handleStart = () => {
-    navigate("/user");
+    navigate("/ticket");
   };
   return (
-    <div className="container">
+    <div className="containerHome ">
       <header className="jumbotron">
         <div className="Home">
           <header className="Home-header">
