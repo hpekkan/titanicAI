@@ -5,6 +5,7 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 
 import AuthService from "../services/auth.service";
+import { useEffect } from "react";
 
 const required = (value) => {
   if (!value) {
@@ -16,8 +17,9 @@ const required = (value) => {
   }
 };
 
-const Login = ({token, setToken}) => {
+const Login = ({setLoading}) => {
   let navigate = useNavigate();
+ 
   const localToken = localStorage.getItem("tokens");
   if(localToken) {
     const access_token = JSON.parse(localToken).access_token;
@@ -25,14 +27,13 @@ const Login = ({token, setToken}) => {
       navigate("/");
     }
   }
- 
 
   const form = useRef();
   const checkBtn = useRef();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
   const [message, setMessage] = useState("");
 
   const onChangeUsername = (e) => {
@@ -47,9 +48,9 @@ const Login = ({token, setToken}) => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-
-    setMessage("");
     setLoading(true);
+    setMessage("");
+    setLocalLoading(true);
 
     form.current.validateAll();
 
@@ -67,12 +68,12 @@ const Login = ({token, setToken}) => {
             error.message ||
             error.toString();
 
-          setLoading(false);
+            setLocalLoading(false);
           setMessage(resMessage);
         }
       );
     } else {
-      setLoading(false);
+      setLocalLoading(false);
     }
   };
 
@@ -111,8 +112,8 @@ const Login = ({token, setToken}) => {
           </div>
 
           <div className="form-group">
-            <button className="btn btn-primary btn-block" disabled={loading}>
-              {loading && (
+            <button className="btn btn-primary btn-block" disabled={localLoading}>
+              {localLoading && (
                 <span className="spinner-border spinner-border-sm"></span>
               )}
               <span>Login</span>

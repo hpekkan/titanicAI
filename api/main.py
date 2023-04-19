@@ -18,6 +18,7 @@ from passlib.context import CryptContext
 from server import connect
 from deps import get_current_user
 from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket
+from datetime import datetime
 
 from utils import  (
     get_hashed_password,
@@ -117,7 +118,7 @@ async def get_me(user: UserOut = Depends(get_current_user)):
 
 
 @app.get('/refresh', summary='Refresh access token')
-async def refresh(refresh_token: str = Depends(oauth2_scheme)):
+async def refresh(refresh_token: str ):
     try:
         if not refresh_token:
             raise HTTPException(status_code=401, detail="Refresh token required")
@@ -132,8 +133,8 @@ async def refresh(refresh_token: str = Depends(oauth2_scheme)):
                     headers={"WWW-Authenticate": "Bearer"},
                 )
         return {
-            "access_token": create_access_token(token_data.username),
-            "refresh_token": create_refresh_token(token_data.username),
+            "access_token": create_access_token(token_data.sub),
+            "refresh_token": create_refresh_token(token_data.sub),
         }
     except (jwt.JWTError, ValidationError) as e:
         raise HTTPException(

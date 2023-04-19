@@ -28,11 +28,13 @@ const login = (username, password) => {
   });
 };
 const refresh = (refresh_token) => {
-  var formData = new FormData();
-  formData.append("refresh", refresh_token);
-  return axios.post(API_URL + "refresh", formData).then((response) => {
+  
+  
+  return axios.get(API_URL + "refresh?refresh_token=" + refresh_token, 
+  ).then((response) => {
     if (response.data.access_token) {
       localStorage.setItem("tokens", JSON.stringify(response.data));
+      console.log(response.data);
     }
     return response.data;
   });
