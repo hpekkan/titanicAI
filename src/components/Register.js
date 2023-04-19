@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
@@ -47,6 +48,14 @@ const vpassword = (value) => {
 };
 
 const Register = () => {
+  let navigate = useNavigate();
+  const localToken = localStorage.getItem("tokens");
+  if(localToken) {
+    const access_token = JSON.parse(localToken).access_token;
+    if (access_token) {
+      navigate("/");
+    }
+  }
   const form = useRef();
   const checkBtn = useRef();
 

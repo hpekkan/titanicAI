@@ -35,25 +35,20 @@ const App = () => {
   return (
     <div className="App">
       <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <Link to={"/"} className="navbar-brand">
-          TicTanic
-        </Link>
-        <div className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link to={"/home"} className="nav-link">
-              Home
-            </Link>
-          </li>
+        <div className="navbar-nav mr-auto col-xl-4">
+          <Link to={"/"} className="navbar-brand ">
+            <h3>TicTanic</h3>
+          </Link>
 
           {currentUser && currentUser.authority_level === "admin" && (
-            <li className="nav-item">
+            <li className="nav-item justify-content-center align-self-center">
               <Link to={"/admin"} className="nav-link">
                 Admin
               </Link>
             </li>
           )}
           {currentUser && currentUser.authority_level === "user" && (
-            <li className="nav-item">
+            <li className="nav-item justify-content-center align-self-center">
               <Link to={"/ticket"} className="nav-link">
                 Book a Ticket
               </Link>
@@ -62,20 +57,20 @@ const App = () => {
         </div>
 
         {currentUser ? (
-          <div className="navbar-nav ml-auto">
+          <div className="navbar-nav ml-auto col-xl-8 justify-content-end  ">
             <li className="nav-item">
               <Link to={"/profile"} className="nav-link">
                 {currentUser.username}
               </Link>
             </li>
-            <li className="nav-item">
-              <a href="/login" className="nav-link" onClick={logOut}>
+            <li className="nav-item logout">
+              <a href="/login" className="nav-link logout" onClick={logOut}>
                 LogOut
               </a>
             </li>
           </div>
         ) : (
-          <div className="navbar-nav ml-auto">
+          <div className="navbar-nav ml-auto ">
             <li className="nav-item">
               <Link to={"/login"} className="nav-link">
                 Login
@@ -91,10 +86,9 @@ const App = () => {
         )}
       </nav>
 
-      <div className="container mt-12">
+      <div className="containerMain ">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />

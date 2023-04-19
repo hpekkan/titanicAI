@@ -129,10 +129,10 @@ const BoardUser = () => {
   };
 
   return (
-    <div className="container ticketsPage">
+    <div className="ticketsPage">
       <header className="jumbotronTickets">
-      <div className="LeftBody">a</div>
-        <Form onSubmit={handleSubmit} ref={form}>
+      <div className="LeftBody ">aasd</div>
+        <Form onSubmit={handleSubmit} ref={form} >
           <div className="form-group">
             <label htmlFor="Pass_id">Pass_id</label>
             <Input

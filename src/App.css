@@ -1,5 +1,6 @@
-.App {
-  background-color: white;
+.App{
+  background-color: #282c34;
+  height: auto;
 }
 
 .Auth-form-container {
@@ -48,13 +49,35 @@ label {
   align-items: center;
 }
 nav a {
-  margin: 0 10px 0 10px;
+  margin: 0 6px 0 6px;
 }
 label {
   display: block;
   margin-top: 10px;
 }
+.containerMain {
+  width: 100%;
+  color: #ccc;
+  height: 90vh;
+  overflow-y: auto;
 
+}
+.containerMain label{
+  color: #ccc;
+}
+.profileContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: baseline;
+  height: 90vh;
+  color: #ccc;
+}
+.profileContainer header{
+  margin-top: 3rem;
+  height:30vh;
+
+}
 .card-container.card {
   max-width: 350px !important;
   padding: 40px 40px;
@@ -100,19 +123,17 @@ label {
 .gender-select input[type="radio"] {
   margin-right: 5px;
 }
-.App{
-  background-color: #282c34;
 
-}
 .containerHome {
   text-align: center;
-  height: 100vh;
+  
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
   background-color: #282c34;
+
   min-height: 30vh;
   display: flex;
   flex-direction: column;
@@ -124,10 +145,14 @@ label {
 
 .jumbotron {
   text-align: center;
+  color: #ccc;
 }
 
+
 .form-group {
-  margin-bottom: 20px;
+  width: 13rem;
+  margin: 10px 8px;
+  height: 11vh;
 }
 
 .form-group label {
@@ -182,19 +207,30 @@ label {
   align-items: center;
 }
 .LeftBody {
-  width: 70%;
+  width: 40%;
   height: auto;
   padding: 1em;
   border: 1px solid #ccc;
   border-radius: 1em;
 }
+.ticketsPage{
+  background-color: #282c34;
+  height: auto;
+}
 .ticketsPage Form {
+  width: 60%;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  overflow: auto;
   color: #a94442;
 }
-
 .Home-header {
   background-color: #282c34;
-  min-height: 30vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -211,4 +247,23 @@ button {
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
+}
+
+h3{
+  margin-block-start: 0.75rem;
+  margin-block-end: 0.75rem;
+}
+
+.navbar-brand {
+  margin-left:28px;
+}
+.navbar {
+  height: 10vh;
+}
+.nav-link {
+  margin-left: 10px;
+}
+
+.justify-content-end .logout{
+  margin-right: 1rem;
 }

@@ -37,7 +37,7 @@ const Home = () => {
     navigate("/ticket");
   };
   return (
-    <div className="containerHome ">
+    <div className="containerHome align-items-center">
       <header className="jumbotron">
         <div className="Home">
           <header className="Home-header">

@@ -20,11 +20,11 @@ const Profile = () => {
     window.location.href = "/login";
   }, []);
   return (
-    <>
-      <div className="container">
-        <header className="jumbotron">
+    <div className="profileContainer">
+      
+        <header className="jumbotron ">
           <h3>
-            <strong>{currentUser.username}</strong> Profile
+          Profile<br/><br/><strong>{currentUser.username}</strong> 
           </h3>
         </header>
         <p>
@@ -40,8 +40,8 @@ const Profile = () => {
         <strong>Authorities:</strong>
         &nbsp;
         {currentUser.authority_level}
-      </div>
-    </>
+      
+    </div>
   );
 };
 
