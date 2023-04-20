@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import VoyageService from "../services/voyage.service";
+import ReactLoading from "react-loading";
+import Voyage from "./Voyage";
 
 const Profile = () => {
   const [currentUser, setCurrentUser] = useState("");
@@ -19,12 +23,46 @@ const Profile = () => {
     }
     window.location.href = "/login";
   }, []);
+
+  let navigate = useNavigate();
+  const [content, setContent] = useState();
+  const [loading, setLoading] = useState(false);
+  const fetchData = async () => {
+    //todo change to my voyages
+    if(localStorage.getItem("currentUser")===null) navigate("/login");
+    setLoading(true);
+    await VoyageService.getVoyages().then(
+      (response) => {
+        if (response.data["Voyages"] === undefined) {
+          setContent([]);
+        } else setContent(response.data["Voyages"]);
+      },
+      (error) => {
+        const _content =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        setContent(_content);
+      }
+    );
+    setLoading(false);
+  };
+  useEffect(() => {
+    
+    fetchData();
+  }, []);
+
   return (
-    <div className="profileContainer">
-      
+    <div className="d-flex">
+      <div className="profileContainer col-xl-4">
         <header className="jumbotron ">
           <h3>
-          Profile<br/><br/><strong>{currentUser.username}</strong> 
+            Profile
+            <br />
+            <br />
+            <strong>{currentUser.username}</strong>
           </h3>
         </header>
         <p>
@@ -40,7 +78,39 @@ const Profile = () => {
         <strong>Authorities:</strong>
         &nbsp;
         {currentUser.authority_level}
+      </div>
+      <div className="profileContainer col-xl-8 d-flex">
+        <header className="jumbotron ">
+          <h3>
+            MY TICKETS &nbsp;
+            <strong>{currentUser.username}</strong>
+          </h3>
+        </header>
+        <div className= " voyages d-flex flex-wrap align-content-center justify-content-center ">
       
+      {loading === true && (
+        <ReactLoading
+          className="spinner"
+          type="spin"
+          color="#FF6100"
+          height={50}
+          width={50}
+        />
+      )}
+      {loading === false &&
+        content !== undefined &&
+        content.map((route) => (
+          <Voyage
+            key={route.route_id}
+            route_id={route.route_id}
+            departure={route.departure_location}
+            arrival={route.arrival_location}
+            departure_time={route.departure_time}
+            currentUser={currentUser}
+          />
+        ))}
+    </div>
+      </div>
     </div>
   );
 };

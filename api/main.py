@@ -118,7 +118,7 @@ async def get_me(user: UserOut = Depends(get_current_user)):
 
 
 @app.get('/voyages', summary='Get all voyages', response_model=VoyageOut)
-async def get_voyages():
+async def get_voyages(user: UserOut = Depends(get_current_user)):
     conn = connect()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM route")
@@ -135,7 +135,6 @@ async def get_voyages():
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Could not find user",
         )
-    print({'voyages': voyages})
     return VoyageOut(**{'Voyages': voyages})
 
 @app.delete('/voyages/{voyage_id}', summary='Delete voyage')
@@ -187,8 +186,28 @@ async def refresh(refresh_token: str):
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+        
+ #todo make passenger_Reservation 
+@app.get('/user/voyages/', summary='Get users voyages', response_model=VoyageOut)
+async def get_user_voyages(user: UserOut = Depends(get_current_user)):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM route")
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    voyages = []
+    for row in rows:
+        row = dict(zip(columns, row))
+        voyage: Union[dict[str, Any], None] = row
+        voyages.append(voyage)
 
-
+    if voyages is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Could not find user",
+        )
+    print({'voyages': voyages})
+    return VoyageOut(**{'Voyages': voyages})
         
     
 

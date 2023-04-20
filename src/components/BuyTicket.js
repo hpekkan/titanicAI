@@ -125,6 +125,7 @@ const BoardUser = () => {
 
     if (checkBtn.current.context._errors.length === 0) {
       //todo: handle submit
+      console.log(sex);
     } else {
       setLoading(false);
     }
