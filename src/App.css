@@ -148,7 +148,19 @@ label {
   color: #ccc;
 }
 
-
+.jumbotronAdmin{
+  margin: 2rem 0 1rem 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.voyages .spinner{
+  margin-top: 10rem;
+}
+.jumbotronAdmin .refresh-button{
+  background-color: #282c34;
+} 
 .form-group {
   width: 13rem;
   margin: 10px 8px;
@@ -276,26 +288,15 @@ h3{
   align-items: center;
   justify-content: center;
 }
-.voyages {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-  height: 100%;
-  width: 100%;
-  margin: 30px 0;
-}
+
 .voyage {
   display: flex;
   flex-direction: column;
-  justify-content:  space-evenly;
+  justify-content:  space;
   align-items: center;
   background-color: #555;
-  width: auto;
-  height: auto;
   border-radius: 1rem;
-  padding: 2rem;
+  height: 32vh;
 }
 .voyage .route-item{
   display: flex;
@@ -304,14 +305,31 @@ h3{
   align-items: center;
 }
 
-.route-item span{
+.route-item strong{
   margin: auto;
   text-align: center;
-  font-size: 1.5rem;
   color: #fff;
   text-decoration: none;
 }
 .voyage .header-item{
-  font-size: 1.75rem;
   margin-right: 0.5rem;
+}
+.voyages .jumbotron{
+  padding: 0 1rem;
+}
+.voyages .text-green{
+  color: greenyellow;
+}
+
+.voyage .d-flex .remove{
+  background-color: #a94442;
+  color: white;
+  padding: 2px;
+}
+.voyage button{
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

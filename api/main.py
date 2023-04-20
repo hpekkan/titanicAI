@@ -141,7 +141,7 @@ async def get_voyages(user: UserOut = Depends(get_current_user)):
     return VoyageOut(**{'Voyages': voyages})
 
 @app.get('/refresh', summary='Refresh access token')
-async def refresh(refresh_token: str ):
+async def refresh(refresh_token: str):
     try:
         if not refresh_token:
             raise HTTPException(status_code=401, detail="Refresh token required")
@@ -159,12 +159,12 @@ async def refresh(refresh_token: str ):
             "access_token": create_access_token(token_data.sub),
             "refresh_token": create_refresh_token(token_data.sub),
         }
-    except (jwt.JWTError, ValidationError) as e:
+    except :
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
-        ) from e
+        )
     
 
         

@@ -1,6 +1,6 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-import AuthService  from "./auth.service";
+import AuthService from "./auth.service";
 const API_URL = "http://127.0.0.1:8000/";
 
 const getPublicContent = () => {
@@ -8,28 +8,36 @@ const getPublicContent = () => {
 };
 
 const getUser = async () => {
-  const response = await axios.get(API_URL + "me", { headers: authHeader() });
-  if(response.status=== 401 ){
-    AuthService.refresh();
-    const newResponse = await axios.get(API_URL + "me", { headers: authHeader() });
-    if(newResponse.status=== 401 ){
-      AuthService.logout();
+  console.log("hello");
+  let response;
+  try {
+    response = await axios.get(API_URL + "me", { headers: authHeader() });
+  } catch (error) {
+    try {
+      await AuthService.refresh();
+      const newResponse = await axios.get(API_URL + "me", {
+        headers: authHeader(),
+      });
+    } catch (error) {
+      await AuthService.logout();
     }
-  }else if (response.status=== 403){
-    AuthService.logout();
-    return null;
   }
+
   return response;
 };
 const getVoyages = async () => {
-  const response = await axios.get(API_URL + "voyages", { headers: authHeader() });
-  if(response.status=== 401 ){
+  const response = await axios.get(API_URL + "voyages", {
+    headers: authHeader(),
+  });
+  if (response.status === 401) {
     AuthService.refresh();
-    const newResponse = await axios.get(API_URL + "voyages", { headers: authHeader() });
-    if(newResponse.status=== 401 ){
+    const newResponse = await axios.get(API_URL + "voyages", {
+      headers: authHeader(),
+    });
+    if (newResponse.status === 401) {
       AuthService.logout();
     }
-  }else if (response.status=== 403){
+  } else if (response.status === 403) {
     AuthService.logout();
     return null;
   }

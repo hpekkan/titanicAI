@@ -28,7 +28,7 @@ const login = (username, password) => {
   });
 };
 const refresh = (refresh_token) => {
-  
+  console.log("refresh");
   
   return axios.get(API_URL + "refresh?refresh_token=" + refresh_token, 
   ).then((response) => {
