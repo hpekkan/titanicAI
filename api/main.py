@@ -140,6 +140,17 @@ async def get_voyages(user: UserOut = Depends(get_current_user)):
     print({'voyages': voyages})
     return VoyageOut(**{'Voyages': voyages})
 
+@app.delete('/voyages/{voyage_id}', summary='Delete voyage')
+async def delete_voyage(voyage_id: int, user: UserOut = Depends(get_current_user)):
+    if user.authority_level != 'admin':
+        raise HTTPException(status_code=401, detail="You are not authorized to view this page")
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM route WHERE route_id = ?", (voyage_id))
+    conn.commit()
+    return {"message": "Voyage deleted successfully"}
+
+
 @app.get('/refresh', summary='Refresh access token')
 async def refresh(refresh_token: str):
     try:
@@ -165,7 +176,7 @@ async def refresh(refresh_token: str):
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
 
         
     

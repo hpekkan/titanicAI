@@ -1,6 +1,7 @@
 
 from pydantic import BaseModel
-from typing import Optional,List    
+from typing import Optional,List
+import datetime    
 
 class Token(BaseModel):
     access_token: str
@@ -32,6 +33,7 @@ class Voyage(BaseModel):
     route_id: str
     departure_location: str
     arrival_location: str
+    departure_time: datetime.datetime
 class VoyageOut(BaseModel):
     Voyages:  List[Voyage] = []
 class User(BaseModel):

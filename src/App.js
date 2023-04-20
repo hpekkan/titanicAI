@@ -64,7 +64,7 @@ const App = () => {
   };
 
   return (
-    <div className="App" id="App">
+    <div className="App " id="App">
       {loading === true && (
         <ReactLoading
           className="spinner"
@@ -83,8 +83,8 @@ const App = () => {
               </Link>
 
               {currentUser && currentUser.authority_level === "admin" && (
-                <li className="nav-item justify-content-center align-self-center">
-                  <Link to={"/admin"} className="nav-link">
+                <li className="nav-item justify-content-center align-self-center ">
+                  <Link to={"/admin"} className="nav-link " >
                     Admin
                   </Link>
                 </li>
