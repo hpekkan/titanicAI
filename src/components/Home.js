@@ -34,7 +34,7 @@ const Home = () => {
   }, [localToken, access_token, navigate]);
 
   const handleStart = () => {
-    navigate("/ticket");
+    navigate("/tickets");
   };
   return (
     <div className="containerHome align-items-center">

@@ -2,7 +2,8 @@ import "../App.css";
 import React, { useState } from "react";
 import VoyageService from "../services/voyage.service";
 
-const Voyage = ({ route_id, departure, arrival, departure_time, popUp }) => {
+const Voyage = ({ route_id, departure, arrival, departure_time, popUp,currentUser }) => {
+  console.log(currentUser);
   const _date = new Date(departure_time);
   let _mdy =
     _date.getMonth() + 1 + "/" + _date.getDate() + "/" + _date.getFullYear();
@@ -74,6 +75,7 @@ const Voyage = ({ route_id, departure, arrival, departure_time, popUp }) => {
                 <strong className="text-green">{_hour}</strong>
               </h5>
             </div>
+            {currentUser && currentUser.authority_level === "admin" && 
             <div className="d-flex ">
               <button
                 className="btn  btn-block m-1 remove "
@@ -90,6 +92,12 @@ const Voyage = ({ route_id, departure, arrival, departure_time, popUp }) => {
               </button>
               <button className="m-1" disabled={popUp}>Edit</button>
             </div>
+          }
+          {currentUser && currentUser.authority_level === "user" && 
+            <div className="row justify-content-md-center m-2">
+              <button className="m-1">BUY</button>
+            </div>
+          }
           </header>
         </div>
       </>

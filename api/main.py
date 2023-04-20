@@ -118,9 +118,7 @@ async def get_me(user: UserOut = Depends(get_current_user)):
 
 
 @app.get('/voyages', summary='Get all voyages', response_model=VoyageOut)
-async def get_voyages(user: UserOut = Depends(get_current_user)):
-    if user.authority_level != 'admin':
-        raise HTTPException(status_code=401, detail="You are not authorized to view this page")
+async def get_voyages():
     conn = connect()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM route")

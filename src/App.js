@@ -91,7 +91,7 @@ const App = () => {
               )}
               {currentUser && currentUser.authority_level === "user" && (
                 <li className="nav-item justify-content-center align-self-center">
-                  <Link to={"/ticket"} className="nav-link">
+                  <Link to={"/tickets"} className="nav-link">
                     Book a Ticket
                   </Link>
                 </li>
@@ -134,8 +134,8 @@ const App = () => {
               <Route path="/login" element={<Login setLoading={setLoading}  />} />
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/ticket" element={<BoardUser />} />
-              <Route path="/admin" element={<BoardAdmin />} />
+              <Route path="/tickets" element={<BoardUser currentUser={currentUser}/>} />
+              <Route path="/admin" element={<BoardAdmin currentUser={currentUser}/>} />
             </Routes>
           </div>
         </>

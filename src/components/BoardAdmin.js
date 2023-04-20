@@ -6,7 +6,7 @@ import ReactLoading from "react-loading";
 import AddVoyage from "./AddVoyage";
 import { useNavigate } from "react-router-dom";
 import PopUp from "./PopUp";
-const BoardUser = () => {
+const BoardUser = ({currentUser}) => {
   let navigate = useNavigate();
   const [popUp, setPopUp] = useState(false);
   const duringPopUp = popUp ? " during-popup" : ""
@@ -70,9 +70,10 @@ const BoardUser = () => {
               arrival={route.arrival_location}
               departure_time={route.departure_time}
               popUp={popUp}
+              currentUser={currentUser}
             />
           ))}
-          {loading === false&&<AddVoyage popUp={popUp} setPopUp={setPopUp}/>}
+          {currentUser && currentUser.authority_level === "admin" &&loading === false&&<AddVoyage popUp={popUp} setPopUp={setPopUp}/>}
       </div>
     </div>
   );
