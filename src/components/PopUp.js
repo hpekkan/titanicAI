@@ -8,6 +8,7 @@ import DatePicker from "react-datepicker";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import "react-datepicker/dist/react-datepicker.css";
+import VoyageService from "../services/voyage.service";
 
 const required = (value) => {
   if (!value) {
@@ -22,7 +23,7 @@ const required = (value) => {
 const PopUp = (props) => {
   // function that takes boolean as param to conditionally display popup
   let navigate = useNavigate();
-  const { setPopUp } = props;
+  const { setPopUp,refreshForms } = props;
   const form = useRef();
   const checkBtn = useRef();
   const [startDate, setStartDate] = useState(
@@ -43,7 +44,7 @@ const PopUp = (props) => {
     setArrival(arrival);
   };
 
-  const handleCreate = (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
@@ -52,7 +53,22 @@ const PopUp = (props) => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      setLocalLoading(false);
+      await VoyageService.createVoyage(departure, arrival, startDate)
+        .then((response) => {
+          if(response.status === 200) {
+            setPopUp(false);
+            refreshForms();
+          }
+        })
+        .catch((error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          return resMessage;
+        });
     } else {
       setLocalLoading(false);
     }
@@ -90,7 +106,6 @@ const PopUp = (props) => {
             selected={startDate}
             onChange={(date) => setStartDate(date)}
             showTimeSelect
-            
             dateFormat="MMMM d, yyyy h:mm aa"
           />
         </div>
@@ -103,30 +118,28 @@ const PopUp = (props) => {
           </div>
         )}
         <CheckButton style={{ display: "none" }} ref={checkBtn} />
-      </Form>
-      <div className="pu-button-container">
-        <div className="form-group">
-          <button
-            className="btn btn-danger btn-block  m-2"
-            disabled={localLoading}
-            onClick={() => setPopUp(false)}
-          >
-            {localLoading && (
-              <span className="spinner-border spinner-border-sm"></span>
-            )}
-            <span>Close</span>
-          </button>
-          <button
-            className="btn btn-primary btn-block m-2"
-            disabled={localLoading}
-          >
-            {localLoading && (
-              <span className="spinner-border spinner-border-sm"></span>
-            )}
-            <span>Add Voyage</span>
-          </button>
+
+        <div className="pu-button-container">
+          <div className="form-group">
+            <button
+              className="btn btn-danger btn-block  m-2"
+              disabled={localLoading}
+              onClick={() => setPopUp(false)}
+            >
+              <span>Close</span>
+            </button>
+            <button
+              className="btn btn-primary btn-block m-2"
+              disabled={localLoading}
+            >
+              {localLoading && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}
+              <span>Add Voyage</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </Form>
     </div>
   );
 };

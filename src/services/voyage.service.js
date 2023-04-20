@@ -54,8 +54,29 @@ const deleteVoyage = async (id) => {
   return response;
 };
 
+const createVoyage = async (departure,arrival,date) => {
+  const response = await axios.post(API_URL + "voyages", {'departure_location':departure, 'arrival_location':arrival, "departure_time":date}, {
+    headers: authHeader(),
+  });
+  if (response.status === 401) {
+    AuthService.refresh();
+    const newResponse = await axios.post(API_URL + "voyages", {'departure_location':departure, 'arrival_location':arrival, "departure_time":date}, {
+      headers: authHeader(),
+    });
+    if (newResponse.status === 401) {
+      AuthService.logout();
+    }
+  } else if (response.status === 403) {
+    AuthService.logout();
+    return null;
+  }
+  return response;
+}
+
+
 const VoyageService = {
   getVoyages,
   deleteVoyage,
+  createVoyage
 };
 export default VoyageService;

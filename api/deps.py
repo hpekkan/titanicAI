@@ -54,3 +54,4 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> UserOut:
             detail="Could not find user",
         )
     return UserOut(**user)
+

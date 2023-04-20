@@ -8,7 +8,7 @@ const Voyage = ({ popUp, setPopUp }) => {
         <header className="jumbotron text-white">
           <h3>Add New Voyage</h3>
           <div className="form-group d-flex justify-content-center align-items-center ">
-            <button className="btn btn-primary " onClick={() => setPopUp(true)} disabled={popUp}>
+            <button className="btn btn-primary " onClick={() => setPopUp(true)} disabled={popUp} >
               <h5>+</h5>
             </button>
           </div>

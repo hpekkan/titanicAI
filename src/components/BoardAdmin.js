@@ -49,7 +49,7 @@ const BoardUser = () => {
         </button>
       </header>
       <div className= {" voyages d-flex flex-wrap align-content-center justify-content-center Checkout" + duringPopUp}>
-      {popUp && <PopUp setPopUp={setPopUp}/>}
+      {popUp && <PopUp setPopUp={setPopUp}  refreshForms={refreshForms}/>}
 
         {loading === true && (
           <ReactLoading
