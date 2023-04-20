@@ -17,9 +17,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 from server import connect
 from deps import get_current_user
-from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket
+from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut
 from datetime import datetime
-
+from typing import Union, Any 
 from utils import  (
     get_hashed_password,
     create_access_token,
@@ -116,6 +116,29 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 async def get_me(user: UserOut = Depends(get_current_user)):
     return user
 
+
+@app.get('/voyages', summary='Get all voyages', response_model=VoyageOut)
+async def get_voyages(user: UserOut = Depends(get_current_user)):
+    if user.authority_level != 'admin':
+        raise HTTPException(status_code=401, detail="You are not authorized to view this page")
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM route")
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    voyages = []
+    for row in rows:
+        row = dict(zip(columns, row))
+        voyage: Union[dict[str, Any], None] = row
+        voyages.append(voyage)
+
+    if voyages is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Could not find user",
+        )
+    print({'voyages': voyages})
+    return VoyageOut(**{'Voyages': voyages})
 
 @app.get('/refresh', summary='Refresh access token')
 async def refresh(refresh_token: str ):

@@ -1,6 +1,6 @@
 
 from pydantic import BaseModel
-from typing import Optional    
+from typing import Optional,List    
 
 class Token(BaseModel):
     access_token: str
@@ -28,7 +28,12 @@ class Ticket(BaseModel):
     fare: float
     cabin: str
     embarked: str
-    
+class Voyage(BaseModel):
+    route_id: str
+    departure_location: str
+    arrival_location: str
+class VoyageOut(BaseModel):
+    Voyages:  List[Voyage] = []
 class User(BaseModel):
     username: str
     password: str
