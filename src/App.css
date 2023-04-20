@@ -334,3 +334,29 @@ h3{
   justify-content: center;
   align-items: center;
 }
+
+.during-popup{
+  z-index: 0;
+}
+
+.PopUp{
+  position: fixed;
+  opacity: 1;
+  left: 25%;
+  top: 30%;
+
+  width: 50%;
+  z-index: 100;
+  border: 1px solid #011627;
+  border-radius: 1em;
+
+  background-color: #FDFFFC;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+
+  color: #011627;
+}

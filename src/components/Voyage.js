@@ -2,9 +2,10 @@ import "../App.css";
 import React, { useState } from "react";
 import VoyageService from "../services/voyage.service";
 
-const Voyage = ({ route_id, departure, arrival, departure_time }) => {
+const Voyage = ({ route_id, departure, arrival, departure_time, popUp }) => {
   const _date = new Date(departure_time);
-  let _mdy = _date.getMonth() + 1 +"/"+ _date.getDate() +"/"+_date.getFullYear();
+  let _mdy =
+    _date.getMonth() + 1 + "/" + _date.getDate() + "/" + _date.getFullYear();
   let _hour = _date.getHours() + ":" + _date.getMinutes();
   const [isVisible, setIsVisible] = useState(true);
   const [Sale, setSale] = useState("Sale");
@@ -64,19 +65,19 @@ const Voyage = ({ route_id, departure, arrival, departure_time }) => {
             <div className="route-item ">
               <h5 className="header-item col-xs-9">Date:</h5>
               <h5 className="valueSpan  col-xs-3">
-                <strong className="text-danger">{_mdy}</strong>
+                <strong className="text-green">{_mdy}</strong>
               </h5>
             </div>
             <div className="route-item ">
               <h5 className="header-item col-xs-9">Hour:</h5>
               <h5 className="valueSpan  col-xs-3">
-                <strong className="text-danger">{_hour}</strong>
+                <strong className="text-green">{_hour}</strong>
               </h5>
             </div>
             <div className="d-flex ">
               <button
                 className="btn  btn-block m-1 remove "
-                onClick={handleRemove}
+                onClick={handleRemove} disabled={popUp}
               >
                 <span>Remove</span>
                 {loadingRemove && (
@@ -84,10 +85,10 @@ const Voyage = ({ route_id, departure, arrival, departure_time }) => {
                 )}
               </button>
 
-              <button className="m-1 sale" onClick={handleSale}>
+              <button className="m-1 sale" onClick={handleSale} disabled={popUp}>
                 {Sale}
               </button>
-              <button className="m-1">Edit</button>
+              <button className="m-1" disabled={popUp}>Edit</button>
             </div>
           </header>
         </div>

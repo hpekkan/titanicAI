@@ -4,10 +4,16 @@ import "../App.css";
 import VoyageService from "../services/voyage.service";
 import ReactLoading from "react-loading";
 import AddVoyage from "./AddVoyage";
+import { useNavigate } from "react-router-dom";
+import PopUp from "./PopUp";
 const BoardUser = () => {
+  let navigate = useNavigate();
+  const [popUp, setPopUp] = useState(false);
+  const duringPopUp = popUp ? " during-popup" : ""
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
   const fetchData = async () => {
+    if(localStorage.getItem("currentUser")===null) navigate("/login");
     setLoading(true);
     await VoyageService.getVoyages().then(
       (response) => {
@@ -28,20 +34,23 @@ const BoardUser = () => {
     setLoading(false);
   };
   useEffect(() => {
+    
     fetchData();
   }, []);
   const refreshForms = async () => {
     await fetchData();
   };
   return (
-    <div className="container text-white">
+    <div className=" container text-white ">
       <header className="jumbotronAdmin">
         <h3>Admin Panel</h3>
         <button className="refresh-button" onClick={refreshForms}>
           🔄
         </button>
       </header>
-      <div className="voyages d-flex flex-wrap align-content-center justify-content-center">
+      <div className= {" voyages d-flex flex-wrap align-content-center justify-content-center Checkout" + duringPopUp}>
+      {popUp && <PopUp setPopUp={setPopUp}/>}
+
         {loading === true && (
           <ReactLoading
             className="spinner"
@@ -60,9 +69,10 @@ const BoardUser = () => {
               departure={route.departure_location}
               arrival={route.arrival_location}
               departure_time={route.departure_time}
+              popUp={popUp}
             />
           ))}
-          {loading === false&&<AddVoyage/>}
+          {loading === false&&<AddVoyage popUp={popUp} setPopUp={setPopUp}/>}
       </div>
     </div>
   );

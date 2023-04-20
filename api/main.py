@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 from server import connect
 from deps import get_current_user
-from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut
+from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn
 from datetime import datetime
 from typing import Union, Any 
 from utils import  (
@@ -150,6 +150,19 @@ async def delete_voyage(voyage_id: int, user: UserOut = Depends(get_current_user
     conn.commit()
     return {"message": "Voyage deleted successfully"}
 
+@app.post('/voyages', summary='Add voyage')
+async def add_voyage(voyage: VoyageIn, user: UserOut = Depends(get_current_user)):
+    if(user.authority_level != 'admin'):
+        raise HTTPException(status_code=401, detail="You are not authorized to view this page")
+    conn = connect()
+    cursor = conn.cursor()
+    columns = [ 'departure_location', 'arrival_location', 'departure_time']
+    values = [getattr(voyage, col) for col in columns]
+    columns_present = [col for col in columns if getattr(voyage, col) is not None]
+    query = f"INSERT INTO route ({', '.join(columns_present)}) VALUES ({', '.join(['?']*len(columns_present))})"
+    cursor.execute(query, values[:len(columns_present)])
+    conn.commit()
+    return {"message": "Voyage added successfully"}
 
 @app.get('/refresh', summary='Refresh access token')
 async def refresh(refresh_token: str):

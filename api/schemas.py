@@ -34,6 +34,10 @@ class Voyage(BaseModel):
     departure_location: str
     arrival_location: str
     departure_time: datetime.datetime
+class VoyageIn(BaseModel):
+    departure_location: str
+    arrival_location: str
+    departure_time: datetime.datetime
 class VoyageOut(BaseModel):
     Voyages:  List[Voyage] = []
 class User(BaseModel):
