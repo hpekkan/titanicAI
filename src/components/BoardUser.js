@@ -65,6 +65,8 @@ const BoardUser = ({currentUser}) => {
               departure={route.departure_location}
               arrival={route.arrival_location}
               departure_time={route.departure_time}
+              quantity={route.ticket_quantity}
+              onSale={route.onSale}
               currentUser={currentUser}
             />
           ))}

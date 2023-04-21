@@ -29,9 +29,9 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const fetchData = async () => {
     //todo change to my voyages
-    if(localStorage.getItem("currentUser")===null) navigate("/login");
+    if (localStorage.getItem("currentUser") === null) navigate("/login");
     setLoading(true);
-    await VoyageService.getVoyages().then(
+    /*await VoyageService.getVoyages().then(
       (response) => {
         if (response.data["Voyages"] === undefined) {
           setContent([]);
@@ -46,11 +46,10 @@ const Profile = () => {
           error.toString();
         setContent(_content);
       }
-    );
+    );*/
     setLoading(false);
   };
   useEffect(() => {
-    
     fetchData();
   }, []);
 
@@ -86,30 +85,18 @@ const Profile = () => {
             <strong>{currentUser.username}</strong>
           </h3>
         </header>
-        <div className= " voyages d-flex flex-wrap align-content-center justify-content-center ">
-      
-      {loading === true && (
-        <ReactLoading
-          className="spinner"
-          type="spin"
-          color="#FF6100"
-          height={50}
-          width={50}
-        />
-      )}
-      {loading === false &&
-        content !== undefined &&
-        content.map((route) => (
-          <Voyage
-            key={route.route_id}
-            route_id={route.route_id}
-            departure={route.departure_location}
-            arrival={route.arrival_location}
-            departure_time={route.departure_time}
-            currentUser={currentUser}
-          />
-        ))}
-    </div>
+        <div className=" voyages d-flex flex-wrap align-content-center justify-content-center ">
+          {loading === true && (
+            <ReactLoading
+              className="spinner"
+              type="spin"
+              color="#FF6100"
+              height={50}
+              width={50}
+            />
+          )}
+          
+        </div>
       </div>
     </div>
   );
