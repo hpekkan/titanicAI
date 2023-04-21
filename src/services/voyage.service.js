@@ -93,14 +93,16 @@ const createVoyage = async (departure, arrival, date,quantity,onSale) => {
   return response;
 };
 
-const updateVoyage = async (id, departure, arrival, date) => {
+const updateVoyage = async (id, departure, arrival, date, quantity,onSale) => {
   const response = await axios.put(
-    API_URL + "voyages/",
+    API_URL + "voyages",
     {
       "voyage_id": id,
       "departure_location": departure,
       "arrival_location": arrival,
       "departure_time": date,
+      "ticket_quantity": quantity,
+      "onSale": onSale,
     },
     {
       headers: authHeader(),

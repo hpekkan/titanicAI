@@ -29,7 +29,6 @@ const EditPopUp = (props) => {
     arrival,
     setArrival,
     date,
-    setDate,
     voyage_id,
     setVoyageID,
     quantity,
@@ -50,10 +49,6 @@ const EditPopUp = (props) => {
   };
 
   const onChangeArrival = (e) => {
-    const arrival = e.target.value;
-    setArrival(arrival);
-  };
-  const onChangeQuantity = (e) => {
     const arrival = e.target.value;
     setArrival(arrival);
   };
@@ -166,7 +161,7 @@ const EditPopUp = (props) => {
           <DatePicker
             wrapperClassName="datePicker"
             selected={startDate}
-            onChange={(date) => {setStartDate(date);setDate(date);}}
+            onChange={(date) => {setStartDate(startDate);}}
             showTimeSelect
             dateFormat="MMMM d, yyyy h:mm aa"
           />

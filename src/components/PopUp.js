@@ -74,7 +74,7 @@ const PopUp = (props) => {
     }
   };
   return (
-    <div className="PopUp">
+    <div className="PopUp d-flex justify-content-center align-items-center overflow-auto">
       <Form onSubmit={handleCreate} ref={form}>
         <div className="form-group">
           <label htmlFor="departure_location">Departure</label>

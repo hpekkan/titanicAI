@@ -168,11 +168,8 @@ async def update_voyage( voyage: VoyageEdit, user: UserOut = Depends(get_current
         raise HTTPException(status_code=401, detail="You are not authorized to view this page")
     conn = connect()
     cursor = conn.cursor()
-    columns = [ 'departure_location', 'arrival_location', 'departure_time','ticket_quantity', 'onSale']
-    values = [getattr(voyage, col) for col in columns]
-    columns_present = [col for col in columns if getattr(voyage, col) is not None]
-    query = "UPDATE route SET departure_location = ?, arrival_location = ?, departure_time = ? WHERE route_id = ?"
-    cursor.execute(query, [voyage.departure_location, voyage.arrival_location, voyage.departure_time, voyage.voyage_id])
+    query = "UPDATE route SET departure_location = ?, arrival_location = ?, departure_time = ?, ticket_quantity = ?, onSale = ?  WHERE route_id = ?"
+    cursor.execute(query, [voyage.departure_location, voyage.arrival_location, voyage.departure_time,voyage.ticket_quantity, voyage.onSale, voyage.voyage_id])
     conn.commit()
     return {"message": "Voyage updated successfully"}
 

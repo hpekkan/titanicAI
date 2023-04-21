@@ -10,6 +10,7 @@ const Voyage = ({
   quantity,
   onSale,
   editPopUp,
+  popUp,
   setEditPopUp,
   currentUser,
   setGlobalArrival,
@@ -25,6 +26,8 @@ const Voyage = ({
   let _hour = _date.getHours() + ":" + _date.getMinutes();
   const [isVisible, setIsVisible] = useState(true);
   const [loadingRemove, setLoadingRemove] = useState(false);
+  const [loadingSale, setLoadingSale] = useState(false);
+  const [_onSale, set_onSale] = useState(onSale);
   const handleRemove = async (e) => {
     setLoadingRemove(true);
     await VoyageService.deleteVoyage(route_id).then(
@@ -38,19 +41,27 @@ const Voyage = ({
     );
     setLoadingRemove(false);
   };
-  const handleSale = (e) => {
-    
-    /*if (Sale === "Sale") {
-      setOnSale("UnSale");
-      document
-        .getElementById(route_id)
-        .getElementsByClassName("sale")[0].style.backgroundColor = "#A94442";
-    } else {
-      setOnSale("Sale");
-      document
-        .getElementById(route_id)
-        .getElementsByClassName("sale")[0].style.backgroundColor = "#4CAF50";
-    }*/
+  const handleSale = async (e) => {
+    setLoadingSale(true);
+    await VoyageService.updateVoyage(route_id, departure, arrival, departure_time, quantity, !_onSale)
+        .then((response) => {
+          set_onSale(!_onSale);
+          if (response.status === 200) {
+            setEditPopUp(false);
+          }
+        })
+        .catch((error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          return resMessage;
+        });
+   
+    setLoadingSale(false);
+
   };
   const handleEdit = (e) => {
     setGlobalArrival(arrival);
@@ -113,7 +124,7 @@ const Voyage = ({
                 <button
                   className="btn  btn-block m-1 remove "
                   onClick={handleRemove}
-                  disabled={editPopUp}
+                  disabled={editPopUp||popUp}
                 >
                   <span>Remove</span>
                   {loadingRemove && (
@@ -124,13 +135,16 @@ const Voyage = ({
                 <button
                   className="m-1 sale"
                   onClick={handleSale}
-                  disabled={editPopUp}
+                  disabled={editPopUp||popUp}
+                  style={{ backgroundColor: _onSale ? "#A94442" : "" , color: _onSale ? "white" : ""}}
                 >
-                  {onSale===true ? "Sale" : "UnSale"}
+                  {!_onSale ? "Sale" : "UnSale"} {loadingSale && (
+                    <span className="spinner-border spinner-border-sm"></span>
+                  )}
                 </button>
                 <button
                   className="m-1"
-                  disabled={editPopUp}
+                  disabled={editPopUp||popUp}
                   onClick={handleEdit}
                 >
                   Edit

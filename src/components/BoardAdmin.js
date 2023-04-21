@@ -102,6 +102,7 @@ const BoardAdmin = ({ currentUser }) => {
               quantity={route.ticket_quantity}
               onSale={route.onSale}
               editPopUp={editPopUp}
+              popUp={popUp}
               setEditPopUp={setEditPopUp}
               currentUser={currentUser}
               setGlobalArrival={setArrival}
