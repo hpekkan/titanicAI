@@ -163,7 +163,7 @@ async def add_voyage(voyage: VoyageIn, user: UserOut = Depends(get_current_user)
 
 @app.put('/voyages', summary='Update voyage')
 async def update_voyage( voyage: VoyageEdit, user: UserOut = Depends(get_current_user)):
-    print(voyage)
+    print(voyage.departure_time)
     if(user.authority_level != 'admin'):
         raise HTTPException(status_code=401, detail="You are not authorized to view this page")
     conn = connect()

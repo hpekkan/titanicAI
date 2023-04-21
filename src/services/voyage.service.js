@@ -94,6 +94,7 @@ const createVoyage = async (departure, arrival, date,quantity,onSale) => {
 };
 
 const updateVoyage = async (id, departure, arrival, date, quantity,onSale) => {
+  console.log(date);
   const response = await axios.put(
     API_URL + "voyages",
     {

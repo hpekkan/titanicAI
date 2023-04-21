@@ -36,10 +36,11 @@ const EditPopUp = (props) => {
     onSale,
     setOnSale,
   } = props;
+  const _date = new Date(date);
+  const utcDate = new Date(Date.UTC(_date.getFullYear(), _date.getMonth(), _date.getDate(), _date.getHours(), _date.getMinutes()));
   const form = useRef();
   const checkBtn = useRef();
-  const [startDate, setStartDate] = useState(new Date(date));
-
+  const [startDate, setStartDate] = useState(utcDate);
   const [localLoading, setLocalLoading] = useState(false);
   const [localLoadingEdit, setLocalLoadingEdit] = useState(false);
   const [message, setMessage] = useState("");
@@ -59,7 +60,7 @@ const EditPopUp = (props) => {
     setLocalLoading(true);
 
     form.current.validateAll();
-
+    
     if (checkBtn.current.context._errors.length === 0) {
       await VoyageService.createVoyage(departure, arrival, startDate, quantity, onSale)
         .then((response) => {
@@ -87,6 +88,7 @@ const EditPopUp = (props) => {
     setLocalLoadingEdit(true);
     form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
+      console.log(startDate);
       await VoyageService.updateVoyage(voyage_id, departure, arrival, startDate, quantity, onSale)
         .then((response) => {
           if (response.status === 200) {
@@ -161,9 +163,9 @@ const EditPopUp = (props) => {
           <DatePicker
             wrapperClassName="datePicker"
             selected={startDate}
-            onChange={(date) => {setStartDate(startDate);}}
+            onChange={(d) => {setStartDate(d); console.log(d)}}
             showTimeSelect
-            dateFormat="MMMM d, yyyy h:mm aa"
+            dateFormat="MMMM d, yyyy h:mm"
           />
         </div>
 

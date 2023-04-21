@@ -26,14 +26,15 @@ const PopUp = (props) => {
   const { setPopUp,refreshForms } = props;
   const form = useRef();
   const checkBtn = useRef();
+  const _date = new Date();
+  const utcDate = new Date();
   const [startDate, setStartDate] = useState(
-    setHours(setMinutes(new Date(), 30), 16)
+    utcDate
   );
   const [departure, setDeparture] = useState("");
   const [arrival, setArrival] = useState("");
   const [localLoading, setLocalLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
   const onChangeDeparture = (e) => {
     const departure = e.target.value;
     setDeparture(departure);
@@ -46,7 +47,6 @@ const PopUp = (props) => {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setMessage("");
     setLocalLoading(true);
 
@@ -74,7 +74,7 @@ const PopUp = (props) => {
     }
   };
   return (
-    <div className="PopUp d-flex justify-content-center align-items-center overflow-auto">
+    <div className="PopUp d-flex justify-content-center align-items-center overflow-auto h-75">
       <Form onSubmit={handleCreate} ref={form}>
         <div className="form-group">
           <label htmlFor="departure_location">Departure</label>
@@ -106,7 +106,7 @@ const PopUp = (props) => {
             selected={startDate}
             onChange={(date) => setStartDate(date)}
             showTimeSelect
-            dateFormat="MMMM d, yyyy h:mm aa"
+            dateFormat="MMMM d, yyyy h:mm"
           />
         </div>
 

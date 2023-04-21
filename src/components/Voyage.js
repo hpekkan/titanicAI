@@ -20,10 +20,12 @@ const Voyage = ({
   setQuantity,
   setOnSale,
 }) => {
-  const _date = new Date(departure_time);
+  const _date = new Date(departure_time );
+  const utcDate = new Date(Date.UTC(_date.getFullYear(), _date.getMonth(), _date.getDate(), _date.getHours(), _date.getMinutes()));
+  console.log(utcDate);
   let _mdy =
-    _date.getMonth() + 1 + "/" + _date.getDate() + "/" + _date.getFullYear();
-  let _hour = _date.getHours() + ":" + _date.getMinutes();
+    utcDate.getMonth() + 1 + "/" + utcDate.getDate() + "/" + utcDate.getFullYear();
+  let _hour = utcDate.getHours() + ":" + utcDate.getMinutes();
   const [isVisible, setIsVisible] = useState(true);
   const [loadingRemove, setLoadingRemove] = useState(false);
   const [loadingSale, setLoadingSale] = useState(false);
