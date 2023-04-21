@@ -37,7 +37,15 @@ const EditPopUp = (props) => {
     setOnSale,
   } = props;
   const _date = new Date(date);
-  const utcDate = new Date(Date.UTC(_date.getFullYear(), _date.getMonth(), _date.getDate(), _date.getHours(), _date.getMinutes()));
+  const utcDate = new Date(
+    Date.UTC(
+      _date.getFullYear(),
+      _date.getMonth(),
+      _date.getDate(),
+      _date.getHours(),
+      _date.getMinutes()
+    )
+  );
   const form = useRef();
   const checkBtn = useRef();
   const [startDate, setStartDate] = useState(utcDate);
@@ -60,9 +68,15 @@ const EditPopUp = (props) => {
     setLocalLoading(true);
 
     form.current.validateAll();
-    
+
     if (checkBtn.current.context._errors.length === 0) {
-      await VoyageService.createVoyage(departure, arrival, startDate, quantity, onSale)
+      await VoyageService.createVoyage(
+        departure,
+        arrival,
+        startDate,
+        quantity,
+        onSale
+      )
         .then((response) => {
           if (response.status === 200) {
             setEditPopUp(false);
@@ -89,7 +103,14 @@ const EditPopUp = (props) => {
     form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
       console.log(startDate);
-      await VoyageService.updateVoyage(voyage_id, departure, arrival, startDate, quantity, onSale)
+      await VoyageService.updateVoyage(
+        voyage_id,
+        departure,
+        arrival,
+        startDate,
+        quantity,
+        onSale
+      )
         .then((response) => {
           if (response.status === 200) {
             setEditPopUp(false);
@@ -152,18 +173,30 @@ const EditPopUp = (props) => {
           />
         </div>
         <div className="form-group">
-            <div className="onSale">
-              <label>
-                <input type="checkbox" name="gender"  defaultChecked value="Sale" onChange={(e)=>{setOnSale(e.target.checked)}} /> Start Sale
-              </label>
-            </div>
+          <div className="onSale">
+            <label>
+              <input
+                type="checkbox"
+                name="gender"
+                defaultChecked
+                value="Sale"
+                onChange={(e) => {
+                  setOnSale(e.target.checked);
+                }}
+              />{" "}
+              Start Sale
+            </label>
           </div>
+        </div>
         <div className="form-group">
           <label htmlFor="date">DateTime</label>
           <DatePicker
             wrapperClassName="datePicker"
             selected={startDate}
-            onChange={(d) => {setStartDate(d); console.log(d)}}
+            onChange={(d) => {
+              setStartDate(d);
+              console.log(d);
+            }}
             showTimeSelect
             dateFormat="MMMM d, yyyy h:mm"
           />

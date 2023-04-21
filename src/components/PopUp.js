@@ -21,18 +21,16 @@ const required = (value) => {
 };
 
 const PopUp = (props) => {
-  // function that takes boolean as param to conditionally display popup
-  let navigate = useNavigate();
   const { setPopUp,refreshForms } = props;
   const form = useRef();
   const checkBtn = useRef();
-  const _date = new Date();
-  const utcDate = new Date();
   const [startDate, setStartDate] = useState(
-    utcDate
+    new Date()
   );
   const [departure, setDeparture] = useState("");
   const [arrival, setArrival] = useState("");
+  const [quantity, setQuantity] = useState(10);
+  const [onSale, setOnSale] = useState(true);
   const [localLoading, setLocalLoading] = useState(false);
   const [message, setMessage] = useState("");
   const onChangeDeparture = (e) => {
@@ -53,9 +51,15 @@ const PopUp = (props) => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      await VoyageService.createVoyage(departure, arrival, startDate,10,true)
+      await VoyageService.createVoyage(
+        departure,
+        arrival,
+        startDate,
+        quantity,
+        onSale
+      )
         .then((response) => {
-          if(response.status === 200) {
+          if (response.status === 200) {
             setPopUp(false);
             refreshForms();
           }
@@ -98,6 +102,33 @@ const PopUp = (props) => {
             onChange={onChangeArrival}
             validations={[required]}
           />
+        </div>
+        <div className="form-group">
+          <label htmlFor="ticket_quantity">Ticket Quantity</label>
+          <Input
+            type="number"
+            className="form-control"
+            name="ticket_quantity"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            validations={[required]}
+          />
+        </div>
+        <div className="form-group">
+          <div className="onSale">
+            <label>
+              <input
+                type="checkbox"
+                name="gender"
+                defaultChecked
+                value="Sale"
+                onChange={(e) => {
+                  setOnSale(e.target.checked);
+                }}
+              />{" "}
+              Start Sale
+            </label>
+          </div>
         </div>
         <div className="form-group">
           <label htmlFor="date">DateTime</label>
