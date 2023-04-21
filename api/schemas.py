@@ -34,10 +34,22 @@ class Voyage(BaseModel):
     departure_location: str
     arrival_location: str
     departure_time: datetime.datetime
+    ticket_quantity: int
+    onSale: bool
 class VoyageIn(BaseModel):
     departure_location: str
     arrival_location: str
     departure_time: datetime.datetime
+    ticket_quantity: int
+    onSale: bool
+    
+class VoyageEdit(BaseModel):
+    voyage_id: str
+    departure_location: str
+    arrival_location: str
+    departure_time: datetime.datetime
+    ticket_quantity: int
+    onSale: bool
 class VoyageOut(BaseModel):
     Voyages:  List[Voyage] = []
 class User(BaseModel):

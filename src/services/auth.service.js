@@ -20,7 +20,6 @@ const login = (username, password) => {
   formData.append("username", username);
   formData.append("password", password);
   return axios.post(API_URL + "login", formData).then((response) => {
-    console.log(response.data.access_token);
     if (response.data.access_token) {
       localStorage.setItem("tokens", JSON.stringify(response.data));
     }
@@ -30,13 +29,11 @@ const login = (username, password) => {
 
 
 const refresh = (refresh_token) => {
-  console.log("refresh");
   
   return axios.get(API_URL + "refresh?refresh_token=" + refresh_token, 
   ).then((response) => {
     if (response.data.access_token) {
       localStorage.setItem("tokens", JSON.stringify(response.data));
-      console.log(response.data);
     }
     return response.data;
   });

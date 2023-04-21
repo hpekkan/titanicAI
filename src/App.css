@@ -63,7 +63,7 @@ label {
 
 }
 .containerMain label{
-  color: #ccc;
+  color: black;
 }
 .profileContainer{
   display: flex;
@@ -163,10 +163,8 @@ label {
 } 
 .form-group {
   width: 13rem;
-  margin: 10px 8px;
-  height: 11vh;
+  margin: 10px 8px 0 8px;
 }
-
 .form-group label {
   display: block;
   margin-bottom: 5px;
@@ -179,7 +177,7 @@ label {
   padding: 6px 12px;
   font-size: 14px;
   line-height: 1.42857143;
-  color: #555;
+  color: black;
   background-color: #fff;
   background-image: none;
   border: 1px solid #ccc;
@@ -253,8 +251,8 @@ label {
 
 button {
   padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
+  background-color: #46f700de;
+  color: black;
   border: none;
   border-radius: 5px;
   font-size: 16px;
@@ -343,8 +341,7 @@ h3{
   position: fixed;
   opacity: 1;
   left: 25%;
-  top: 30%;
-
+  top: 15%;
   width: 50%;
   z-index: 100;
   border: 1px solid #011627;
@@ -352,10 +349,6 @@ h3{
 
   background-color: #FDFFFC;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
   padding: 1rem;
 
   color: #011627;

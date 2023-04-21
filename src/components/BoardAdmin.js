@@ -6,14 +6,22 @@ import ReactLoading from "react-loading";
 import AddVoyage from "./AddVoyage";
 import { useNavigate } from "react-router-dom";
 import PopUp from "./PopUp";
-const BoardUser = ({currentUser}) => {
+import EditPopUp from "./EditPopUp";
+const BoardAdmin = ({ currentUser }) => {
   let navigate = useNavigate();
   const [popUp, setPopUp] = useState(false);
-  const duringPopUp = popUp ? " during-popup" : ""
+  const [editPopUp, setEditPopUp] = useState(false);
+  const duringPopUp = popUp ? " during-popup" : "";
+  const [arrival, setArrival] = useState("");
+  const [departure, setDeparture] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [voyage_id, setVoyageID] = useState("");
+  const [quantity, setQuantity] = useState(0);
+  const [onSale, setOnSale] = useState(false);
   const [content, setContent] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const fetchData = async () => {
-    if(localStorage.getItem("currentUser")===null) navigate("/login");
+    if (localStorage.getItem("currentUser") === null) navigate("/login");
     setLoading(true);
     await VoyageService.getVoyages().then(
       (response) => {
@@ -34,7 +42,6 @@ const BoardUser = ({currentUser}) => {
     setLoading(false);
   };
   useEffect(() => {
-    
     fetchData();
   }, []);
   const refreshForms = async () => {
@@ -48,8 +55,31 @@ const BoardUser = ({currentUser}) => {
           🔄
         </button>
       </header>
-      <div className= {" voyages d-flex flex-wrap align-content-center justify-content-center Checkout" + duringPopUp}>
-      {popUp && <PopUp setPopUp={setPopUp}  refreshForms={refreshForms}/>}
+      <div
+        className={
+          " voyages d-flex flex-wrap align-content-center justify-content-center Checkout" +
+          duringPopUp
+        }
+      >
+        {popUp && <PopUp setPopUp={setPopUp} refreshForms={refreshForms} />}
+        {editPopUp && (
+          <EditPopUp
+            setEditPopUp={setEditPopUp}
+            refreshForms={refreshForms}
+            arrival={arrival}
+            departure={departure}
+            setArrival={setArrival}
+            setDeparture={setDeparture}
+            date={date}
+            setDate={setDate}
+            voyage_id={voyage_id}
+            setVoyageID={setVoyageID}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            onSale={onSale}
+            setOnSale={setOnSale}
+          />
+        )}
 
         {loading === true && (
           <ReactLoading
@@ -69,14 +99,25 @@ const BoardUser = ({currentUser}) => {
               departure={route.departure_location}
               arrival={route.arrival_location}
               departure_time={route.departure_time}
-              popUp={popUp}
+              quantity={route.ticket_quantity}
+              onSale={route.onSale}
+              editPopUp={editPopUp}
+              setEditPopUp={setEditPopUp}
               currentUser={currentUser}
+              setGlobalArrival={setArrival}
+              setGlobalDeparture={setDeparture}
+              setDate={setDate}
+              setVoyageID={setVoyageID}
+              setQuantity={setQuantity}
+              setOnSale={setOnSale}
             />
           ))}
-          {currentUser && currentUser.authority_level === "admin" &&loading === false&&<AddVoyage popUp={popUp} setPopUp={setPopUp}/>}
+        {currentUser &&
+          currentUser.authority_level === "admin" &&
+          loading === false && <AddVoyage popUp={popUp} setPopUp={setPopUp} />}
       </div>
     </div>
   );
 };
 
-export default BoardUser;
+export default BoardAdmin;

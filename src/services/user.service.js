@@ -8,7 +8,6 @@ const getPublicContent = () => {
 };
 
 const getUser = async () => {
-  console.log("hello");
   let response;
   try {
     response = await axios.get(API_URL + "me", { headers: authHeader() });

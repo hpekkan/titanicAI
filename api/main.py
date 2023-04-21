@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 from server import connect
 from deps import get_current_user
-from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn
+from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,VoyageEdit
 from datetime import datetime
 from typing import Union, Any 
 from utils import  (
@@ -153,13 +153,28 @@ async def add_voyage(voyage: VoyageIn, user: UserOut = Depends(get_current_user)
         raise HTTPException(status_code=401, detail="You are not authorized to view this page")
     conn = connect()
     cursor = conn.cursor()
-    columns = [ 'departure_location', 'arrival_location', 'departure_time']
+    columns = [ 'departure_location', 'arrival_location', 'departure_time','ticket_quantity', 'onSale']
     values = [getattr(voyage, col) for col in columns]
     columns_present = [col for col in columns if getattr(voyage, col) is not None]
     query = f"INSERT INTO route ({', '.join(columns_present)}) VALUES ({', '.join(['?']*len(columns_present))})"
     cursor.execute(query, values[:len(columns_present)])
     conn.commit()
     return {"message": "Voyage added successfully"}
+
+@app.put('/voyages', summary='Update voyage')
+async def update_voyage( voyage: VoyageEdit, user: UserOut = Depends(get_current_user)):
+    print(voyage)
+    if(user.authority_level != 'admin'):
+        raise HTTPException(status_code=401, detail="You are not authorized to view this page")
+    conn = connect()
+    cursor = conn.cursor()
+    columns = [ 'departure_location', 'arrival_location', 'departure_time','ticket_quantity', 'onSale']
+    values = [getattr(voyage, col) for col in columns]
+    columns_present = [col for col in columns if getattr(voyage, col) is not None]
+    query = "UPDATE route SET departure_location = ?, arrival_location = ?, departure_time = ? WHERE route_id = ?"
+    cursor.execute(query, [voyage.departure_location, voyage.arrival_location, voyage.departure_time, voyage.voyage_id])
+    conn.commit()
+    return {"message": "Voyage updated successfully"}
 
 @app.get('/refresh', summary='Refresh access token')
 async def refresh(refresh_token: str):
