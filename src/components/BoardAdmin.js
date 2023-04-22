@@ -16,51 +16,60 @@ const BoardAdmin = ({ currentUser, logOut }) => {
   const [departure, setDeparture] = useState("");
   const [date, setDate] = useState(new Date());
   const [voyage_id, setVoyageID] = useState("");
+  const [ticket_id, setTicketID] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [onSale, setOnSale] = useState(false);
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(true);
+
   const fetchData = async () => {
-    if (localStorage.getItem("currentUser") === null) navigate("/login");
-    setLoading(true);
-    await VoyageService.getVoyages().then(
-      (response) => {
-        if (response.status === 401 || response.status === 403) logOut();
-        if (response.data["Voyages"] === undefined) {
-          setContent([]);
-        } else setContent(response.data["Voyages"]);
-      },
-      (error) => {
-        const _content =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        setContent(_content);
-      }
-    );
-    setLoading(false);
-  };
-  useEffect(() => {
-    async function fetchData() {
-      if (localStorage.getItem("currentUser") === null) navigate("/login");
+    if (localStorage.getItem("currentUser") === null)
+        await navigate("/login");
       setLoading(true);
       await VoyageService.getVoyages().then(
         (response) => {
-          if (response.status === 401 || response.status === 403) logOut();
-          if (response.data["Voyages"] === undefined) {
-            setContent([]);
-          } else setContent(response.data["Voyages"]);
+           setContent(response.data["Voyages"]);
         },
         (error) => {
+          if (error.response.status === 401 || error.response.status === 403) logOut();
+          if (error.response.status === 404 || error.response.status === 500) {
+            setContent([]);
+            return;
+          }
           const _content =
             (error.response &&
               error.response.data &&
               error.response.data.message) ||
             error.message ||
             error.toString();
-          setContent(_content);
+            console.log(_content);
+        }
+      );
+      setLoading(false);
+  };
+  useEffect(() => {
+    async function fetchData() {
+      if (localStorage.getItem("currentUser") === null)
+        await navigate("/login");
+      setLoading(true);
+      await VoyageService.getVoyages().then(
+        (response) => {
+          console.log(response.data["Voyages"]);
+           setContent(response.data["Voyages"]);
+        },
+        (error) => {
+          if (error.response.status === 401 || error.response.status === 403) logOut();
+          if (error.response.status === 404 || error.response.status === 500) {
+            setContent([]);
+            return;
+          }
+          const _content =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+            console.log(_content);
         }
       );
       setLoading(false);
@@ -97,13 +106,14 @@ const BoardAdmin = ({ currentUser, logOut }) => {
             setDate={setDate}
             voyage_id={voyage_id}
             setVoyageID={setVoyageID}
+            ticket_id={ticket_id}
             quantity={quantity}
             setQuantity={setQuantity}
             onSale={onSale}
             setOnSale={setOnSale}
           />
         )}
-
+  
         {loading === true && (
           <ReactLoading
             className="spinner"
@@ -113,8 +123,9 @@ const BoardAdmin = ({ currentUser, logOut }) => {
             width={50}
           />
         )}
-        {loading === false &&
-          content !== undefined &&
+
+        {loading === false && 
+          Object.keys(content).length > 0 &&
           content.map((route) => (
             <Voyage
               key={route.route_id}
@@ -124,6 +135,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
               departure_time={route.departure_time}
               quantity={route.ticket_quantity}
               onSale={route.onSale}
+              ticket_id={route.ticket_id}
               editPopUp={editPopUp}
               popUp={popUp}
               setEditPopUp={setEditPopUp}
@@ -134,6 +146,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
               setVoyageID={setVoyageID}
               setQuantity={setQuantity}
               setOnSale={setOnSale}
+              setTicketID={setTicketID}
             />
           ))}
         {currentUser &&

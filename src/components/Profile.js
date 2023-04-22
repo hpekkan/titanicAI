@@ -27,31 +27,31 @@ const Profile = () => {
   let navigate = useNavigate();
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
-  const fetchData = async () => {
-    //todo change to my voyages
-    if (localStorage.getItem("currentUser") === null) navigate("/login");
-    setLoading(true);
-    /*await VoyageService.getVoyages().then(
-      (response) => {
-        if (response.data["Voyages"] === undefined) {
-          setContent([]);
-        } else setContent(response.data["Voyages"]);
-      },
-      (error) => {
-        const _content =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        setContent(_content);
-      }
-    );*/
-    setLoading(false);
-  };
+  
   useEffect(() => {
+    async function fetchData() {
+      if (localStorage.getItem("currentUser") === null) await navigate("/login");
+      setLoading(true);
+      /*await VoyageService.getVoyages().then(
+        (response) => {
+          if (response.data["Voyages"] === undefined) {
+            setContent([]);
+          } else setContent(response.data["Voyages"]);
+        },
+        (error) => {
+          const _content =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          setContent(_content);
+        }
+      );*/
+      setLoading(false);
+    }
     fetchData();
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="d-flex">

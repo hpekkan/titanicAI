@@ -34,12 +34,12 @@ const PopUp = (props) => {
   const [localLoading, setLocalLoading] = useState(false);
   const [message, setMessage] = useState("");
   const onChangeDeparture = (e) => {
-    const departure = e.target.value;
+    const departure = (e.target.value.toString()).toUpperCase();
     setDeparture(departure);
   };
 
   const onChangeArrival = (e) => {
-    const arrival = e.target.value;
+    const arrival = (e.target.value.toString()).toUpperCase();
     setArrival(arrival);
   };
 

@@ -17,7 +17,7 @@
   padding-top: 30px;
   padding-bottom: 20px;
   border-radius: 8px;
-  background-color: white;
+  background-color: #282C34;
 }
 
 .Auth-form-content {
@@ -36,7 +36,7 @@
 label {
   font-size: 14px;
   font-weight: 600;
-  color: rgb(34, 34, 34);
+  color: white;
 }
 
 .wrapper {
@@ -63,7 +63,7 @@ label {
 
 }
 .containerMain label{
-  color: black;
+  color: white;
 }
 .profileContainer{
   display: flex;
@@ -81,10 +81,11 @@ label {
 .card-container.card {
   max-width: 350px !important;
   padding: 40px 40px;
+  border-radius: 20px;
 }
 
 .card {
-  background-color: #f7f7f7;
+  background-color: #00acac;
   padding: 20px 25px 30px;
   margin: 0 auto 25px;
   margin-top: 50px;
@@ -177,8 +178,8 @@ label {
   padding: 6px 12px;
   font-size: 14px;
   line-height: 1.42857143;
-  color: black;
-  background-color: #fff;
+  color: white;
+  background-color: #282C34;
   background-image: none;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -347,7 +348,7 @@ h3{
   border: 1px solid #011627;
   border-radius: 1em;
 
-  background-color: #FDFFFC;
+  background-color: #00acac;
 
   padding: 1rem;
 

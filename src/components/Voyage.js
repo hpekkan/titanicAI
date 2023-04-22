@@ -19,10 +19,12 @@ const Voyage = ({
   setVoyageID,
   setQuantity,
   setOnSale,
+  ticket_id,
+  setTicketID
+  
 }) => {
   const _date = new Date(departure_time );
   const utcDate = new Date(Date.UTC(_date.getFullYear(), _date.getMonth(), _date.getDate(), _date.getHours(), _date.getMinutes()));
-  console.log(utcDate);
   let _mdy =
     utcDate.getMonth() + 1 + "/" + utcDate.getDate() + "/" + utcDate.getFullYear();
   let _hour = utcDate.getHours() + ":" + utcDate.getMinutes();
@@ -45,7 +47,7 @@ const Voyage = ({
   };
   const handleSale = async (e) => {
     setLoadingSale(true);
-    await VoyageService.updateVoyage(route_id, departure, arrival, departure_time, quantity, !_onSale)
+    await VoyageService.updateVoyage(route_id, departure, arrival, departure_time, quantity, !_onSale,ticket_id)
         .then((response) => {
           set_onSale(!_onSale);
           if (response.status === 200) {
@@ -72,6 +74,7 @@ const Voyage = ({
     setVoyageID(route_id);
     setQuantity( quantity);
     setOnSale(onSale);
+    setTicketID(ticket_id);
     setEditPopUp(true);
   };
 

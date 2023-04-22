@@ -23,7 +23,6 @@ const App = () => {
     async function logOut() {
       await AuthService.logout();
       setCurrentUser(undefined);
-      setLoading(false);
     };
     async function fetchData() {
       try {
@@ -31,16 +30,13 @@ const App = () => {
         if(data){
           setCurrentUser(data);
           localStorage.setItem("currentUser", JSON.stringify(data));
-          setLoading(false);
           return true;
         }else {
-          setLoading(false);
           return false;
         }
        
       } catch (error) {
         console.log(error);
-        setLoading(false);
         return false;
       }
     }
@@ -49,19 +45,17 @@ const App = () => {
         const data = await AuthService.refresh();
         if (data) {
           fetchData();
-          setLoading(false);
           return true;
         }
-        setLoading(false);
         return false;
       } catch (error) {
         console.log(error);
         logOut();
-        setLoading(false);
         return false;
       }
     }
     if (!fetchData()) refreshToken();
+    setLoading(false);
   }, []);
   
   useEffect(() => {
@@ -74,8 +68,7 @@ const App = () => {
   const logOut = async () => {
     await AuthService.logout();
     setCurrentUser(undefined);
-     navigate("/login");
-    setLoading(false);
+    await navigate("/login");
   };
 
 
@@ -146,12 +139,12 @@ const App = () => {
 
           <div className="containerMain ">
             <Routes>
-              <Route path="/" element={<Home logOut={logOut} />} />
+              <Route path="/" element={<Home currentUser={currentUser}/>} />
               <Route
                 path="/login"
-                element={<Login setLoading={setLoading} logOut={logOut} />}
+                element={<Login loading={loading} setLoading={setLoading}  />}
               />
-              <Route path="/register" element={<Register logOut={logOut} />} />
+              <Route path="/register" element={<Register setLoading={setLoading} />} />
               <Route path="/profile" element={<Profile logOut={logOut} />} />
               <Route
                 path="/tickets"

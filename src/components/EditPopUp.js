@@ -9,7 +9,7 @@ import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import "react-datepicker/dist/react-datepicker.css";
 import VoyageService from "../services/voyage.service";
-
+import TicketService from "../services/ticket.service";
 const required = (value) => {
   if (!value) {
     return (
@@ -31,6 +31,8 @@ const EditPopUp = (props) => {
     date,
     voyage_id,
     setVoyageID,
+    ticket_id,
+    setTicketID,
     quantity,
     setQuantity,
     onSale,
@@ -52,13 +54,14 @@ const EditPopUp = (props) => {
   const [localLoading, setLocalLoading] = useState(false);
   const [localLoadingEdit, setLocalLoadingEdit] = useState(false);
   const [message, setMessage] = useState("");
+  
   const onChangeDeparture = (e) => {
-    const departure = e.target.value;
+    const departure =(e.target.value.toString()).toUpperCase();
     setDeparture(departure);
   };
 
   const onChangeArrival = (e) => {
-    const arrival = e.target.value;
+    const arrival =  (e.target.value.toString()).toUpperCase();
     setArrival(arrival);
   };
 
@@ -102,17 +105,24 @@ const EditPopUp = (props) => {
     setLocalLoadingEdit(true);
     form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
-      console.log(startDate);
       await VoyageService.updateVoyage(
         voyage_id,
         departure,
         arrival,
         startDate,
         quantity,
-        onSale
+        onSale,quantity,ticket_id
       )
         .then((response) => {
           if (response.status === 200) {
+            TicketService.updateTicket( ticket_id,
+              voyage_id,
+              departure,
+              arrival,
+              startDate,
+              'never',
+              '1',
+              '100');
             setEditPopUp(false);
             refreshForms();
           }
@@ -172,6 +182,7 @@ const EditPopUp = (props) => {
             validations={[required]}
           />
         </div>
+        
         <div className="form-group">
           <div className="onSale">
             <label>
@@ -195,7 +206,6 @@ const EditPopUp = (props) => {
             selected={startDate}
             onChange={(d) => {
               setStartDate(d);
-              console.log(d);
             }}
             showTimeSelect
             dateFormat="MMMM d, yyyy h:mm"

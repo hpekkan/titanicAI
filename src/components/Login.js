@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
+import ReactLoading from "react-loading";
 
 import AuthService from "../services/auth.service";
+import { useEffect } from "react";
 
 const required = (value) => {
   if (!value) {
@@ -16,16 +18,16 @@ const required = (value) => {
   }
 };
 
-const Login = ({setLoading}) => {
+const Login = ({loading,setLoading}) => {
   let navigate = useNavigate();
- 
-  const localToken = localStorage.getItem("tokens");
-  if(localToken) {
-    const access_token = JSON.parse(localToken).access_token;
-    if (access_token) {
+  useEffect (() => {
+    if(localStorage.getItem("currentUser") !== null) {
+      setLoading(false);
       navigate("/");
     }
-  }
+  }, [navigate, setLoading]);
+
+ 
 
   const form = useRef();
   const checkBtn = useRef();
@@ -78,13 +80,21 @@ const Login = ({setLoading}) => {
 
   return (
     <div className="LoginColumn col-md-12">
+    {loading===true && <ReactLoading
+          className="spinner"
+          type="spin"
+          color="#FF6100"
+          height={50}
+          width={50}
+        />}
+   
       <div className="card card-container">
         <img
           src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
           alt="profile-img"
           className="profile-img-card"
         />
-
+         {loading===false &&
         <Form onSubmit={handleLogin} ref={form}>
           <div className="form-group">
             <label htmlFor="username">Username</label>
@@ -127,7 +137,7 @@ const Login = ({setLoading}) => {
             </div>
           )}
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
-        </Form>
+        </Form>}
       </div>
     </div>
   );

@@ -30,19 +30,21 @@ class Ticket(BaseModel):
     cabin: str
     embarked: str
 class Voyage(BaseModel):
-    route_id: str
+    route_id: int
     departure_location: str
     arrival_location: str
     departure_time: datetime.datetime
     ticket_quantity: int
     onSale: bool
+    ticket_id: int = None
+    left_ticket:int
 class VoyageIn(BaseModel):
     departure_location: str
     arrival_location: str
     departure_time: datetime.datetime
     ticket_quantity: int
     onSale: bool
-    
+    left_ticket:int
 class VoyageOut(BaseModel):
     Voyages:  List[Voyage] = []
 class User(BaseModel):
@@ -69,10 +71,20 @@ class TicketIn(BaseModel):
     departure_location: str
     arrival_location: str
     departure_date: datetime.datetime
-    return_date: datetime.datetime
+    return_date: str
+    ticket_type: str
+    price: float
+
+class Ticket(BaseModel):
+    ticket_id: int
+    route_id: int
+    departure_location: str
+    arrival_location: str
+    departure_date: datetime.datetime
+    return_date: str
     ticket_type: str
     price: float
     
 class TicketOut(BaseModel):
-    tickets: List[TicketIn] = []
+    tickets: List[Ticket] = []
       
