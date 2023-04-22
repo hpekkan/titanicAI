@@ -4,7 +4,6 @@ import AuthService from "./auth.service";
 import VoyageService from "./voyage.service";
 const API_URL = "http://127.0.0.1:8000/";
 
-
 const createTicket = async (
   route_id,
   departure_location,
@@ -53,7 +52,7 @@ const createTicket = async (
               { headers: authHeader() }
             );
             if (newResponse.status === 200) {
-                VoyageService.updateVoyage(
+              VoyageService.updateVoyage(
                 route_id,
                 departure_location,
                 arrival_location,
@@ -75,7 +74,7 @@ const createTicket = async (
       }
     }
     if (response.status === 200) {
-        VoyageService.updateVoyage(
+      VoyageService.updateVoyage(
         route_id,
         departure_location,
         arrival_location,
@@ -94,6 +93,16 @@ const createTicket = async (
   }
 };
 const updateTicket = async (
+  ticket_id,
+  route_id,
+  departure_location,
+  arrival_location,
+  departure_time,
+  return_date,
+  ticket_type,
+  price
+) => {
+  console.log(
     ticket_id,
     route_id,
     departure_location,
@@ -102,33 +111,53 @@ const updateTicket = async (
     return_date,
     ticket_type,
     price
-    ) => {
-        console.log(ticket_id, route_id, departure_location, arrival_location, departure_time, return_date, ticket_type, price)
-    try {
-        const response = await axios.put(
-        API_URL + "ticket",
-        {
-            "ticket_id": ticket_id,
-            "route_id": route_id,
-            "departure_location": departure_location,
-            "arrival_location": arrival_location,
-            "departure_date": departure_time,
-            "return_date": return_date,
-            "ticket_type": ticket_type,
-            "price": price,
-        },
-        { headers: authHeader() }
-        );
-        return response;
-    } catch (error) {
-        throw new Error("Failed to update ticket");
-    }
+  );
+  try {
+    const response = await axios.put(
+      API_URL + "ticket",
+      {
+        ticket_id: ticket_id,
+        route_id: route_id,
+        departure_location: departure_location,
+        arrival_location: arrival_location,
+        departure_date: departure_time,
+        return_date: return_date,
+        ticket_type: ticket_type,
+        price: price,
+      },
+      { headers: authHeader() }
+    );
+    return response;
+  } catch (error) {
+    throw new Error("Failed to update ticket");
+  }
 };
 
+const getTicket = async (ticket_id) => {
+  try {
+    const response = await axios.get(API_URL + "ticket/" + ticket_id, {
+      headers: authHeader(),
+    });
+    return response;
+  } catch (error) {
+    throw new Error("Failed to get ticket");
+  }
+};
+const getTickets = async () => {
+  try {
+    const response = await axios.get(API_URL + "tickets", {
+      headers: authHeader(),
+    });
+    return response;
+  } catch (error) {
+    throw new Error("Failed to get tickets");
+  }
+};
 
 const TicketService = {
- 
   createTicket,
-  updateTicket
+  updateTicket,
+  getTicket,
+  getTickets,
 };
 export default TicketService;

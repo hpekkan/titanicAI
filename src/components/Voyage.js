@@ -1,6 +1,7 @@
 import "../App.css";
 import React, { useState } from "react";
 import VoyageService from "../services/voyage.service";
+import { useEffect } from "react";
 
 const Voyage = ({
   route_id,
@@ -20,7 +21,8 @@ const Voyage = ({
   setQuantity,
   setOnSale,
   ticket_id,
-  setTicketID
+  setTicketID,
+  fetchTicket
   
 }) => {
   const _date = new Date(departure_time );
@@ -32,6 +34,8 @@ const Voyage = ({
   const [loadingRemove, setLoadingRemove] = useState(false);
   const [loadingSale, setLoadingSale] = useState(false);
   const [_onSale, set_onSale] = useState(onSale);
+  
+
   const handleRemove = async (e) => {
     setLoadingRemove(true);
     await VoyageService.deleteVoyage(route_id).then(
@@ -67,7 +71,7 @@ const Voyage = ({
     setLoadingSale(false);
 
   };
-  const handleEdit = (e) => {
+  const handleEdit = async (e) => {
     setGlobalArrival(arrival);
     setGlobalDeparture(departure);
     setDate(_date);
@@ -75,6 +79,8 @@ const Voyage = ({
     setQuantity( quantity);
     setOnSale(onSale);
     setTicketID(ticket_id);
+    await fetchTicket(ticket_id);
+
     setEditPopUp(true);
   };
 

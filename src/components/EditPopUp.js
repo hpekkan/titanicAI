@@ -54,14 +54,14 @@ const EditPopUp = (props) => {
   const [localLoading, setLocalLoading] = useState(false);
   const [localLoadingEdit, setLocalLoadingEdit] = useState(false);
   const [message, setMessage] = useState("");
-  
+  //todo fetch ticket info on load voyage
   const onChangeDeparture = (e) => {
-    const departure =(e.target.value.toString()).toUpperCase();
+    const departure = e.target.value.toString().toUpperCase();
     setDeparture(departure);
   };
 
   const onChangeArrival = (e) => {
-    const arrival =  (e.target.value.toString()).toUpperCase();
+    const arrival = e.target.value.toString().toUpperCase();
     setArrival(arrival);
   };
 
@@ -99,6 +99,7 @@ const EditPopUp = (props) => {
       setLocalLoading(false);
     }
   };
+
   const handleEdit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -111,18 +112,22 @@ const EditPopUp = (props) => {
         arrival,
         startDate,
         quantity,
-        onSale,quantity,ticket_id
+        onSale,
+        quantity,
+        ticket_id
       )
         .then((response) => {
           if (response.status === 200) {
-            TicketService.updateTicket( ticket_id,
+            TicketService.updateTicket(
+              ticket_id,
               voyage_id,
               departure,
               arrival,
               startDate,
-              'never',
-              '1',
-              '100');
+              "never",
+              "1",
+              "100"
+            );
             setEditPopUp(false);
             refreshForms();
           }
@@ -182,7 +187,7 @@ const EditPopUp = (props) => {
             validations={[required]}
           />
         </div>
-        
+
         <div className="form-group">
           <div className="onSale">
             <label>

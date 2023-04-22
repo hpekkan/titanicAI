@@ -301,7 +301,7 @@ async def get_tickets(user: UserOut = Depends(get_current_user)):
         cursor.close()
         conn.close()
         
-@app.get('/ticket', summary='Get ticket', response_model=Ticket)
+@app.get('/ticket/{ticket_id}', summary='Get ticket', response_model=Ticket)
 async def get_ticket(ticket_id: int, user: UserOut = Depends(get_current_user)):
     try:
         if user.authority_level != 'admin':

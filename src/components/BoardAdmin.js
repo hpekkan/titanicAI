@@ -7,6 +7,7 @@ import AddVoyage from "./AddVoyage";
 import { useNavigate } from "react-router-dom";
 import PopUp from "./PopUp";
 import EditPopUp from "./EditPopUp";
+import TicketService from "../services/ticket.service";
 const BoardAdmin = ({ currentUser, logOut }) => {
   let navigate = useNavigate();
   const [popUp, setPopUp] = useState(false);
@@ -47,6 +48,17 @@ const BoardAdmin = ({ currentUser, logOut }) => {
       );
       setLoading(false);
   };
+  //todo display ticket info
+  async function fetchTicket(_ticket_id)  {
+    await TicketService.getTicket(_ticket_id).then(
+      (response) => {
+        console.log(response.data);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
   useEffect(() => {
     async function fetchData() {
       if (localStorage.getItem("currentUser") === null)
@@ -147,6 +159,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
               setQuantity={setQuantity}
               setOnSale={setOnSale}
               setTicketID={setTicketID}
+              fetchTicket={fetchTicket}
             />
           ))}
         {currentUser &&
