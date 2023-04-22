@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 from server import connect
 from deps import get_current_user
-from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,VoyageEdit
+from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,TicketIn
 from datetime import datetime
 from typing import Union, Any 
 from utils import  (
@@ -119,59 +119,134 @@ async def get_me(user: UserOut = Depends(get_current_user)):
 
 @app.get('/voyages', summary='Get all voyages', response_model=VoyageOut)
 async def get_voyages(user: UserOut = Depends(get_current_user)):
-    conn = connect()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM route")
-    rows = cursor.fetchall()
-    columns = [column[0] for column in cursor.description]
-    voyages = []
-    for row in rows:
-        row = dict(zip(columns, row))
-        voyage: Union[dict[str, Any], None] = row
-        voyages.append(voyage)
+    try:
+        conn = connect()
+        cursor = conn.cursor()
+        if user.authority_level == 'admin':
+            cursor.execute("SELECT * FROM route")
+        else:
+            cursor.execute("SELECT * FROM route WHERE onSale = 1")
+        rows = cursor.fetchall()
+        columns = [column[0] for column in cursor.description]
+        voyages = []
+        for row in rows:
+            row = dict(zip(columns, row))
+            voyage: Union[dict[str, Any], None] = row
+            voyages.append(voyage)
 
-    if voyages is None:
+        if not voyages:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Could not find any voyages",
+            )
+
+        return VoyageOut(Voyages=voyages)
+    except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Could not find user",
-        )
-    return VoyageOut(**{'Voyages': voyages})
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}",
+        ) from e
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.delete('/voyages/{voyage_id}', summary='Delete voyage')
 async def delete_voyage(voyage_id: int, user: UserOut = Depends(get_current_user)):
-    if user.authority_level != 'admin':
-        raise HTTPException(status_code=401, detail="You are not authorized to view this page")
-    conn = connect()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM route WHERE route_id = ?", (voyage_id))
-    conn.commit()
-    return {"message": "Voyage deleted successfully"}
+    try:
+        if user.authority_level != 'admin':
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized to view this page")
 
+        conn= connect()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM route WHERE route_id = ?", (voyage_id,))
+        conn.commit()
+        return {"message": "Voyage deleted successfully"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}",
+        ) from e
+    finally:
+        cursor.close()
+        conn.close()
+        
 @app.post('/voyages', summary='Add voyage')
 async def add_voyage(voyage: VoyageIn, user: UserOut = Depends(get_current_user)):
-    if(user.authority_level != 'admin'):
-        raise HTTPException(status_code=401, detail="You are not authorized to view this page")
-    conn = connect()
-    cursor = conn.cursor()
-    columns = [ 'departure_location', 'arrival_location', 'departure_time','ticket_quantity', 'onSale']
-    values = [getattr(voyage, col) for col in columns]
-    columns_present = [col for col in columns if getattr(voyage, col) is not None]
-    query = f"INSERT INTO route ({', '.join(columns_present)}) VALUES ({', '.join(['?']*len(columns_present))})"
-    cursor.execute(query, values[:len(columns_present)])
-    conn.commit()
-    return {"message": "Voyage added successfully"}
+    try:
+        if user.authority_level != 'admin':
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized to view this page")
+
+        conn = connect()
+        cursor= conn.cursor()
+        columns = ['departure_location', 'arrival_location', 'departure_time', 'ticket_quantity', 'onSale']
+        values = [getattr(voyage, col) for col in columns]
+        columns_present = [col for col in columns if getattr(voyage, col) is not None]
+        query = f"INSERT INTO route ({', '.join(columns_present)}) VALUES ({', '.join(['?'] * len(columns_present))})"
+        cursor.execute(query, values[:len(columns_present)])
+        conn.commit()
+        return {"message": "Voyage added successfully"}
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Validation error: {e.json()}",
+        ) from e
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}",
+        ) from e
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.put('/voyages', summary='Update voyage')
-async def update_voyage( voyage: VoyageEdit, user: UserOut = Depends(get_current_user)):
-    print(voyage.departure_time)
-    if(user.authority_level != 'admin'):
-        raise HTTPException(status_code=401, detail="You are not authorized to view this page")
-    conn = connect()
-    cursor = conn.cursor()
-    query = "UPDATE route SET departure_location = ?, arrival_location = ?, departure_time = ?, ticket_quantity = ?, onSale = ?  WHERE route_id = ?"
-    cursor.execute(query, [voyage.departure_location, voyage.arrival_location, voyage.departure_time,voyage.ticket_quantity, voyage.onSale, voyage.voyage_id])
-    conn.commit()
-    return {"message": "Voyage updated successfully"}
+async def update_voyage(voyage: Voyage, user: UserOut = Depends(get_current_user)):
+    try:
+        if user.authority_level != 'admin':
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized to view this page")
+
+        conn = connect()
+        cursor= conn.cursor()
+        query = "UPDATE route SET departure_location = ?, arrival_location = ?, departure_time = ?, ticket_quantity = ?, onSale = ?  WHERE route_id = ?"
+        cursor.execute(query, [voyage.departure_location, voyage.arrival_location, voyage.departure_time, voyage.ticket_quantity, voyage.onSale, voyage.route_id])
+        conn.commit()
+        return {"message": "Voyage updated successfully"}
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Validation error: {e.json()}",
+        ) from e
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}",
+        ) from e
+    finally:
+        cursor.close()
+        conn.close()
+        
+@app.post('/ticket', summary='Add ticket')
+async def add_ticket(ticket: TicketIn, user: UserOut = Depends(get_current_user)):
+    try:
+        if user.authority_level != 'admin':
+            raise HTTPException(status_code=401, detail="You are not authorized to view this page")
+        conn= connect()
+        cursor = conn.cursor()
+        columns = ['route_id', 'departure_location', 'arrival_location', 'departure_date', 'return_date', 'ticket_type', 'price']
+        values = [getattr(ticket, col) for col in columns]
+        columns_present = [col for col in columns if getattr(ticket, col) is not None]
+        query = f"INSERT INTO ticket ({', '.join(columns_present)}) VALUES ({', '.join(['?'] * len(columns_present))})"
+        cursor.execute(query, values[:len(columns_present)])
+        conn.commit()
+        return {"message": "Ticket added successfully"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}",
+        ) from e
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.get('/refresh', summary='Refresh access token')
 async def refresh(refresh_token: str):
@@ -179,25 +254,25 @@ async def refresh(refresh_token: str):
         if not refresh_token:
             raise HTTPException(status_code=401, detail="Refresh token required")
         payload = jwt.decode(
-                refresh_token, refresh_key, algorithms=[ALGORITHM]
-            )
+            refresh_token, refresh_key, algorithms=[ALGORITHM]
+        )
         token_data = TokenPayload(**payload)
         if datetime.fromtimestamp(token_data.exp) < datetime.now():
-                raise HTTPException(
-                    status_code = status.HTTP_401_UNAUTHORIZED,
-                    detail="Refresh Token expired",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Refresh Token expired",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
         return {
             "access_token": create_access_token(token_data.sub),
             "refresh_token": create_refresh_token(token_data.sub),
         }
-    except :
+    except jwt.PyJWTError as e:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
-        )
+        ) from e
         
  #todo make passenger_Reservation 
 @app.get('/user/voyages/', summary='Get users voyages', response_model=VoyageOut)

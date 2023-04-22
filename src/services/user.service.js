@@ -8,44 +8,30 @@ const getPublicContent = () => {
 };
 
 const getUser = async () => {
-  let response;
   try {
-    response = await axios.get(API_URL + "me", { headers: authHeader() });
+    // Attempt to get user data with authorization header
+    const response = await axios.get(API_URL + "me", { headers: authHeader() });
+    return response;
   } catch (error) {
+    // If there's an error, try refreshing the token and retry getting user data
     try {
       await AuthService.refresh();
       const newResponse = await axios.get(API_URL + "me", {
         headers: authHeader(),
       });
+      return newResponse;
     } catch (error) {
+      // If refreshing token fails, log the user out
       await AuthService.logout();
+      throw new Error("Failed to get user data");
     }
   }
+};
 
-  return response;
-};
-const getVoyages = async () => {
-  const response = await axios.get(API_URL + "voyages", {
-    headers: authHeader(),
-  });
-  if (response.status === 401) {
-    AuthService.refresh();
-    const newResponse = await axios.get(API_URL + "voyages", {
-      headers: authHeader(),
-    });
-    if (newResponse.status === 401) {
-      AuthService.logout();
-    }
-  } else if (response.status === 403) {
-    AuthService.logout();
-    return null;
-  }
-  return response;
-};
+
 const UserService = {
   getPublicContent,
   getUser,
-  getVoyages,
 };
 
 export default UserService;

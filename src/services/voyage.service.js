@@ -14,7 +14,7 @@ const getVoyages = async () => {
     });
     if (newResponse.status === 401) {
       AuthService.logout();
-    }else if(newResponse.status === 200){
+    } else if (newResponse.status === 200) {
       return newResponse;
     }
   } else if (response.status === 403) {
@@ -25,36 +25,39 @@ const getVoyages = async () => {
 };
 
 const deleteVoyage = async (id) => {
-  const response = await axios.delete(API_URL + "voyages/" + id, {
-    headers: authHeader(),
-  });
-  if (response.status === 401) {
-    const localToken = localStorage.getItem("tokens");
+  try {
+    let response = await axios.delete(API_URL + "voyages/" + id, {
+      headers: authHeader(),
+    });
 
-    if (localToken) {
-      const refresh_token = JSON.parse(localToken).refresh_token;
-      if (refresh_token) {
-        await AuthService.refresh(refresh_token);
-        const newResponse = await axios.delete(API_URL + "voyages/" + id, {
-          headers: authHeader(),
-        });
-        if (newResponse.status === 401) {
-          AuthService.logout();
-          return null;
-        } else if (response.status === 403) {
-          AuthService.logout();
-          return null;
+    if (response.status === 401 || response.status === 403) {
+      const localToken = localStorage.getItem("tokens");
+
+      if (localToken) {
+        const refresh_token = JSON.parse(localToken).refresh_token;
+
+        if (refresh_token) {
+          await AuthService.refresh();
+          response = await axios.delete(API_URL + "voyages/" + id, {
+            headers: authHeader(),
+          });
+
+          if (response.status === 401 || response.status === 403) {
+            AuthService.logout();
+            return null;
+          }
         }
       }
     }
-  } else if (response.status === 403) {
-    AuthService.logout();
-    return null;
+
+    return response;
+  } catch (error) {
+    // Handle any errors that occur during the deleteVoyage process
+    throw new Error("Failed to delete voyage");
   }
-  return response;
 };
 
-const createVoyage = async (departure, arrival, date,quantity,onSale) => {
+const createVoyage = async (departure, arrival, date, quantity, onSale) => {
   const response = await axios.post(
     API_URL + "voyages",
     {
@@ -92,18 +95,73 @@ const createVoyage = async (departure, arrival, date,quantity,onSale) => {
   }
   return response;
 };
-
-const updateVoyage = async (id, departure, arrival, date, quantity,onSale) => {
+const createTicket = async (
+  route_id,
+  departure_location,
+  arrival_location,
+  departure_time,
+  return_date,
+  ticket_type,
+  price
+) => {
+  const response = await axios
+    .post(
+      API_URL + "ticket",
+      {
+        route_id: route_id,
+        departure_location: departure_location,
+        arrival_location: arrival_location,
+        departure_date: departure_time,
+        return_date: return_date,
+        ticket_type: ticket_type,
+        price: price,
+      },
+      { headers: authHeader() }
+    )
+    .then(async (_response) => {
+      if (_response.status === 401) {
+        await AuthService.refresh();
+        const newResponse = await axios.post(
+          API_URL + "ticket",
+          {
+            route_id: route_id,
+            departure_location: departure_location,
+            arrival_location: arrival_location,
+            departure_date: departure_time,
+            return_date: return_date,
+            ticket_type: ticket_type,
+            price: price,
+          },
+          { headers: authHeader() }
+        );
+        if (newResponse.status === 401) {
+          AuthService.logout();
+        }
+      } else if (_response.status === 403) {
+        AuthService.logout();
+        return null;
+      }
+      return response;
+    });
+};
+const updateVoyage = async (
+  route_id,
+  departure,
+  arrival,
+  date,
+  quantity,
+  onSale
+) => {
   console.log(date);
   const response = await axios.put(
     API_URL + "voyages",
     {
-      "voyage_id": id,
-      "departure_location": departure,
-      "arrival_location": arrival,
-      "departure_time": date,
-      "ticket_quantity": quantity,
-      "onSale": onSale,
+      route_id: route_id,
+      departure_location: departure,
+      arrival_location: arrival,
+      departure_time: date,
+      ticket_quantity: quantity,
+      onSale: onSale,
     },
     {
       headers: authHeader(),
@@ -112,7 +170,7 @@ const updateVoyage = async (id, departure, arrival, date, quantity,onSale) => {
   if (response.status === 401) {
     AuthService.refresh();
     const newResponse = await axios.put(
-      API_URL + "voyages/" + id,
+      API_URL + "voyages/" + route_id,
       {
         departure_location: departure,
         arrival_location: arrival,
@@ -137,5 +195,6 @@ const VoyageService = {
   deleteVoyage,
   createVoyage,
   updateVoyage,
+  createTicket,
 };
 export default VoyageService;

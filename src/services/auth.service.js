@@ -3,45 +3,90 @@ import UserService from "./user.service";
 const API_URL = "http://127.0.0.1:8000/";
 
 const register = async (username, email, password) => {
-  const response =  axios.post(API_URL + "signup", {
-    username,
-    email,
-    password,
-  });
-  return response;
-  
+  try {
+    // Send a POST request to register a new user with the provided data
+    const response = await axios.post(API_URL + "signup", {
+      username,
+      email,
+      password,
+    });
+    return response;
+  } catch (error) {
+    // Handle any errors that occur during the registration process
+    throw new Error("Failed to register a new user");
+  }
 };
+
 const getToken = () => {
-  return JSON.parse(localStorage.getItem("tokens")).access_token;
-};
-
-const login = (username, password) => {
-  var formData = new FormData();
-  formData.append("username", username);
-  formData.append("password", password);
-  return axios.post(API_URL + "login", formData).then((response) => {
-    if (response.data.access_token) {
-      localStorage.setItem("tokens", JSON.stringify(response.data));
-    }
-    return response.data;
-  });
-};
-
-
-const refresh = (refresh_token) => {
+  const tokens = localStorage.getItem("tokens");
+  if (!tokens) {
+    throw new Error("Tokens not found");
+  }
   
-  return axios.get(API_URL + "refresh?refresh_token=" + refresh_token, 
-  ).then((response) => {
+  const { access_token } = JSON.parse(tokens).access_token;
+  if (!access_token) {
+    throw new Error("Access token not found");
+  }
+  
+  return access_token;
+};
+
+const getRefreshToken = () => {
+  const tokens = localStorage.getItem("tokens");
+  if (!tokens) {
+    throw new Error("Tokens not found");
+  }
+  
+  const { refresh_token } = JSON.parse(tokens).refresh_token;
+  if (!refresh_token) {
+    throw new Error("Access token not found");
+  }
+  
+  return refresh_token;
+};
+
+const login = async (username, password) => {
+  try {
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", password);
+    
+    const response = await axios.post(API_URL + "login", formData);
+    
     if (response.data.access_token) {
       localStorage.setItem("tokens", JSON.stringify(response.data));
     }
+    
     return response.data;
-  });
+  } catch (error) {
+    // Handle any errors that occur during the login process
+    throw new Error("Failed to log in");
+  }
 };
+
+const refresh = async () => {
+  try {
+    const _refresh_token =  getRefreshToken();
+    const response = await axios.get(API_URL + "refresh", {
+      params: {
+        refresh_token: _refresh_token
+      }
+    });
+    
+    if (response.data.access_token) {
+      localStorage.setItem("tokens", JSON.stringify(response.data));
+    }
+    
+    return response.data;
+  } catch (error) {
+    // Handle any errors that occur during the token refresh process
+    throw new Error("Failed to refresh token");
+  }
+};
+
 const logout = () => {
   localStorage.removeItem("tokens");
   localStorage.removeItem("currentUser");
-
 };
 
 const getCurrentUser = async () => {

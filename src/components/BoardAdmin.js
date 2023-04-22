@@ -7,7 +7,7 @@ import AddVoyage from "./AddVoyage";
 import { useNavigate } from "react-router-dom";
 import PopUp from "./PopUp";
 import EditPopUp from "./EditPopUp";
-const BoardAdmin = ({ currentUser }) => {
+const BoardAdmin = ({ currentUser, logOut }) => {
   let navigate = useNavigate();
   const [popUp, setPopUp] = useState(false);
   const [editPopUp, setEditPopUp] = useState(false);
@@ -25,6 +25,7 @@ const BoardAdmin = ({ currentUser }) => {
     setLoading(true);
     await VoyageService.getVoyages().then(
       (response) => {
+        if (response.status === 401 || response.status === 403) logOut();
         if (response.data["Voyages"] === undefined) {
           setContent([]);
         } else setContent(response.data["Voyages"]);
@@ -42,8 +43,30 @@ const BoardAdmin = ({ currentUser }) => {
     setLoading(false);
   };
   useEffect(() => {
+    async function fetchData() {
+      if (localStorage.getItem("currentUser") === null) navigate("/login");
+      setLoading(true);
+      await VoyageService.getVoyages().then(
+        (response) => {
+          if (response.status === 401 || response.status === 403) logOut();
+          if (response.data["Voyages"] === undefined) {
+            setContent([]);
+          } else setContent(response.data["Voyages"]);
+        },
+        (error) => {
+          const _content =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          setContent(_content);
+        }
+      );
+      setLoading(false);
+    }
     fetchData();
-  }, []);
+  }, [logOut, navigate]);
   const refreshForms = async () => {
     await fetchData();
   };

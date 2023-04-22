@@ -43,13 +43,6 @@ class VoyageIn(BaseModel):
     ticket_quantity: int
     onSale: bool
     
-class VoyageEdit(BaseModel):
-    voyage_id: str
-    departure_location: str
-    arrival_location: str
-    departure_time: datetime.datetime
-    ticket_quantity: int
-    onSale: bool
 class VoyageOut(BaseModel):
     Voyages:  List[Voyage] = []
 class User(BaseModel):
@@ -70,4 +63,16 @@ class UserOut(BaseModel):
     email: Optional[str] = None
     user_id: Optional[str] = None
     authority_level: Optional[str] = None
+    
+class TicketIn(BaseModel):
+    route_id: int
+    departure_location: str
+    arrival_location: str
+    departure_date: datetime.datetime
+    return_date: datetime.datetime
+    ticket_type: str
+    price: float
+    
+class TicketOut(BaseModel):
+    tickets: List[TicketIn] = []
       

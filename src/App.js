@@ -11,18 +11,44 @@ import Home from "./components/Home";
 import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
 import BoardAdmin from "./components/BoardAdmin";
+
 const App = () => {
   let navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(undefined);
   const [loading, setLoading] = useState(true);
+
+ 
   useEffect(() => {
     setLoading(true);
+    async function logOut() {
+      await AuthService.logout();
+      setCurrentUser(undefined);
+      setLoading(false);
+    };
     async function fetchData() {
       try {
         const data = await AuthService.getCurrentUser();
-        setCurrentUser(data);
-        localStorage.setItem("currentUser", JSON.stringify(data));
-        if (data.authority_level) {
+        if(data){
+          setCurrentUser(data);
+          localStorage.setItem("currentUser", JSON.stringify(data));
+          setLoading(false);
+          return true;
+        }else {
+          setLoading(false);
+          return false;
+        }
+       
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+        return false;
+      }
+    }
+    async function refreshToken() {
+      try {
+        const data = await AuthService.refresh();
+        if (data) {
+          fetchData();
           setLoading(false);
           return true;
         }
@@ -30,26 +56,14 @@ const App = () => {
         return false;
       } catch (error) {
         console.log(error);
+        logOut();
+        setLoading(false);
         return false;
       }
     }
-    const localToken = localStorage.getItem("tokens");
-    if (localToken) {
-      const access_token = JSON.parse(localToken).access_token;
-      if (access_token) {
-        if (!fetchData()) {
-          const refresh_token = JSON.parse(localToken).refresh_token;
-          if (refresh_token) {
-            AuthService.refresh(refresh_token);
-            if (!fetchData()) console.log("error");
-          } else {
-            AuthService.logout();
-            setLoading(false);
-          }
-        }
-      }
-    }else setLoading(false);
+    if (!fetchData()) refreshToken();
   }, []);
+  
   useEffect(() => {
     if (loading) {
       document.getElementById("App").className = "App fullscreen";
@@ -57,11 +71,13 @@ const App = () => {
       document.getElementById("App").className = "App";
     }
   }, [loading]);
-
-  const logOut = () => {
-    setLoading(true);
-    AuthService.logout();
+  const logOut = async () => {
+    await AuthService.logout();
+    setCurrentUser(undefined);
+     navigate("/login");
+    setLoading(false);
   };
+
 
   return (
     <div className="App " id="App">
@@ -84,7 +100,7 @@ const App = () => {
 
               {currentUser && currentUser.authority_level === "admin" && (
                 <li className="nav-item justify-content-center align-self-center ">
-                  <Link to={"/admin"} className="nav-link " >
+                  <Link to={"/admin"} className="nav-link ">
                     Admin
                   </Link>
                 </li>
@@ -130,12 +146,25 @@ const App = () => {
 
           <div className="containerMain ">
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login setLoading={setLoading}  />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/tickets" element={<BoardUser currentUser={currentUser}/>} />
-              <Route path="/admin" element={<BoardAdmin currentUser={currentUser}/>} />
+              <Route path="/" element={<Home logOut={logOut} />} />
+              <Route
+                path="/login"
+                element={<Login setLoading={setLoading} logOut={logOut} />}
+              />
+              <Route path="/register" element={<Register logOut={logOut} />} />
+              <Route path="/profile" element={<Profile logOut={logOut} />} />
+              <Route
+                path="/tickets"
+                element={
+                  <BoardUser currentUser={currentUser} logOut={logOut} />
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <BoardAdmin currentUser={currentUser} logOut={logOut} />
+                }
+              />
             </Routes>
           </div>
         </>
