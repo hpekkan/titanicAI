@@ -26,31 +26,31 @@ const BoardAdmin = ({ currentUser, logOut }) => {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
-    if (localStorage.getItem("currentUser") === null)
-        await navigate("/login");
-      setLoading(true);
-      await VoyageService.getVoyages().then(
-        (response) => {
-           setContent(response.data["Voyages"]);
-        },
-        (error) => {
-          if (error.response.status === 401 || error.response.status === 403) logOut();
-          if (error.response.status === 404 || error.response.status === 500) {
-            setContent([]);
-            return;
-          }
-          const _content =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-            console.log(_content);
+    if (localStorage.getItem("currentUser") === null) await navigate("/login");
+    setLoading(true);
+    await VoyageService.getVoyages().then(
+      (response) => {
+        setContent(response.data["Voyages"]);
+      },
+      (error) => {
+        if (error.response.status === 401 || error.response.status === 403)
+          logOut();
+        if (error.response.status === 404 || error.response.status === 500) {
+          setContent([]);
+          return;
         }
-      );
-      setLoading(false);
+        const _content =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(_content);
+      }
+    );
+    setLoading(false);
   };
-  
+
   useEffect(() => {
     async function fetchData() {
       if (localStorage.getItem("currentUser") === null)
@@ -58,10 +58,11 @@ const BoardAdmin = ({ currentUser, logOut }) => {
       setLoading(true);
       await VoyageService.getVoyages().then(
         (response) => {
-           setContent(response.data["Voyages"]);
+          setContent(response.data["Voyages"]);
         },
         (error) => {
-          if (error.response.status === 401 || error.response.status === 403) logOut();
+          if (error.response.status === 401 || error.response.status === 403)
+            logOut();
           if (error.response.status === 404 || error.response.status === 500) {
             setContent([]);
             return;
@@ -72,7 +73,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
               error.response.data.message) ||
             error.message ||
             error.toString();
-            console.log(_content);
+          console.log(_content);
         }
       );
       setLoading(false);
@@ -120,7 +121,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
             setTicketPrice={setTicketPrice}
           />
         )}
-  
+
         {loading === true && (
           <ReactLoading
             className="spinner"
@@ -131,7 +132,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
           />
         )}
 
-        {loading === false && 
+        {loading === false &&
           Object.keys(content).length > 0 &&
           content.map((route) => (
             <Voyage

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserService from "../services/user.service";
-const Payment = ({currentUser, setCurrentUser}) => {
+const Payment = ({ currentUser, setCurrentUser }) => {
   const [currentUserLocal, setCurrentUserLocal] = useState("");
   useEffect(() => {
     if (localStorage.getItem("currentUser") === null)
@@ -19,8 +19,14 @@ const Payment = ({currentUser, setCurrentUser}) => {
     console.log(currentUserLocal);
     setLoading(true);
     await UserService.addBalance(100);
-    setCurrentUserLocal({ ...currentUserLocal, balance: currentUserLocal.balance + 100 });
-    setCurrentUser({ ...currentUserLocal, balance: currentUserLocal.balance + 100 });
+    setCurrentUserLocal({
+      ...currentUserLocal,
+      balance: currentUserLocal.balance + 100,
+    });
+    setCurrentUser({
+      ...currentUserLocal,
+      balance: currentUserLocal.balance + 100,
+    });
     setLoading(false);
   };
   return (
@@ -29,11 +35,20 @@ const Payment = ({currentUser, setCurrentUser}) => {
         <header className="jumbotron ">
           <h2>
             <p>
-              <strong>Balance:</strong> {currentUserLocal.balance}$
+              <strong >Balance:</strong> <span className="text-success">{currentUserLocal.balance}$</span>
             </p>
             <br />
             <br />
-            <strong>{currentUserLocal.username}</strong>
+            <strong className="text-warning">{currentUserLocal.username}</strong>
+            <div className="d-flex justify-content-center align-items-center m-5">
+              <h5>
+                <span className="text-danger">Warning:</span> Please note that
+                the balance displayed on this website is solely for
+                demonstration purposes and is not reflective of real financial
+                transactions. The balance is artificially generated and does not
+                represent actual monetary value.
+              </h5>
+            </div>
           </h2>
         </header>
       </div>

@@ -27,10 +27,11 @@ const Profile = () => {
   let navigate = useNavigate();
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
     async function fetchData() {
-      if (localStorage.getItem("currentUser") === null) await navigate("/login");
+      if (localStorage.getItem("currentUser") === null)
+        await navigate("/login");
       setLoading(true);
       /*await VoyageService.getVoyages().then(
         (response) => {
@@ -58,35 +59,34 @@ const Profile = () => {
       <div className="profileContainer col-xl-4">
         <header className="jumbotron ">
           <h3>
-            Profile
             <br />
             <br />
-            <strong>{currentUser.username}</strong>
+            <strong className="text-warning">{currentUser.username}</strong>
           </h3>
         </header>
         <p>
-          <strong>Token:</strong> {access_token.substring(0, 20)} ...{" "}
+          <strong className="text-primary">Token:</strong>{" "}
+          {access_token.substring(0, 20)} ...{" "}
           {access_token.substring(access_token.length - 20)}
         </p>
         <p>
-          <strong>Id:</strong> {currentUser.user_id}
+          <strong className="text-primary">Id:</strong> {currentUser.user_id}
         </p>
         <p>
-          <strong>Email:</strong> {currentUser.email}
+          <strong className="text-primary">Email:</strong> {currentUser.email}
         </p>
         <p>
-          <strong>Balance:</strong> {currentUser.balance}
+          <strong className="text-primary">Balance:</strong>{" "}
+          {currentUser.balance}
         </p>
-        <strong>Authorities:</strong>
-        &nbsp;
-        {currentUser.authority_level}
+        <p>
+          <strong className="text-primary">Authorities:</strong>{" "}
+          {currentUser.authority_level}
+        </p>
       </div>
       <div className="profileContainer col-xl-8 d-flex">
         <header className="jumbotron ">
-          <h3>
-            MY TICKETS &nbsp;
-            <strong>{currentUser.username}</strong>
-          </h3>
+          <h3>MY TICKETS</h3>
         </header>
         <div className=" voyages d-flex flex-wrap align-content-center justify-content-center ">
           {loading === true && (
@@ -98,7 +98,6 @@ const Profile = () => {
               width={50}
             />
           )}
-          
         </div>
       </div>
     </div>
