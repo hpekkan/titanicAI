@@ -58,7 +58,7 @@ const deleteVoyage = async (id) => {
   }
 };
 
-const createVoyage = async (departure, arrival, date, quantity, onSale) => {
+const createVoyage = async (departure, arrival, date, quantity, onSale,ticket_price) => {
   try {
     let response = await axios.post(
       API_URL + "voyages",
@@ -112,7 +112,7 @@ const createVoyage = async (departure, arrival, date, quantity, onSale) => {
               quantity,
               "never",
               "1",
-              100
+              ticket_price
             );
           }
         }
@@ -129,7 +129,7 @@ const createVoyage = async (departure, arrival, date, quantity, onSale) => {
         quantity,
         "never",
         "1",
-        100
+        ticket_price
       );
     }
 

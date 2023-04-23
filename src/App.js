@@ -11,6 +11,7 @@ import Home from "./components/Home";
 import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
 import BoardAdmin from "./components/BoardAdmin";
+import Payment from "./components/Payment";
 
 const App = () => {
   let navigate = useNavigate();
@@ -109,9 +110,14 @@ const App = () => {
 
             {currentUser ? (
               <div className="navbar-nav ml-auto col-xl-8 justify-content-end  ">
-                <li className="nav-item">
+              <li className="nav-item">
                   <Link to={"/profile"} className="nav-link">
                     {currentUser.username}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to={"/payment"} className="nav-link">
+                  <span>Balance:</span> <span className="text-success">{currentUser.balance}$</span>
                   </Link>
                 </li>
                 <li className="nav-item logout">
@@ -146,6 +152,7 @@ const App = () => {
               />
               <Route path="/register" element={<Register setLoading={setLoading} />} />
               <Route path="/profile" element={<Profile logOut={logOut} />} />
+              <Route path="/payment" element={<Payment logOut={logOut} />} />
               <Route
                 path="/tickets"
                 element={

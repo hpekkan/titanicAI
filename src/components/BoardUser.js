@@ -5,12 +5,12 @@ import VoyageService from "../services/voyage.service";
 import ReactLoading from "react-loading";
 
 import { useNavigate } from "react-router-dom";
-const BoardUser = ({currentUser}) => {
+const BoardUser = ({ currentUser }) => {
   let navigate = useNavigate();
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
   const fetchData = async () => {
-    if(localStorage.getItem("currentUser")===null) navigate("/login");
+    if (localStorage.getItem("currentUser") === null) navigate("/login");
     setLoading(true);
     await VoyageService.getVoyages().then(
       (response) => {
@@ -31,7 +31,6 @@ const BoardUser = ({currentUser}) => {
     setLoading(false);
   };
   useEffect(() => {
-    
     fetchData();
   }, []);
   const refreshForms = async () => {
@@ -45,8 +44,7 @@ const BoardUser = ({currentUser}) => {
           🔄
         </button>
       </header>
-      <div className= " voyages d-flex flex-wrap align-content-center justify-content-center ">
-      
+      <div className=" voyages d-flex flex-wrap align-content-center justify-content-center ">
         {loading === true && (
           <ReactLoading
             className="spinner"
@@ -67,6 +65,8 @@ const BoardUser = ({currentUser}) => {
               departure_time={route.departure_time}
               quantity={route.ticket_quantity}
               onSale={route.onSale}
+              left_ticket={route.left_ticket}
+              _ticket_id={route.ticket_id}
               currentUser={currentUser}
             />
           ))}

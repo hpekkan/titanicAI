@@ -18,6 +18,8 @@ const BoardAdmin = ({ currentUser, logOut }) => {
   const [date, setDate] = useState(new Date());
   const [voyage_id, setVoyageID] = useState("");
   const [ticket_id, setTicketID] = useState("");
+  const [left_ticket, setLeftTicket] = useState(0);
+  const [ticket_price, setTicketPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [onSale, setOnSale] = useState(false);
   const [content, setContent] = useState();
@@ -49,16 +51,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
       setLoading(false);
   };
   //todo display ticket info
-  /*async function fetchTicket(_ticket_id)  {
-    await TicketService.getTicket(_ticket_id).then(
-      (response) => {
-        console.log(response.data);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }*/
+  
   useEffect(() => {
     async function fetchData() {
       if (localStorage.getItem("currentUser") === null)
@@ -115,6 +108,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
             setDeparture={setDeparture}
             date={date}
             setDate={setDate}
+            left_ticket={left_ticket}
             voyage_id={voyage_id}
             setVoyageID={setVoyageID}
             ticket_id={ticket_id}
@@ -122,6 +116,9 @@ const BoardAdmin = ({ currentUser, logOut }) => {
             setQuantity={setQuantity}
             onSale={onSale}
             setOnSale={setOnSale}
+            setLeftTicket={setLeftTicket}
+            ticket_price={ticket_price}
+            setTicketPrice={setTicketPrice}
           />
         )}
   
@@ -146,6 +143,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
               departure_time={route.departure_time}
               quantity={route.ticket_quantity}
               onSale={route.onSale}
+              left_ticket={route.left_ticket}
               _ticket_id={route.ticket_id}
               editPopUp={editPopUp}
               popUp={popUp}
@@ -158,7 +156,8 @@ const BoardAdmin = ({ currentUser, logOut }) => {
               setQuantity={setQuantity}
               setOnSale={setOnSale}
               setTicketID={setTicketID}
-              //fetchTicket={fetchTicket}
+              setLeftTicket={setLeftTicket}
+              setTicketPrice={setTicketPrice}
             />
           ))}
         {currentUser &&

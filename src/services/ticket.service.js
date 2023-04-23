@@ -125,9 +125,7 @@ const updateTicket = async (
 
 const getTicket = async (ticket_id) => {
   try {
-    const response = await axios.get(API_URL + "ticket/" + ticket_id, {
-      headers: authHeader(),
-    });
+    const response = await axios.get(API_URL + "ticket/" + ticket_id);
     return response;
   } catch (error) {
     throw new Error("Failed to get ticket");

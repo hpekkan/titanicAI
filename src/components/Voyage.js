@@ -2,6 +2,7 @@ import "../App.css";
 import React, { useState } from "react";
 import VoyageService from "../services/voyage.service";
 import TicketService from "../services/ticket.service";
+import ReactLoading from "react-loading";
 import { useEffect } from "react";
 
 const Voyage = ({
@@ -22,20 +23,24 @@ const Voyage = ({
   setQuantity,
   setOnSale,
   _ticket_id,
+  left_ticket,
+  setLeftTicket,
   setTicketID,
-  fetchTicket
-  
+  ticket_price,
+  setTicketPrice
 }) => {
+  
   const _date = new Date(departure_time );
   const utcDate = new Date(Date.UTC(_date.getFullYear(), _date.getMonth(), _date.getDate(), _date.getHours(), _date.getMinutes()));
   let _mdy =
     utcDate.getMonth() + 1 + "/" + utcDate.getDate() + "/" + utcDate.getFullYear();
   let _hour = utcDate.getHours() + ":" + utcDate.getMinutes();
   const [isVisible, setIsVisible] = useState(true);
+  const [_loading, _setLoading] = useState(true);
   const [loadingRemove, setLoadingRemove] = useState(false);
   const [loadingSale, setLoadingSale] = useState(false);
   const [_onSale, set_onSale] = useState(onSale);
-  
+  const [localPrice , setLocalPrice] = useState(0);
 
   const handleRemove = async (e) => {
     setLoadingRemove(true);
@@ -59,9 +64,27 @@ const Voyage = ({
     
     setLoadingRemove(false);
   };
+  useEffect(() => {
+    console.log(_ticket_id);
+    _setLoading(true);
+    async function fetchTicket(_ticket_id)  {
+      await TicketService.getTicket(_ticket_id).then(
+        (response) => {
+          setLocalPrice(response.data["price"]);
+          _setLoading(false);
+        },
+        (error) => {
+          _setLoading(false);
+          console.log(error);
+        }
+      );
+    }
+    fetchTicket(_ticket_id);
+  }, [_ticket_id,setTicketPrice]);
+
   const handleSale = async (e) => {
     setLoadingSale(true);
-    await VoyageService.updateVoyage(route_id, departure, arrival, departure_time, quantity, !_onSale,quantity,_ticket_id)
+    await VoyageService.updateVoyage(route_id, departure, arrival, departure_time, quantity, !_onSale,left_ticket,_ticket_id)
         .then((response) => {
           set_onSale(!_onSale);
           if (response.status === 200) {
@@ -89,6 +112,8 @@ const Voyage = ({
     setQuantity( quantity);
     setOnSale(onSale);
     setTicketID(_ticket_id);
+    setLeftTicket(left_ticket);
+    setTicketPrice(localPrice);
     //await fetchTicket(ticket_id);
 
     setEditPopUp(true);
@@ -100,7 +125,7 @@ const Voyage = ({
         <div
           className="voyage col-xl-3 m-1 p-4 d-flex justify-content-center align-items-center "
           id={route_id}
-        >
+        >{_loading === false &&
           <header className="jumbotron text-white">
             <div className="d-flex row ">
               <div className="route-item col-xl-6">
@@ -112,7 +137,7 @@ const Voyage = ({
               <div className="route-item col-xl-6">
                 <h5 className="header-item col-xs-9">Left : </h5>
                 <h5 className="valueSpan col-xs-3">
-                  <strong className="text-green">{quantity}</strong>
+                  <strong className="text-green">{left_ticket}</strong>
                 </h5>
               </div>
             </div>
@@ -138,6 +163,12 @@ const Voyage = ({
               <h5 className="header-item col-xs-9">Hour:</h5>
               <h5 className="valueSpan  col-xs-3">
                 <strong className="text-green">{_hour}</strong>
+              </h5>
+            </div>
+            <div className="route-item ">
+              <h5 className="header-item col-xs-9">Price:</h5>
+              <h5 className="valueSpan  col-xs-3">
+                <strong className="text-green">{localPrice}$</strong>
               </h5>
             </div>
             {currentUser && currentUser.authority_level === "admin" && (
@@ -177,8 +208,16 @@ const Voyage = ({
                 <button className="m-1">BUY</button>
               </div>
             )}
-          </header>
+          </header>}
+          {_loading === true && <ReactLoading
+            className=" d-flex justify-content-center align-items-center"
+            type="spin"
+            color="#FF6100"
+            height={50}
+            width={50}
+          />}
         </div>
+        
       </>
     )
   );

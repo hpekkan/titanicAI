@@ -10,11 +10,21 @@ import setMinutes from "date-fns/setMinutes";
 import "react-datepicker/dist/react-datepicker.css";
 import VoyageService from "../services/voyage.service";
 import TicketService from "../services/ticket.service";
+import { useEffect } from "react";
 const required = (value) => {
   if (!value) {
     return (
       <div className="alert alert-danger" role="alert">
         This field is required!
+      </div>
+    );
+  }
+};
+const valueRequired = (value) => {
+  if (value < 0) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        This field must be positive or zero!
       </div>
     );
   }
@@ -33,10 +43,14 @@ const EditPopUp = (props) => {
     setVoyageID,
     ticket_id,
     setTicketID,
+    left_ticket,
+    setLeftTicket,
     quantity,
     setQuantity,
     onSale,
     setOnSale,
+    ticket_price,
+    setTicketPrice
   } = props;
   const _date = new Date(date);
   const utcDate = new Date(
@@ -64,6 +78,7 @@ const EditPopUp = (props) => {
     const arrival = e.target.value.toString().toUpperCase();
     setArrival(arrival);
   };
+  
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -78,7 +93,8 @@ const EditPopUp = (props) => {
         arrival,
         startDate,
         quantity,
-        onSale
+        onSale,
+        ticket_price
       )
         .then((response) => {
           if (response.status === 200) {
@@ -113,7 +129,7 @@ const EditPopUp = (props) => {
         startDate,
         quantity,
         onSale,
-        quantity,
+        left_ticket,
         ticket_id
       )
         .then((response) => {
@@ -126,7 +142,7 @@ const EditPopUp = (props) => {
               startDate,
               "never",
               "1",
-              100
+              ticket_price,
             );
             setEditPopUp(false);
             refreshForms();
@@ -176,18 +192,46 @@ const EditPopUp = (props) => {
             validations={[required]}
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="ticket_quantity">Ticket Quantity</label>
-          <Input
-            type="number"
-            className="form-control"
-            name="ticket_quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            validations={[required]}
-          />
+        <div className="d-flex col-sm-4">
+          <div className="form-group ">
+            <label htmlFor="ticket_quantity">Ticket Quantity</label>
+            <Input
+              type="number"
+              className="form-control"
+              name="ticket_quantity"
+              min="0"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              validations={[valueRequired]}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="left_ticket">Left Ticket</label>
+            <Input
+              type="number"
+              className="form-control"
+              name="left_ticket"
+              min="0"
+              max={quantity}
+              value={left_ticket}
+              onChange={(e) => setLeftTicket(e.target.value)}
+              validations={[valueRequired]}
+            />
+          </div>
         </div>
-
+        <div className="d-flex col-sm-4">
+        <div className="form-group">
+            <label htmlFor="ticket_price">Ticket Price</label>
+            <Input
+              type="number"
+              className="form-control"
+              name="ticket_price"
+              min="0"
+              value={ticket_price}
+              onChange={(e) => setTicketPrice(e.target.value)}
+              validations={[valueRequired]}
+            />
+          </div>
         <div className="form-group">
           <div className="onSale">
             <label>
@@ -204,6 +248,8 @@ const EditPopUp = (props) => {
             </label>
           </div>
         </div>
+        </div>
+
         <div className="form-group">
           <label htmlFor="date">DateTime</label>
           <DatePicker

@@ -299,10 +299,9 @@ async def get_tickets(user: UserOut = Depends(get_current_user)):
         conn.close()
         
 @app.get('/ticket/{ticket_id}', summary='Get ticket', response_model=Ticket)
-async def get_ticket(ticket_id: int, user: UserOut = Depends(get_current_user)):
+async def get_ticket(ticket_id: int):
     try:
-        if user.authority_level != 'admin':
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized to view this page")
+        
         conn = connect()
         cursor = conn.cursor()
         query = "SELECT * FROM ticket WHERE ticket_id = ?"

@@ -64,6 +64,7 @@ class UserOut(BaseModel):
     username: str
     email: Optional[str] = None
     user_id: Optional[str] = None
+    balance: float 
     authority_level: Optional[str] = None
     
 class TicketIn(BaseModel):

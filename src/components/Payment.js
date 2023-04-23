@@ -4,7 +4,7 @@ import VoyageService from "../services/voyage.service";
 import ReactLoading from "react-loading";
 import Voyage from "./Voyage";
 
-const Profile = () => {
+const Payment = () => {
   const [currentUser, setCurrentUser] = useState("");
   const [access_token, setAccessToken] = useState("");
   useEffect(() => {
@@ -27,10 +27,11 @@ const Profile = () => {
   let navigate = useNavigate();
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
     async function fetchData() {
-      if (localStorage.getItem("currentUser") === null) await navigate("/login");
+      if (localStorage.getItem("currentUser") === null)
+        await navigate("/login");
       setLoading(true);
       /*await VoyageService.getVoyages().then(
         (response) => {
@@ -52,57 +53,36 @@ const Profile = () => {
     }
     fetchData();
   }, [navigate]);
-
+  const handleClick = async () => {
+    setLoading(true);
+  };
   return (
     <div className="d-flex">
       <div className="profileContainer col-xl-4">
         <header className="jumbotron ">
-          <h3>
-            Profile
+          <h2>
+            <p>
+              <strong>Balance:</strong> {currentUser.balance}$
+            </p>
             <br />
             <br />
             <strong>{currentUser.username}</strong>
-          </h3>
+          </h2>
         </header>
-        <p>
-          <strong>Token:</strong> {access_token.substring(0, 20)} ...{" "}
-          {access_token.substring(access_token.length - 20)}
-        </p>
-        <p>
-          <strong>Id:</strong> {currentUser.user_id}
-        </p>
-        <p>
-          <strong>Email:</strong> {currentUser.email}
-        </p>
-        <p>
-          <strong>Balance:</strong> {currentUser.balance}
-        </p>
-        <strong>Authorities:</strong>
-        &nbsp;
-        {currentUser.authority_level}
       </div>
       <div className="profileContainer col-xl-8 d-flex">
         <header className="jumbotron ">
-          <h3>
-            MY TICKETS &nbsp;
-            <strong>{currentUser.username}</strong>
-          </h3>
+          <h3>ADD BALANCE &nbsp;</h3>
         </header>
-        <div className=" voyages d-flex flex-wrap align-content-center justify-content-center ">
-          {loading === true && (
-            <ReactLoading
-              className="spinner"
-              type="spin"
-              color="#FF6100"
-              height={50}
-              width={50}
-            />
+        <button className="btn btn-success btn-block" disabled={loading}>
+          {loading && (
+            <span className="spinner-border spinner-border-sm"></span>
           )}
-          
-        </div>
+          <span>ADD 100$</span>
+        </button>
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default Payment;
