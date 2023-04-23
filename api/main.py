@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 from server import connect
 from deps import get_current_user
-from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,TicketIn,TicketOut
+from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,TicketIn,TicketOut,UserUpdate
 from datetime import datetime
 from typing import Union, Any 
 from utils import  (
@@ -80,7 +80,7 @@ async def create_user(user: User):
     
     # Insert user into passenger table
     user.password = password_context.hash(user.password)
-    columns = ['username', 'password', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'city', 'state', 'zip_code', 'authority_level']
+    columns = ['username', 'password', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'city', 'state', 'zip_code', 'authority_level','balance']
     values = [getattr(user, col) for col in columns]
     columns_present = [col for col in columns if getattr(user, col) is not None]
     
@@ -107,8 +107,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         )
     
     return {
-        "access_token": create_access_token(row['username']),
-        "refresh_token": create_refresh_token(row['username']),
+        "access_token": create_access_token(row['user_id']),
+        "refresh_token": create_refresh_token(row['user_id']),
     }
     
 @app.get('/me', summary='Get details of currently logged in user', response_model=UserOut)
@@ -395,6 +395,46 @@ async def refresh(refresh_token: str):
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         ) from e
+        
+@app.put('/user' , summary='Update user')
+async def update_user(user: UserUpdate, user_in: UserOut = Depends(get_current_user)):
+    try:
+        conn = connect()
+        cursor = conn.cursor()
+        columns =  columns = ['username','balance', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'city', 'state', 'zip_code', 'authority_level']
+        values = [getattr(user, col) for col in columns]
+        columns_present = [col for col in columns if getattr(user, col) is not None]
+        query = f"UPDATE passenger SET {', '.join([f'{col} = ?' for col in columns_present])} WHERE user_id = ?"
+        cursor.execute(query, values[:len(columns_present)] + [user_in.user_id])
+        conn.commit()
+        user_in.username = user.username
+        return {"message": "User updated successfully"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}",
+        ) from e
+    finally:
+        cursor.close()
+        conn.close()
+ 
+ 
+@app.post('/addBalance/{amount}', summary='Add balance')
+async def add_balance(amount: int, user: UserOut = Depends(get_current_user)):
+    try:
+        conn = connect()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE passenger SET balance = balance + ? WHERE user_id = ?", (amount, user.user_id))
+        conn.commit()
+        return {"message": "Balance added successfully"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}",
+        ) from e
+    finally:
+        cursor.close()
+        conn.close()
         
  #todo make passenger_Reservation 
 @app.get('/user/voyages/', summary='Get users voyages', response_model=VoyageOut)

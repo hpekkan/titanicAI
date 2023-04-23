@@ -27,11 +27,36 @@ const getUser = async () => {
     }
   }
 };
-
+const addBalance = async (amount) => {
+  try {
+    // Attempt to get user data with authorization header
+    const response = await axios.post(API_URL + "addBalance/" + amount, null, {
+      headers: authHeader(),
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    // If there's an error, try refreshing the token and retry getting user data
+    try {
+      await AuthService.refresh();
+      const newResponse = await axios.post(
+        API_URL + "addBalance/" + amount,
+        null,
+        { headers: authHeader() }
+      );
+      return newResponse;
+    } catch (error) {
+      // If refreshing token fails, log the user out
+      await AuthService.logout();
+      throw new Error("Failed to get user data");
+    }
+  }
+};
 
 const UserService = {
   getPublicContent,
   getUser,
+  addBalance,
 };
 
 export default UserService;

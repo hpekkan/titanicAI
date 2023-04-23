@@ -22,13 +22,14 @@ reuseable_oauth = OAuth2PasswordBearer(
 
     
 async def get_current_user(token: str = Depends(reuseable_oauth)) -> UserOut:
+    print("sdaas")
     try:
         payload = jwt.decode(
             token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
         )
         token_data = TokenPayload(**payload)
-
         if datetime.fromtimestamp(token_data.exp) < datetime.now():
+            
             raise HTTPException(
                 status_code = status.HTTP_401_UNAUTHORIZED,
                 detail="Token expired",
@@ -42,7 +43,7 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> UserOut:
         ) from e
     conn = connect()
     cursor = conn.cursor()
-    query = "SELECT * FROM passenger WHERE username = ?"
+    query = "SELECT * FROM passenger WHERE user_id = ?"
     cursor.execute(query, (token_data.sub))
     if not (row := cursor.fetchone()):
         raise HTTPException(status_code=401, detail="User not found")

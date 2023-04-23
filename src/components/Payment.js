@@ -1,60 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import VoyageService from "../services/voyage.service";
-import ReactLoading from "react-loading";
-import Voyage from "./Voyage";
-
+import UserService from "../services/user.service";
 const Payment = () => {
   const [currentUser, setCurrentUser] = useState("");
-  const [access_token, setAccessToken] = useState("");
   useEffect(() => {
-    const localToken = localStorage.getItem("tokens");
-    if (localToken) {
-      const access_tokenLocal = JSON.parse(localToken).access_token;
-      if (access_tokenLocal) {
-        setAccessToken(access_tokenLocal);
-        const currentUserLocal = localStorage.getItem("currentUser");
-        if (currentUserLocal) {
-          const currentParsedLocal = JSON.parse(currentUserLocal);
-          if (currentParsedLocal) setCurrentUser(currentParsedLocal);
-        }
+    if (localStorage.getItem("currentUser") === null)
+      window.location.href = "/login";
+    else {
+      const currentUserLocal = localStorage.getItem("currentUser");
+      if (currentUserLocal) {
+        const currentParsedLocal = JSON.parse(currentUserLocal);
+        if (currentParsedLocal) setCurrentUser(currentParsedLocal);
       }
-      return;
     }
-    window.location.href = "/login";
   }, []);
 
-  let navigate = useNavigate();
-  const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
-      if (localStorage.getItem("currentUser") === null)
-        await navigate("/login");
-      setLoading(true);
-      /*await VoyageService.getVoyages().then(
-        (response) => {
-          if (response.data["Voyages"] === undefined) {
-            setContent([]);
-          } else setContent(response.data["Voyages"]);
-        },
-        (error) => {
-          const _content =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          setContent(_content);
-        }
-      );*/
-      setLoading(false);
-    }
-    fetchData();
-  }, [navigate]);
   const handleClick = async () => {
+    console.log(currentUser);
     setLoading(true);
+    await UserService.addBalance(100);
+    setLoading(false);
   };
   return (
     <div className="d-flex">
@@ -74,7 +40,11 @@ const Payment = () => {
         <header className="jumbotron ">
           <h3>ADD BALANCE &nbsp;</h3>
         </header>
-        <button className="btn btn-success btn-block" disabled={loading}>
+        <button
+          className="btn btn-success btn-block"
+          disabled={loading}
+          onClick={handleClick}
+        >
           {loading && (
             <span className="spinner-border spinner-border-sm"></span>
           )}

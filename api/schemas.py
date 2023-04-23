@@ -50,6 +50,7 @@ class VoyageOut(BaseModel):
 class User(BaseModel):
     username: str
     password: str
+    balance: float
     email: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
@@ -61,12 +62,24 @@ class User(BaseModel):
     authority_level: Optional[str] = None
     
 class UserOut(BaseModel):
+    user_id: int
     username: str
     email: Optional[str] = None
     user_id: Optional[str] = None
-    balance: float 
+    balance: float  = None
     authority_level: Optional[str] = None
-    
+class UserUpdate(BaseModel):
+    username: str
+    balance: float = None
+    email: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone_number: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    zip_code: Optional[str] = None
+    authority_level: Optional[str] = None
 class TicketIn(BaseModel):
     route_id: int
     departure_location: str
