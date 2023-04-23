@@ -50,7 +50,6 @@ const BoardAdmin = ({ currentUser, logOut }) => {
       );
       setLoading(false);
   };
-  //todo display ticket info
   
   useEffect(() => {
     async function fetchData() {

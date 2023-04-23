@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from "react";
 import UserService from "../services/user.service";
-const Payment = () => {
-  const [currentUser, setCurrentUser] = useState("");
+const Payment = ({currentUser, setCurrentUser}) => {
+  const [currentUserLocal, setCurrentUserLocal] = useState("");
   useEffect(() => {
     if (localStorage.getItem("currentUser") === null)
       window.location.href = "/login";
     else {
-      const currentUserLocal = localStorage.getItem("currentUser");
-      if (currentUserLocal) {
-        const currentParsedLocal = JSON.parse(currentUserLocal);
-        if (currentParsedLocal) setCurrentUser(currentParsedLocal);
+      const _currentUser = localStorage.getItem("currentUser");
+      if (_currentUser) {
+        const currentParsedLocal = JSON.parse(_currentUser);
+        if (currentParsedLocal) setCurrentUserLocal(currentParsedLocal);
       }
     }
   }, []);
-
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
-    console.log(currentUser);
+    console.log(currentUserLocal);
     setLoading(true);
     await UserService.addBalance(100);
+    setCurrentUserLocal({ ...currentUserLocal, balance: currentUserLocal.balance + 100 });
+    setCurrentUser({ ...currentUserLocal, balance: currentUserLocal.balance + 100 });
     setLoading(false);
   };
   return (
@@ -28,11 +29,11 @@ const Payment = () => {
         <header className="jumbotron ">
           <h2>
             <p>
-              <strong>Balance:</strong> {currentUser.balance}$
+              <strong>Balance:</strong> {currentUserLocal.balance}$
             </p>
             <br />
             <br />
-            <strong>{currentUser.username}</strong>
+            <strong>{currentUserLocal.username}</strong>
           </h2>
         </header>
       </div>

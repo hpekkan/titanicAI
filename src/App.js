@@ -152,7 +152,7 @@ const App = () => {
               />
               <Route path="/register" element={<Register setLoading={setLoading} />} />
               <Route path="/profile" element={<Profile logOut={logOut} />} />
-              <Route path="/payment" element={<Payment currentUser={currentUser} />} />
+              <Route path="/payment" element={<Payment currentUser={currentUser} setCurrentUser={setCurrentUser} />} />
               <Route
                 path="/tickets"
                 element={
