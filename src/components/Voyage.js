@@ -61,7 +61,7 @@ const Voyage = ({
   };
   const handleSale = async (e) => {
     setLoadingSale(true);
-    await VoyageService.updateVoyage(route_id, departure, arrival, departure_time, quantity, !_onSale,_ticket_id)
+    await VoyageService.updateVoyage(route_id, departure, arrival, departure_time, quantity, !_onSale,quantity,_ticket_id)
         .then((response) => {
           set_onSale(!_onSale);
           if (response.status === 200) {
