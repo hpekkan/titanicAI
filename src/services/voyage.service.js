@@ -104,7 +104,7 @@ const createVoyage = async (departure, arrival, date, quantity, onSale) => {
             AuthService.logout();
           }
           if (response.status === 200) {
-            TicketService.createTicket(
+            await TicketService.createTicket(
               response.data.id,
               departure,
               arrival,
@@ -121,7 +121,7 @@ const createVoyage = async (departure, arrival, date, quantity, onSale) => {
         return null;
       }
     } else if (response.status === 200) {
-      TicketService.createTicket(
+      await TicketService.createTicket(
         response.data.id,
         departure,
         arrival,

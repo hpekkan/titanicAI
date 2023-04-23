@@ -65,7 +65,7 @@ ALGORITHM = "HS256"
 def read_root():
     return {"data": "Welcome to titanic prediction model"}
 
-  
+#auth  
 @app.post("/signup")
 async def create_user(user: User):
     conn = connect()
@@ -115,7 +115,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 async def get_me(user: UserOut = Depends(get_current_user)):
     return user
 
-
+#voyages
 @app.get('/voyages', summary='Get all voyages', response_model=VoyageOut)
 async def get_voyages(user: UserOut = Depends(get_current_user)):
     try:
@@ -232,9 +232,9 @@ async def update_voyage(voyage: Voyage, user: UserOut = Depends(get_current_user
     finally:
         cursor.close()
         conn.close()
-        
+#Ticket
 @app.post('/ticket', summary='Add ticket')
-async def add_ticket(ticket: int, user: UserOut = Depends(get_current_user)):
+async def add_ticket(ticket: TicketIn, user: UserOut = Depends(get_current_user)):
     try:
         if user.authority_level != 'admin':
             raise HTTPException(status_code=401, detail="You are not authorized to view this page")
@@ -277,7 +277,7 @@ async def get_tickets(user: UserOut = Depends(get_current_user)):
         if len(rows) == 0:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Could not find any voyages",
+                detail="Could not find any tickets",
             )
             
         for row in rows:
@@ -324,22 +324,19 @@ async def get_ticket(ticket_id: int, user: UserOut = Depends(get_current_user)):
     finally:
         cursor.close()
         conn.close()
-@app.get('/tickets', summary='Get all tickets' ,response_model=TicketOut)
-async def get_tickets(user: UserOut = Depends(get_current_user)):
+
+
+@app.delete('/ticket/{ticket_id}', summary='Delete ticket')
+async def delete_ticket(ticket_id: int, user: UserOut = Depends(get_current_user)):
     try:
         if user.authority_level != 'admin':
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized to view this page")
-        conn = connect()
+
+        conn= connect()
         cursor = conn.cursor()
-        query = "SELECT * FROM ticket"
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        return {"tickets": rows}
-    except ValidationError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Validation error: {e.json()}",
-        ) from e
+        cursor.execute("DELETE FROM ticket WHERE ticket_id = ?", (ticket_id))
+        conn.commit()
+        return {"message": "Ticket deleted successfully"}
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -348,7 +345,32 @@ async def get_tickets(user: UserOut = Depends(get_current_user)):
     finally:
         cursor.close()
         conn.close()
-         
+        
+@app.put('/ticket', summary='Update ticket')
+async def update_ticket(ticket: Ticket, user: UserOut = Depends(get_current_user)):
+    if user.authority_level != 'admin':
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized to view this page")
+    try:
+        conn = connect()
+        cursor = conn.cursor()
+        columns = ['route_id', 'departure_location', 'arrival_location', 'departure_date', 'return_date', 'ticket_type', 'price']
+        values = [getattr(ticket, col) for col in columns]
+        columns_present = [col for col in columns if getattr(ticket, col) is not None]
+        query = f"UPDATE ticket SET {', '.join([f'{col} = ?' for col in columns_present])} WHERE ticket_id = ?"
+        cursor.execute(query, values[:len(columns_present)] + [ticket.ticket_id])
+        conn.commit()
+        return {"message": "Ticket updated successfully"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}",
+        ) from e
+    finally:
+        cursor.close()
+        conn.close()
+
+
+        
 @app.get('/refresh', summary='Refresh access token')
 async def refresh(refresh_token: str):
     try:

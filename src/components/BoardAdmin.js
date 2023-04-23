@@ -49,7 +49,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
       setLoading(false);
   };
   //todo display ticket info
-  async function fetchTicket(_ticket_id)  {
+  /*async function fetchTicket(_ticket_id)  {
     await TicketService.getTicket(_ticket_id).then(
       (response) => {
         console.log(response.data);
@@ -58,7 +58,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
         console.log(error);
       }
     );
-  }
+  }*/
   useEffect(() => {
     async function fetchData() {
       if (localStorage.getItem("currentUser") === null)
@@ -66,7 +66,6 @@ const BoardAdmin = ({ currentUser, logOut }) => {
       setLoading(true);
       await VoyageService.getVoyages().then(
         (response) => {
-          console.log(response.data["Voyages"]);
            setContent(response.data["Voyages"]);
         },
         (error) => {
@@ -147,7 +146,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
               departure_time={route.departure_time}
               quantity={route.ticket_quantity}
               onSale={route.onSale}
-              ticket_id={route.ticket_id}
+              _ticket_id={route.ticket_id}
               editPopUp={editPopUp}
               popUp={popUp}
               setEditPopUp={setEditPopUp}
@@ -159,7 +158,7 @@ const BoardAdmin = ({ currentUser, logOut }) => {
               setQuantity={setQuantity}
               setOnSale={setOnSale}
               setTicketID={setTicketID}
-              fetchTicket={fetchTicket}
+              //fetchTicket={fetchTicket}
             />
           ))}
         {currentUser &&

@@ -1,6 +1,7 @@
 import "../App.css";
 import React, { useState } from "react";
 import VoyageService from "../services/voyage.service";
+import TicketService from "../services/ticket.service";
 import { useEffect } from "react";
 
 const Voyage = ({
@@ -20,7 +21,7 @@ const Voyage = ({
   setVoyageID,
   setQuantity,
   setOnSale,
-  ticket_id,
+  _ticket_id,
   setTicketID,
   fetchTicket
   
@@ -38,6 +39,13 @@ const Voyage = ({
 
   const handleRemove = async (e) => {
     setLoadingRemove(true);
+    await TicketService.deleteTicket(_ticket_id).then(
+      (response) => {
+      }, 
+      (error) => {
+        setIsVisible(true);
+        console.log(error);
+      });
     await VoyageService.deleteVoyage(route_id).then(
       (response) => {
         setIsVisible(false);
@@ -45,13 +53,15 @@ const Voyage = ({
       (error) => {
         setIsVisible(true);
         console.log(error);
+        return;
       }
     );
+    
     setLoadingRemove(false);
   };
   const handleSale = async (e) => {
     setLoadingSale(true);
-    await VoyageService.updateVoyage(route_id, departure, arrival, departure_time, quantity, !_onSale,ticket_id)
+    await VoyageService.updateVoyage(route_id, departure, arrival, departure_time, quantity, !_onSale,_ticket_id)
         .then((response) => {
           set_onSale(!_onSale);
           if (response.status === 200) {
@@ -78,8 +88,8 @@ const Voyage = ({
     setVoyageID(route_id);
     setQuantity( quantity);
     setOnSale(onSale);
-    setTicketID(ticket_id);
-    await fetchTicket(ticket_id);
+    setTicketID(_ticket_id);
+    //await fetchTicket(ticket_id);
 
     setEditPopUp(true);
   };

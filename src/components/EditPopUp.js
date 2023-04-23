@@ -126,7 +126,7 @@ const EditPopUp = (props) => {
               startDate,
               "never",
               "1",
-              "100"
+              100
             );
             setEditPopUp(false);
             refreshForms();

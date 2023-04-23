@@ -52,7 +52,7 @@ const createTicket = async (
               { headers: authHeader() }
             );
             if (newResponse.status === 200) {
-              VoyageService.updateVoyage(
+              await VoyageService.updateVoyage(
                 route_id,
                 departure_location,
                 arrival_location,
@@ -102,18 +102,8 @@ const updateTicket = async (
   ticket_type,
   price
 ) => {
-  console.log(
-    ticket_id,
-    route_id,
-    departure_location,
-    arrival_location,
-    departure_time,
-    return_date,
-    ticket_type,
-    price
-  );
   try {
-    const response = await axios.put(
+     const response = await axios.put(
       API_URL + "ticket",
       {
         ticket_id: ticket_id,
@@ -153,11 +143,22 @@ const getTickets = async () => {
     throw new Error("Failed to get tickets");
   }
 };
+const deleteTicket = async (ticket_id) => {
+  try {
+    const response = await axios.delete(API_URL + "ticket/" + ticket_id, {
+      headers: authHeader(),
+    });
+    return response;
+  } catch (error) {
+    throw new Error("Failed to delete ticket");
+  }
+};
 
 const TicketService = {
   createTicket,
   updateTicket,
   getTicket,
   getTickets,
+  deleteTicket
 };
 export default TicketService;
