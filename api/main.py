@@ -80,7 +80,6 @@ async def create_user(user: User):
     
     # Insert user into passenger table
     user.password = password_context.hash(user.password)
-    print(user.password)
     columns = ['username', 'password', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'city', 'state', 'zip_code', 'authority_level']
     values = [getattr(user, col) for col in columns]
     columns_present = [col for col in columns if getattr(user, col) is not None]
@@ -137,7 +136,6 @@ async def get_voyages(user: UserOut = Depends(get_current_user)):
             )
             
         for row in rows:
-            print("row")
             row = dict(zip(columns, row))
             voyage: Union[dict[str, Any], None] = row
             voyages.append(voyage)
@@ -283,7 +281,6 @@ async def get_tickets(user: UserOut = Depends(get_current_user)):
             )
             
         for row in rows:
-            print("row")
             row = dict(zip(columns, row))
             ticket: Union[dict[str, Any], None] = row
             tickets.append(ticket)
@@ -311,7 +308,6 @@ async def get_ticket(ticket_id: int, user: UserOut = Depends(get_current_user)):
         query = "SELECT * FROM ticket WHERE ticket_id = ?"
         cursor.execute(query, [ticket_id])
         row = cursor.fetchone()
-        print(row)
         if row is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ticket not found")
         return Ticket(**dict(zip([column[0] for column in cursor.description], row)))
@@ -398,7 +394,6 @@ async def get_user_voyages(user: UserOut = Depends(get_current_user)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Could not find user",
         )
-    print({'voyages': voyages})
     return VoyageOut(**{'Voyages': voyages})
         
     
