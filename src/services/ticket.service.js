@@ -152,6 +152,7 @@ const deleteTicket = async (ticket_id) => {
   }
 };
 
+
 const TicketService = {
   createTicket,
   updateTicket,

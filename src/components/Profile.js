@@ -20,7 +20,7 @@ const Profile = () => {
         }
       }
       return;
-    }
+    }else
     window.location.href = "/login";
   }, []);
 

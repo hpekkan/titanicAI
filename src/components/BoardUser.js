@@ -5,7 +5,7 @@ import VoyageService from "../services/voyage.service";
 import ReactLoading from "react-loading";
 
 import { useNavigate } from "react-router-dom";
-const BoardUser = ({ currentUser }) => {
+const BoardUser = ({ currentUser,setCurrentUser }) => {
   let navigate = useNavigate();
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
@@ -68,6 +68,7 @@ const BoardUser = ({ currentUser }) => {
               left_ticket={route.left_ticket}
               _ticket_id={route.ticket_id}
               currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
             />
           ))}
       </div>

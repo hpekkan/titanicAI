@@ -101,4 +101,22 @@ class Ticket(BaseModel):
     
 class TicketOut(BaseModel):
     tickets: List[Ticket] = []
-      
+
+class Reservation(BaseModel):
+    user_id: int = None
+    ship_name: str = None
+    route_id: int = None
+    ticket_id: int = None
+    ticket_price: float = None
+    departure_date: datetime.datetime = None
+    return_date: str = None
+    cabin_type: str = None
+    cabin_number: int = None
+    payment_id: int = None
+    
+class Payment(BaseModel):
+    user_id: int
+    ticket_id: int
+    payment_amount: float
+    payment_date: datetime.datetime
+    payment_status: str

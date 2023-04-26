@@ -156,7 +156,7 @@ const App = () => {
               <Route
                 path="/tickets"
                 element={
-                  <BoardUser currentUser={currentUser} logOut={logOut} />
+                  <BoardUser currentUser={currentUser} setCurrentUser={setCurrentUser} logOut={logOut} />
                 }
               />
               <Route

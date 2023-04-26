@@ -16,7 +16,6 @@ const Payment = ({ currentUser, setCurrentUser }) => {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
-    console.log(currentUserLocal);
     setLoading(true);
     await UserService.addBalance(100);
     setCurrentUserLocal({

@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 from server import connect
 from deps import get_current_user
-from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,TicketIn,TicketOut,UserUpdate
+from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,TicketIn,TicketOut,UserUpdate,Reservation,Payment
 from datetime import datetime
 from typing import Union, Any 
 from utils import  (
@@ -457,8 +457,58 @@ async def get_user_voyages(user: UserOut = Depends(get_current_user)):
         )
     return VoyageOut(**{'Voyages': voyages})
         
+#reservation
+@app.post('/reservation', summary='Create reservation')
+async def create_reservation(reservation: Reservation, user: UserOut = Depends(get_current_user)):
+    print(reservation)
+    try:
+        conn = connect()
+        if user.balance < reservation.ticket_price:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Insufficient funds",
+                )
+        cursor = conn.cursor()
+        cursor.execute("UPDATE passenger SET balance = balance - ? WHERE user_id = ?", (reservation.ticket_price, user.user_id))
+        conn.commit()  
+        payment = Payment( user_id=user.user_id,ticket_id=reservation.ticket_id, payment_amount=reservation.ticket_price, payment_date=datetime.now(),payment_status="paid")
+        cursor.execute("INSERT INTO payment (user_id, ticket_id, payment_amount, payment_date, payment_status) VALUES (?, ?, ?, ?, ?)", (payment.user_id, payment.ticket_id, payment.payment_amount, payment.payment_date, payment.payment_status))
+        conn.commit()
+        cursor.execute("SELECT @@IDENTITY AS id")
+        inserted_id = cursor.fetchone()[0]
+        reservation.payment_id = inserted_id
+        cursor = conn.cursor()
+        payment = Payment( user_id=user.user_id,ticket_id=reservation.ticket_id, payment_amount=reservation.ticket_price, payment_date=datetime.now(),payment_status="paid")
+        cursor.execute("INSERT INTO payment (user_id, ticket_id, payment_amount, payment_date, payment_status) VALUES (?, ?, ?, ?, ?)", (payment.user_id, payment.ticket_id, payment.payment_amount, payment.payment_date, payment.payment_status))
+        conn.commit()
+        cursor.execute("SELECT @@IDENTITY AS id")
+        inserted_id = cursor.fetchone()[0]
+        reservation.payment_id = inserted_id
+        cursor = conn.cursor()
+        cursor.execute("SELECT left_ticket FROM route WHERE ticket_id = ?", (reservation.ticket_id,))
+        left_ticket = cursor.fetchone()[0]
+        conn.commit()
+        if left_ticket <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="No tickets left",
+            )
+        cursor.execute("UPDATE route SET left_ticket = left_ticket - 1 WHERE ticket_id = ?", (reservation.ticket_id,))
+        conn.commit()
+        cursor.execute("INSERT INTO ship_reservation (user_id,ship_name, route_id,ticket_id, departure_date, return_date, cabin_type,cabin_number, price,payment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (user.user_id, reservation.ship_name, reservation.route_id, reservation.ticket_id, reservation.departure_date, reservation.return_date, reservation.cabin_type, reservation.cabin_number, reservation.ticket_price, reservation.payment_id))
+        conn.commit()
+        return {"message": "Reservation created successfully"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}",
+        ) from e
     
-
+        
+    
+    
+     
     
 # Load the Model
 model = pickle.load(open('../model/model/titanic_model.pkl', 'rb'))
