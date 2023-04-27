@@ -7,7 +7,6 @@ import AddVoyage from "./AddVoyage";
 import { useNavigate } from "react-router-dom";
 import PopUp from "./PopUp";
 import EditPopUp from "./EditPopUp";
-import TicketService from "../services/ticket.service";
 const BoardAdmin = ({ currentUser, logOut }) => {
   let navigate = useNavigate();
   const [popUp, setPopUp] = useState(false);

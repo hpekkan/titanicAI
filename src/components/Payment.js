@@ -23,8 +23,8 @@ const Payment = ({ currentUser, setCurrentUser }) => {
       balance: currentUserLocal.balance + 100,
     });
     setCurrentUser({
-      ...currentUserLocal,
-      balance: currentUserLocal.balance + 100,
+      ...currentUser,
+      balance: currentUser.balance + 100,
     });
     setLoading(false);
   };

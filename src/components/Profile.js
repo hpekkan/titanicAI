@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import VoyageService from "../services/voyage.service";
-import ReactLoading from "react-loading";
-import Voyage from "./Voyage";
-
+import ReservationService from "../services/reservation.service";
+import Ticket from "./Ticket";
 const Profile = () => {
   const [currentUser, setCurrentUser] = useState("");
   const [access_token, setAccessToken] = useState("");
@@ -20,8 +18,7 @@ const Profile = () => {
         }
       }
       return;
-    }else
-    window.location.href = "/login";
+    } else window.location.href = "/login";
   }, []);
 
   let navigate = useNavigate();
@@ -33,11 +30,13 @@ const Profile = () => {
       if (localStorage.getItem("currentUser") === null)
         await navigate("/login");
       setLoading(true);
-      /*await VoyageService.getVoyages().then(
+      await ReservationService.getUserTickets().then(
         (response) => {
-          if (response.data["Voyages"] === undefined) {
+          if (response.data["reservations"] === undefined) {
             setContent([]);
-          } else setContent(response.data["Voyages"]);
+          } else {
+            console.log(response.data);
+            setContent(response.data["reservations"]);}
         },
         (error) => {
           const _content =
@@ -48,7 +47,8 @@ const Profile = () => {
             error.toString();
           setContent(_content);
         }
-      );*/
+      );
+      
       setLoading(false);
     }
     fetchData();
@@ -89,15 +89,28 @@ const Profile = () => {
           <h3>MY TICKETS</h3>
         </header>
         <div className=" voyages d-flex flex-wrap align-content-center justify-content-center ">
-          {loading === true && (
-            <ReactLoading
-              className="spinner"
-              type="spin"
-              color="#FF6100"
-              height={50}
-              width={50}
+        {loading === false &&
+          content !== undefined &&
+          content.map((ticket) => (
+            
+            <Ticket
+              key={ticket.reservation_id}
+              reservation_id={ticket.reservation_id}
+              user_id={ticket.user_id}
+              departure_date={ticket.departure_date}
+              ship_name={ticket.ship_name}
+              route_id={ticket.route_id}
+              left_ticket={ticket.left_ticket}
+              _ticket_id={ticket.ticket_id}
+              price={ticket.price}
+              return_date={ticket.return_date}
+              cabin_type={ticket.cabin_type}
+              cabin_number={ticket.cabin_number}
+              payment_id={ticket.payment_id}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
             />
-          )}
+          ))}
         </div>
       </div>
     </div>

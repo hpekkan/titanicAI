@@ -114,6 +114,20 @@ class Reservation(BaseModel):
     cabin_number: int = None
     payment_id: int = None
     
+class ReservationOut(BaseModel):
+    reservation_id: int = None  
+    user_id: int = None
+    ship_name: str = None
+    route_id: int = None
+    ticket_id: int = None
+    departure_date: datetime.datetime = None
+    return_date: str = None
+    cabin_type: str = None
+    cabin_number: int = None
+    price: float = None
+    payment_id: int = None
+class ReservationArray(BaseModel):
+    reservations: List[ReservationOut] = []
 class Payment(BaseModel):
     user_id: int
     ticket_id: int

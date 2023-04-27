@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 from server import connect
 from deps import get_current_user
-from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,TicketIn,TicketOut,UserUpdate,Reservation,Payment
+from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,TicketIn,TicketOut,UserUpdate,Reservation,Payment,ReservationArray
 from datetime import datetime
 from typing import Union, Any 
 from utils import  (
@@ -505,7 +505,25 @@ async def create_reservation(reservation: Reservation, user: UserOut = Depends(g
             detail=f"Internal server error: {str(e)}",
         ) from e
     
-        
+@app.get('/user/reservations', summary='Get users reservations', response_model=ReservationArray)
+async def get_user_reservations(user: UserOut = Depends(get_current_user)):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM ship_reservation WHERE user_id = ?", (user.user_id,))
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    reservations = []
+    for row in rows:
+        row = dict(zip(columns, row))
+        reservation: Union[dict[str, Any], None] = row
+        reservations.append(reservation)
+
+    if reservations is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Could not find user",
+        )
+    return ReservationArray(**{'reservations': reservations})    
     
     
      

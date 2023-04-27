@@ -44,8 +44,22 @@ const createReservation = async (
     throw new Error("Failed to create reservation");
   } 
 };
+const getUserTickets = async () => {
+  try {
+    const response = await axios.get(API_URL + "user/reservations", {
+      headers: authHeader(),
+    });
+    console.log(response.data);
+    return response;
+  } catch (error) {
+    throw new Error("Failed to get user tickets");
+  }
+};
+
+
 
 const ReservationService = {
     createReservation,
+    getUserTickets
 };
 export default ReservationService;

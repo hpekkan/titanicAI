@@ -9,6 +9,7 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
   let navigate = useNavigate();
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
+  
   const fetchData = async () => {
     if (localStorage.getItem("currentUser") === null) navigate("/login");
     setLoading(true);
