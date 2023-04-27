@@ -30,9 +30,10 @@ const valueRequired = (value) => {
   }
 };
 
-const EditPopUp = (props) => {
+const BuyPopUp = (props) => {
   const {
-    setEditPopUp,
+    setBuyPopUp,
+    currentUser,
     refreshForms,
     departure,
     setDeparture,
@@ -50,7 +51,7 @@ const EditPopUp = (props) => {
     onSale,
     setOnSale,
     ticket_price,
-    setTicketPrice
+    setTicketPrice,
   } = props;
   const _date = new Date(date);
   const utcDate = new Date(
@@ -67,103 +68,291 @@ const EditPopUp = (props) => {
   const [startDate, setStartDate] = useState(utcDate);
   const [localLoading, setLocalLoading] = useState(false);
   const [localLoadingEdit, setLocalLoadingEdit] = useState(false);
+  const [pass_id, setPassID] = useState(currentUser.user_id);
+  const [pclass, setPClass] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [sex, setSex] = useState("");
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  //todo fetch ticket info on load voyage
-  const onChangeDeparture = (e) => {
-    const departure = e.target.value.toString().toUpperCase();
-    setDeparture(departure);
+  const [age, setAge] = useState("");
+  const [sibsp, setSibsp] = useState("");
+  const [parch, setParch] = useState("");
+  const [ticket, setTicket] = useState(ticket_id);
+  const [fare, setFare] = useState("");
+  const [cabin, setCabin] = useState("");
+  const [embarked, setEmbarked] = useState("");
+  const [seatSelecting, setSeatSelecting] = useState(false);
+  const onChangePassID = (e) => {
+    const pass_id = e.target.value;
+    setPassID(pass_id);
+  };
+  const onChangePClass = (e) => {
+    const pclass = e.target.value;
+    setPClass(pclass);
+  };
+  const onChangeFirstName = (e) => {
+    const firstName = e.target.value;
+    setFirstName(firstName);
   };
 
-  const onChangeArrival = (e) => {
-    const arrival = e.target.value.toString().toUpperCase();
-    setArrival(arrival);
+  const onChangeSex = (e) => {
+    const sex = e.target.value;
+    setSex(sex);
   };
-  
+  const onChangeAge = (e) => {
+    const age = e.target.value;
+    setAge(age);
+  };
+  const onChangeSibsp = (e) => {
+    const sibsp = e.target.value;
+    setSibsp(sibsp);
+  };
 
-  const handleCreate = async (e) => {
+  const onChangeParch = (e) => {
+    const parch = e.target.value;
+    setParch(parch);
+  };
+
+  const onChangeTicket = (e) => {
+    const ticket = e.target.value;
+    setTicket(ticket);
+  };
+
+  const onChangeFare = (e) => {
+    const fare = e.target.value;
+    setFare(fare);
+  };
+
+  const onChangeCabin = (e) => {
+    const cabin = e.target.value;
+    setCabin(cabin);
+  };
+  const onChangeEmbarked = (e) => {
+    const embarked = e.target.value;
+    setEmbarked(embarked);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+
     setMessage("");
-    setLocalLoading(true);
+    setLoading(true);
 
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      await VoyageService.createVoyage(
-        departure,
-        arrival,
-        startDate,
-        quantity,
-        onSale,
-        ticket_price
-      )
-        .then((response) => {
-          if (response.status === 200) {
-            setEditPopUp(false);
-            refreshForms();
-          }
-        })
-        .catch((error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          return resMessage;
-        });
+      //todo: handle submit
     } else {
-      setLocalLoading(false);
-    }
-  };
-
-  const handleEdit = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    setLocalLoadingEdit(true);
-    form.current.validateAll();
-    if (checkBtn.current.context._errors.length === 0) {
-      await VoyageService.updateVoyage(
-        voyage_id,
-        departure,
-        arrival,
-        startDate,
-        quantity,
-        onSale,
-        left_ticket,
-        ticket_id
-      )
-        .then((response) => {
-          if (response.status === 200) {
-            TicketService.updateTicket(
-              ticket_id,
-              voyage_id,
-              departure,
-              arrival,
-              startDate,
-              "never",
-              "1",
-              ticket_price,
-            );
-            setEditPopUp(false);
-            refreshForms();
-          }
-        })
-        .catch((error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          return resMessage;
-        });
-    } else {
-      setLocalLoadingEdit(false);
+      setLoading(false);
     }
   };
   return (
-    <div className="PopUp h-75 overflow-auto">
-      <Form
+    <div className="PopUp d-flex justify-content-center align-items-center h-75">
+      {seatSelecting === false && (
+        <Form
+          onSubmit={handleSubmit}
+          ref={form}
+          className="overflow-auto d-flex flex-row"
+        >
+          <div>
+            <div className="form-group">
+              <button
+                className="btn btn-warning btn-block  m-2"
+                disabled={localLoading}
+                onClick={() => {
+                  setSeatSelecting(true);
+                }}
+              >
+                <span>Select Seat</span>
+              </button>
+            </div>
+            <div className="form-group ">
+              <label htmlFor="Pass_id">Pass_id</label>
+              <Input
+                type="text"
+                className="form-control"
+                name="pass_id"
+                value={pass_id}
+                onChange={onChangePassID}
+                validations={[required]}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="pclass">pclass</label>
+              <Input
+                type="text"
+                className="form-control"
+                name="pclass"
+                value={pclass}
+                onChange={onChangePClass}
+                validations={[required]}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="firstName">Name</label>
+              <Input
+                type="text"
+                className="form-control"
+                name="firstName"
+                value={firstName}
+                onChange={onChangeFirstName}
+                validations={[required]}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="sex">Sex</label>
+              <div className="gender-select" onChange={onChangeSex}>
+                <label>
+                  <input type="radio" name="gender" value="male" /> Male
+                </label>
+                <label>
+                  <input type="radio" name="gender" value="female" /> Female
+                </label>
+                <label>
+                  <input type="radio" name="gender" value="" /> Other
+                </label>
+              </div>
+            </div>
+          </div>
+          <div className="">
+            <div className="form-group">
+              <label htmlFor="age">Age</label>
+              <Input
+                type="number"
+                className="form-control"
+                name="age"
+                value={age}
+                onChange={onChangeAge}
+                validations={[required]}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="sibsp">Number of Siblings/Spouses</label>
+              <Input
+                type="number"
+                className="form-control"
+                name="sibsp"
+                value={sibsp}
+                onChange={onChangeSibsp}
+                validations={[required]}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="parch">Number of Parents/Children</label>
+              <Input
+                type="number"
+                className="form-control"
+                name="parch"
+                value={parch}
+                onChange={onChangeParch}
+                validations={[required]}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="ticket">Ticket</label>
+              <Input
+                type="text"
+                className="form-control"
+                name="ticket"
+                value={ticket}
+                onChange={onChangeTicket}
+                validations={[required]}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="fare">Fare</label>
+              <Input
+                type="number"
+                className="form-control"
+                name="fare"
+                value={fare}
+                onChange={onChangeFare}
+                validations={[required]}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="cabin">Cabin</label>
+              <Input
+                type="text"
+                className="form-control"
+                name="cabin"
+                value={cabin}
+                onChange={onChangeCabin}
+                validations={[required]}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="embarked">Embarked</label>
+              <Input
+                type="text"
+                className="form-control"
+                name="embarked"
+                value={embarked}
+                onChange={onChangeEmbarked}
+                validations={[required]}
+              />
+            </div>
+          </div>
+          {message && (
+            <div className="form-group">
+              <div className="alert alert-danger" role="alert">
+                {message}
+              </div>
+            </div>
+          )}
+          <div className="pu-button-container d-flex justify-content-center align-items-center">
+            <div className="d-flex flex-wrap mt-3">
+              <button
+                className="btn btn-danger btn-block  m-2"
+                disabled={localLoading}
+                onClick={() => setBuyPopUp(false)}
+              >
+                <span>Close</span>
+              </button>
+
+              <button
+                className="btn btn-primary btn-block m-2"
+                disabled={localLoading}
+                onClick={"s"}
+              >
+                {localLoadingEdit && (
+                  <span className="spinner-border spinner-border-sm"></span>
+                )}
+                <span>Buy Ticket</span>
+              </button>
+            </div>
+          </div>
+
+          <CheckButton style={{ display: "none" }} ref={checkBtn} />
+        </Form>
+      )}
+      {seatSelecting === true && (
+        <div className="d-flex flex-row w-100 h-100">
+          <div className="col-xl-10 d-flex justify-content-center align-items-center bg-info">
+            
+          </div>
+          <div className="col-xl-2 d-flex justify-content-center align-items-center bg-light">
+            <button
+              className="btn btn-warning btn-block  m-2 "
+              disabled={localLoading}
+              onClick={() => {
+                setSeatSelecting(false);
+              }}
+            >
+              <span>Return back</span>
+            </button>
+          </div>
+        </div>
+      )}
+      {/*<Form
         onSubmit={handleCreate}
         ref={form}
         className="d-flex flex-column justify-content-center align-items-center flex-wrap"
@@ -277,7 +466,7 @@ const EditPopUp = (props) => {
             <button
               className="btn btn-danger btn-block  m-2"
               disabled={localLoading}
-              onClick={() => setEditPopUp(false)}
+              onClick={() => setBuyPopUp(false)}
             >
               <span>Close</span>
             </button>
@@ -302,9 +491,9 @@ const EditPopUp = (props) => {
             </button>
           </div>
         </div>
-      </Form>
+      </Form>*/}
     </div>
   );
 };
 
-export default EditPopUp;
+export default BuyPopUp;

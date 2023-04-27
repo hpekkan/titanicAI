@@ -3,7 +3,7 @@ import Voyage from "./Voyage";
 import "../App.css";
 import VoyageService from "../services/voyage.service";
 import ReactLoading from "react-loading";
-import PopUp from "./PopUp";
+import BuyPopUp from "./BuyPopUp";
 
 import { useNavigate } from "react-router-dom";
 const BoardUser = ({ currentUser,setCurrentUser }) => {
@@ -11,8 +11,16 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
   const [buyPopUp, setBuyPopUp] = useState(false);
-  
-  
+   const [arrival, setArrival] = useState("");
+  const [departure, setDeparture] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [voyage_id, setVoyageID] = useState("");
+  const [ticket_id, setTicketID] = useState("");
+  const [left_ticket, setLeftTicket] = useState(0);
+  const [ticket_price, setTicketPrice] = useState(0);
+  const [quantity, setQuantity] = useState(0);
+  const [onSale, setOnSale] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       if (localStorage.getItem("currentUser") === null) navigate("/login");
@@ -71,6 +79,30 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
         </button>
       </header>
       <div className=" voyages d-flex flex-wrap align-content-center justify-content-center ">
+      {buyPopUp && (
+          <BuyPopUp
+            setBuyPopUp={setBuyPopUp}
+            refreshForms={refreshForms}
+            arrival={arrival}
+            departure={departure}
+            setArrival={setArrival}
+            setDeparture={setDeparture}
+            date={date}
+            setDate={setDate}
+            left_ticket={left_ticket}
+            voyage_id={voyage_id}
+            setVoyageID={setVoyageID}
+            ticket_id={ticket_id}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            onSale={onSale}
+            setOnSale={setOnSale}
+            setLeftTicket={setLeftTicket}
+            ticket_price={ticket_price}
+            setTicketPrice={setTicketPrice}
+            currentUser={currentUser}
+          />
+        )}
         {loading === true && (
           <ReactLoading
             className="spinner"
@@ -96,6 +128,15 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
               setBuyPopUp={setBuyPopUp}
+              setGlobalArrival={setArrival}
+              setGlobalDeparture={setDeparture}
+              setDate={setDate}
+              setVoyageID={setVoyageID}
+              setQuantity={setQuantity}
+              setOnSale={setOnSale}
+              setTicketID={setTicketID}
+              setLeftTicket={setLeftTicket}
+              setTicketPrice={setTicketPrice}
             />
           ))}
       </div>

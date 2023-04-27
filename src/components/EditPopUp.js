@@ -68,7 +68,6 @@ const EditPopUp = (props) => {
   const [localLoading, setLocalLoading] = useState(false);
   const [localLoadingEdit, setLocalLoadingEdit] = useState(false);
   const [message, setMessage] = useState("");
-  //todo fetch ticket info on load voyage
   const onChangeDeparture = (e) => {
     const departure = e.target.value.toString().toUpperCase();
     setDeparture(departure);

@@ -174,7 +174,7 @@ const Voyage = ({
     setTicketID(_ticket_id);
     setLeftTicket(left_ticket);
     setTicketPrice(localPrice);
-    
+    setBuyPopUp(true);
   };
   const handleEdit = async (e) => {
     setGlobalArrival(arrival);
