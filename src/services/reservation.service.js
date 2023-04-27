@@ -24,7 +24,6 @@ const createReservation = async (
   cabin_number
 ) => {
   try {
-    console.log(ship_name, route_id, ticket_id, ticket_price, departure_date, return_date, cabin_type, cabin_number);
     const response = await axios.post(
       API_URL + "reservation",
       {
@@ -41,7 +40,7 @@ const createReservation = async (
     );
     return response;
   } catch (error) {
-    throw new Error("Failed to create reservation");
+    throw new Error(error.response.data.detail);
   } 
 };
 const getUserTickets = async () => {
@@ -49,9 +48,9 @@ const getUserTickets = async () => {
     const response = await axios.get(API_URL + "user/reservations", {
       headers: authHeader(),
     });
-    console.log(response.data);
     return response;
   } catch (error) {
+
     throw new Error("Failed to get user tickets");
   }
 };

@@ -3,13 +3,41 @@ import Voyage from "./Voyage";
 import "../App.css";
 import VoyageService from "../services/voyage.service";
 import ReactLoading from "react-loading";
+import PopUp from "./PopUp";
 
 import { useNavigate } from "react-router-dom";
 const BoardUser = ({ currentUser,setCurrentUser }) => {
   let navigate = useNavigate();
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
+  const [buyPopUp, setBuyPopUp] = useState(false);
   
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      if (localStorage.getItem("currentUser") === null) navigate("/login");
+      setLoading(true);
+      await VoyageService.getVoyages().then(
+        (response) => {
+          if (response.data["Voyages"] === undefined) {
+            setContent([]);
+          } else setContent(response.data["Voyages"]);
+        },
+        (error) => {
+          const _content =
+            (error.response &&
+              error.response.data &&
+              error.response.data.detail) ||
+            error.message ||
+            error.toString();
+          setContent(_content);
+        }
+      );
+      setLoading(false);
+    };
+    if(localStorage.getItem("currentUser")===null) navigate("/login");
+    fetchData();
+  }, [ navigate]);
   const fetchData = async () => {
     if (localStorage.getItem("currentUser") === null) navigate("/login");
     setLoading(true);
@@ -23,7 +51,7 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
         const _content =
           (error.response &&
             error.response.data &&
-            error.response.data.message) ||
+            error.response.data.detail) ||
           error.message ||
           error.toString();
         setContent(_content);
@@ -31,9 +59,6 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
     );
     setLoading(false);
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
   const refreshForms = async () => {
     await fetchData();
   };
@@ -70,6 +95,7 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
               _ticket_id={route.ticket_id}
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
+              setBuyPopUp={setBuyPopUp}
             />
           ))}
       </div>

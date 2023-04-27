@@ -30,6 +30,7 @@ const Voyage = ({
   ticket_price,
   setTicketPrice,
   setCurrentUser,
+  setBuyPopUp
 }) => {
   const _date = new Date(departure_time);
   const utcDate = new Date(
@@ -57,6 +58,7 @@ const Voyage = ({
   const [localPrice, setLocalPrice] = useState(0);
   const [loadingBuy, setLoadingBuy] = useState(false);
   const [localQuantity, setLocalQuantity] = useState(left_ticket);
+  const [error, setError] = useState("");
   const handleRemove = async (e) => {
     setLoadingRemove(true);
     await TicketService.deleteTicket(_ticket_id).then(
@@ -80,8 +82,9 @@ const Voyage = ({
     setLoadingRemove(false);
   };
   useEffect(() => {
-    console.log(_ticket_id);
+    
     _setLoading(true);
+    setError("");
     async function fetchTicket(_ticket_id) {
       await TicketService.getTicket(_ticket_id).then(
         (response) => {
@@ -129,6 +132,7 @@ const Voyage = ({
   };
   
   const handleBuy = async (e) => {
+    /*
     if (currentUser) {
       setLoadingBuy(true);
       await ReservationService.createReservation(
@@ -150,13 +154,27 @@ const Voyage = ({
             });
           }
           setLocalQuantity(localQuantity - 1);
+          setError("");
           setLoadingBuy(false);
 
         })
         .catch((error) => {
-          console.log(error);
+          
+          setLoadingBuy(false);
+          setError(error.message)
         });
     }
+    */
+    setGlobalArrival(arrival);
+    setGlobalDeparture(departure);
+    setDate(_date);
+    setVoyageID(route_id);
+    setQuantity(quantity);
+    setOnSale(onSale);
+    setTicketID(_ticket_id);
+    setLeftTicket(left_ticket);
+    setTicketPrice(localPrice);
+    
   };
   const handleEdit = async (e) => {
     setGlobalArrival(arrival);
@@ -268,6 +286,9 @@ const Voyage = ({
                     BUY{" "}
                     {loadingBuy && (
                       <span className="spinner-border spinner-border-sm"></span>
+                    )}
+                    {error.length > 0  && (
+                      <span className="text-danger" >{error}</span>
                     )}
                   </button>
                 </div>

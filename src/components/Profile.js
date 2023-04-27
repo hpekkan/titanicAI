@@ -35,7 +35,6 @@ const Profile = () => {
           if (response.data["reservations"] === undefined) {
             setContent([]);
           } else {
-            console.log(response.data);
             setContent(response.data["reservations"]);}
         },
         (error) => {
@@ -88,7 +87,7 @@ const Profile = () => {
         <header className="jumbotron ">
           <h3>MY TICKETS</h3>
         </header>
-        <div className=" voyages d-flex flex-wrap align-content-center justify-content-center ">
+        <div className=" voyages col-xl-12 d-flex flex-wrap align-content-center justify-content-center ">
         {loading === false &&
           content !== undefined &&
           content.map((ticket) => (
