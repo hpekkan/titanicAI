@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 from server import connect
 from deps import get_current_user
-from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,TicketIn,TicketOut,UserUpdate,Reservation,Payment,ReservationArray
+from schemas import TokenPayload, User, UserOut,TokenSchema,Ticket,Voyage,VoyageOut,VoyageIn,TicketIn,TicketOut,UserUpdate,Reservation,Payment,ReservationArray,model_data
 from datetime import datetime
 from typing import Union, Any 
 from utils import  (
@@ -499,7 +499,27 @@ async def create_reservation(reservation: Reservation, user: UserOut = Depends(g
     conn.commit()
     return {"message": "Reservation created successfully"}
 
-    
+@app.post('/ticket/predict', summary='Predict ticket class')
+async def predict_ticket_class(passenger: model_data,user: UserOut = Depends(get_current_user) ):
+    try:
+        conn = connect()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO model_data (Pass_id, pclass, name, sex, age, sibsp, parch, ticket, fare, cabin, embarked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",( user.user_id,passenger.pclass,passenger.name,passenger.sex,passenger.age,passenger.sibsp,passenger.parch,passenger.ticket,passenger.fare,passenger.cabin,passenger.embarked) )
+        conn.commit()
+        pipeline = data(passenger_id=user.user_id, pclass=passenger.pclass, name=passenger.name, sex=passenger.sex, age=passenger.age, sibsp=passenger.sibsp, parch=passenger.parch, ticket=passenger.ticket, fare=passenger.fare, cabin=passenger.cabin, embarked=passenger.embarked, train_age_median=train_age_median, train_embarked_mode=train_embarked_mode, train_fare_median=train_fare_median)
+        prepro_data = pipeline.preprocess()
+        prediction = model.predict(prepro_data.values.reshape(1, -1))
+        return {
+            "data": {
+                'prediction': str(prediction[0])
+            }
+        }
+    except Exception as e:
+        return {
+            "error": str(e)
+        }
+
+ 
 @app.get('/user/reservations', summary='Get users reservations', response_model=ReservationArray)
 async def get_user_reservations(user: UserOut = Depends(get_current_user)):
     conn = connect()

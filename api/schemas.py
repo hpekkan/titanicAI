@@ -134,3 +134,31 @@ class Payment(BaseModel):
     payment_amount: float
     payment_date: datetime.datetime
     payment_status: str
+class model_data(BaseModel):
+    Pass_id: int
+    pclass: int
+    name: str
+    sex: str
+    age: Optional[float] = None
+    sibsp: int
+    parch: int
+    ticket: str
+    fare: float
+    cabin: str
+    embarked: str
+    
+    """
+    {
+    "Pass_id" : 1,
+    "pclass" : 3,
+    "name" : "Braund, Mr. Owen Harris",
+    "sex" : "M",
+    "age": 22,
+    "sibsp" : 1,
+    "parch" : 0,
+    "ticket" : "A/5 21171",
+    "fare" : 8.25,
+    "cabin":" ",
+    "embarked":"S"
+}
+    """
