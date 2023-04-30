@@ -99,7 +99,7 @@ const App = () => {
                   </Link>
                 </li>
               )}
-              {currentUser && currentUser.authority_level === "user" && (
+              {currentUser  && (
                 <li className="nav-item justify-content-center align-self-center">
                   <Link to={"/tickets"} className="nav-link">
                     Book a Ticket

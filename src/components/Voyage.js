@@ -280,7 +280,7 @@ const Voyage = ({
                   </button>
                 </div>
               )}
-              {currentUser && currentUser.authority_level === "user" && (
+              {currentUser  && (
                 <div className="row justify-content-md-center m-2">
                   <button className="m-1" onClick={handleBuy}>
                     BUY{" "}
