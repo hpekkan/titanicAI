@@ -110,9 +110,17 @@ class Reservation(BaseModel):
     ticket_price: float = None
     departure_date: datetime.datetime = None
     return_date: str = None
-    cabin_type: str = None
-    cabin_number: int = None
     payment_id: int = None
+    pclass: int= None
+    name: str= None
+    sex: str= None
+    age: Optional[float] = None
+    sibsp: int= None
+    parch: int= None
+    ticket: str= None
+    fare: float= None
+    cabin: str= None
+    embarked: str= None
     
 class ReservationOut(BaseModel):
     reservation_id: int = None  
@@ -122,10 +130,18 @@ class ReservationOut(BaseModel):
     ticket_id: int = None
     departure_date: datetime.datetime = None
     return_date: str = None
-    cabin_type: str = None
-    cabin_number: int = None
     price: float = None
     payment_id: int = None
+    pclass: int= None
+    name: str= None
+    sex: str= None
+    age: Optional[float] = None
+    sibsp: int= None
+    parch: int= None
+    ticket: str= None
+    fare: float= None
+    cabin: str= None
+    embarked: str= None
 class ReservationArray(BaseModel):
     reservations: List[ReservationOut] = []
 class Payment(BaseModel):

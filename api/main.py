@@ -494,30 +494,20 @@ async def create_reservation(reservation: Reservation, user: UserOut = Depends(g
     reservation.payment_id = inserted_id
     cursor.execute("UPDATE route SET left_ticket = left_ticket - 1 WHERE ticket_id = ?", (reservation.ticket_id,))
     conn.commit()
-    cursor.execute("INSERT INTO ship_reservation (user_id,ship_name, route_id,ticket_id, departure_date, return_date, cabin_type,cabin_number, price,payment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (user.user_id, reservation.ship_name, reservation.route_id, reservation.ticket_id, reservation.departure_date, reservation.return_date, reservation.cabin_type, reservation.cabin_number, reservation.ticket_price, reservation.payment_id))
+    pipeline = data(passenger_id=user.user_id, pclass=reservation.pclass, name=reservation.name, sex=reservation.sex, age=reservation.age, sibsp=reservation.sibsp, parch=reservation.parch, ticket=reservation.ticket, fare=reservation.fare, cabin=reservation.cabin, embarked=reservation.embarked, train_age_median=train_age_median, train_embarked_mode=train_embarked_mode, train_fare_median=train_fare_median)
+    prepro_data = pipeline.preprocess()
+    prediction = model.predict(prepro_data.values.reshape(1, -1))
+    cursor.execute("INSERT INTO ship_reservation (user_id,ship_name, route_id,ticket_id, departure_date, return_date, price,payment_id,pclass,name,sex,age,sibsp,parch,ticket,fare,cabin,embarked,prediction) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (user.user_id, reservation.ship_name, reservation.route_id, reservation.ticket_id, reservation.departure_date, reservation.return_date, reservation.ticket_price, reservation.payment_id,reservation.pclass,reservation.name,reservation.sex,reservation.age,reservation.sibsp,reservation.parch,reservation.ticket,reservation.fare,reservation.cabin,reservation.embarked,int(prediction[0])))
     conn.commit()
-    return {"message": "Reservation created successfully"}
+    return {
+        "data": {
+            "message": "Reservation created successfully",
+            'prediction': str(prediction[0])   
+        }
+    }
 
-@app.post('/ticket/predict', summary='Predict ticket class')
-async def predict_ticket_class(passenger: model_data,user: UserOut = Depends(get_current_user) ):
-    try:
-        conn = connect()
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO model_data (Pass_id, pclass, name, sex, age, sibsp, parch, ticket, fare, cabin, embarked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",( user.user_id,passenger.pclass,passenger.name,passenger.sex,passenger.age,passenger.sibsp,passenger.parch,passenger.ticket,passenger.fare,passenger.cabin,passenger.embarked) )
-        conn.commit()
-        pipeline = data(passenger_id=user.user_id, pclass=passenger.pclass, name=passenger.name, sex=passenger.sex, age=passenger.age, sibsp=passenger.sibsp, parch=passenger.parch, ticket=passenger.ticket, fare=passenger.fare, cabin=passenger.cabin, embarked=passenger.embarked, train_age_median=train_age_median, train_embarked_mode=train_embarked_mode, train_fare_median=train_fare_median)
-        prepro_data = pipeline.preprocess()
-        prediction = model.predict(prepro_data.values.reshape(1, -1))
-        return {
-            "data": {
-                'prediction': str(prediction[0])
-            }
-        }
-    except Exception as e:
-        return {
-            "error": str(e)
-        }
+
 
  
 @app.get('/user/reservations', summary='Get users reservations', response_model=ReservationArray)
