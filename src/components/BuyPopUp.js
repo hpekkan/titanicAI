@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import VoyageService from "../services/voyage.service";
 import TicketService from "../services/ticket.service";
 import { useEffect } from "react";
+import SvgComponent from "./shipSvg";
 const required = (value) => {
   if (!value) {
     return (
@@ -336,19 +337,52 @@ const BuyPopUp = (props) => {
       )}
       {seatSelecting === true && (
         <div className="d-flex flex-row w-100 h-100">
-          <div className="col-xl-10 d-flex justify-content-center align-items-center bg-info">
-            
+          <div className="col-xl-10 d-flex justify-content-center align-items-center bg-info ">
+            <SvgComponent></SvgComponent>
           </div>
-          <div className="col-xl-2 d-flex justify-content-center align-items-center bg-light">
-            <button
-              className="btn btn-warning btn-block  m-2 "
-              disabled={localLoading}
-              onClick={() => {
-                setSeatSelecting(false);
-              }}
-            >
-              <span>Return back</span>
-            </button>
+          <div className="col-xl-2 d-flex flex-column justify-content-center align-items-center bg-light">
+            <div>
+              <button
+                className="btn btn-warning btn-block  m-2 "
+                disabled={localLoading}
+                onClick={() => {
+                  setSeatSelecting(false);
+                }}
+              >
+                <span>Return back</span>
+              </button>
+            </div>
+            <h5>↓Choose Floor↓</h5>
+            <div className="d-flex flex-row ">
+            
+              <button
+                className="btn btn-warning btn-block  m-2 "
+                disabled={localLoading}
+                onClick={() => {
+                  setSeatSelecting(false);
+                }}
+              >
+                <span>1</span>
+              </button>
+              <button
+                className="btn btn-warning btn-block  m-2 "
+                disabled={localLoading}
+                onClick={() => {
+                  setSeatSelecting(false);
+                }}
+              >
+                <span>2</span>
+              </button>
+              <button
+                className="btn btn-warning btn-block  m-2 "
+                disabled={localLoading}
+                onClick={() => {
+                  setSeatSelecting(false);
+                }}
+              >
+                <span>3</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
