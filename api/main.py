@@ -66,6 +66,7 @@ def read_root():
     return {"data": "Welcome to titanic prediction model"}
 
 #auth  
+
 @app.post("/signup")
 async def create_user(user: User):
     conn = connect()
@@ -89,6 +90,15 @@ async def create_user(user: User):
     conn.commit()
     return {"message": "User created successfully"}
 
+@app.delete("/delete_user", summary="Delete user")
+async def delete_user(username: str,user: UserOut = Depends(get_current_user)):
+    if(user.authority_level != 'admin'):
+        raise HTTPException(status_code=403, detail="You are not authorized to perform this action")
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM passenger WHERE username = ?", (username))
+    conn.commit()
+    return {"message": "User deleted successfully"}
 
 @app.post('/login', summary="Create access and refresh tokens for user", response_model=TokenSchema)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
