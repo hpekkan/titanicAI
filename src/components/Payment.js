@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserService from "../services/user.service";
-const Payment = ({ currentUser, setCurrentUser }) => {
+const Payment = ({ currentUser, setCurrentUser, balance,setBalance }) => {
   const [currentUserLocal, setCurrentUserLocal] = useState("");
   useEffect(() => {
     if (localStorage.getItem("currentUser") === null)
@@ -18,10 +18,7 @@ const Payment = ({ currentUser, setCurrentUser }) => {
   const handleClick = async () => {
     setLoading(true);
     await UserService.addBalance(100);
-    setCurrentUserLocal({
-      ...currentUserLocal,
-      balance: currentUserLocal.balance + 100,
-    });
+    setBalance(balance + 100);
     setCurrentUser({
       ...currentUser,
       balance: currentUser.balance + 100,
@@ -34,7 +31,7 @@ const Payment = ({ currentUser, setCurrentUser }) => {
         <header className="jumbotron ">
           <h2>
             <p>
-              <strong >Balance:</strong> <span className="text-success">{currentUserLocal.balance}$</span>
+              <strong >Balance:</strong> <span className="text-success">{balance}$</span>
             </p>
             <br />
             <br />

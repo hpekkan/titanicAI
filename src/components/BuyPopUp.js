@@ -4,13 +4,9 @@ import AuthService from "../services/auth.service";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import DatePicker from "react-datepicker";
-import setHours from "date-fns/setHours";
-import setMinutes from "date-fns/setMinutes";
 import "react-datepicker/dist/react-datepicker.css";
-import VoyageService from "../services/voyage.service";
-import TicketService from "../services/ticket.service";
 import { useEffect } from "react";
+import ReservationService from "../services/reservation.service";
 import SvgComponent from "./shipSvg";
 const required = (value) => {
   if (!value) {
@@ -53,6 +49,7 @@ const BuyPopUp = (props) => {
     setOnSale,
     ticket_price,
     setTicketPrice,
+    route_id
   } = props;
   const _date = new Date(date);
   const utcDate = new Date(
@@ -66,7 +63,7 @@ const BuyPopUp = (props) => {
   );
   const form = useRef();
   const checkBtn = useRef();
-  const [startDate, setStartDate] = useState(utcDate);
+  
   const [localLoading, setLocalLoading] = useState(false);
   const [localLoadingEdit, setLocalLoadingEdit] = useState(false);
   const [pass_id, setPassID] = useState(currentUser.user_id);
@@ -133,7 +130,7 @@ const BuyPopUp = (props) => {
     setEmbarked(embarked);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit =  async (e) => {
     e.preventDefault();
 
     setMessage("");
@@ -142,7 +139,23 @@ const BuyPopUp = (props) => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      //todo: handle submit
+        await ReservationService.createReservation(
+          "titanic",
+          route_id,
+          ticket_id,
+          ticket_price,
+          date,
+          "never",
+          pclass,
+          firstName,
+          sex,
+          age,
+          sibsp,
+          parch,
+          ticket,
+          fare,
+          cabin,
+          embarked);
     } else {
       setLoading(false);
     }
@@ -341,7 +354,9 @@ const BuyPopUp = (props) => {
             <SvgComponent></SvgComponent>
           </div>
           <div className="col-xl-2 d-flex flex-column justify-content-center align-items-center bg-light">
+          <h5 className="text-center text-danger">Under Development</h5>
             <div>
+            
               <button
                 className="btn btn-warning btn-block  m-2 "
                 disabled={localLoading}

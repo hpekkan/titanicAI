@@ -17,7 +17,7 @@ const App = () => {
   let navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(undefined);
   const [loading, setLoading] = useState(true);
-
+  const [balance, setBalance] = useState(0);
  
   useEffect(() => {
     setLoading(true);
@@ -31,6 +31,7 @@ const App = () => {
         if(data){
           setCurrentUser(data);
           localStorage.setItem("currentUser", JSON.stringify(data));
+          setBalance(data.balance);
           return true;
         }else {
           return false;
@@ -56,6 +57,7 @@ const App = () => {
       }
     }
     if (!fetchData()) refreshToken();
+    
     setLoading(false);
   }, []);
   
@@ -117,7 +119,7 @@ const App = () => {
                 </li>
                 <li className="nav-item">
                   <Link to={"/payment"} className="nav-link">
-                  <span>Balance:</span> <span className="text-success">{currentUser.balance}$</span>
+                  <span>Balance:</span> <span className="text-success">{balance}$</span>
                   </Link>
                 </li>
                 <li className="nav-item logout">
@@ -151,8 +153,8 @@ const App = () => {
                 element={<Login loading={loading} setLoading={setLoading}  />}
               />
               <Route path="/register" element={<Register setLoading={setLoading} />} />
-              <Route path="/profile" element={<Profile logOut={logOut} />} />
-              <Route path="/payment" element={<Payment currentUser={currentUser} setCurrentUser={setCurrentUser} />} />
+              <Route path="/profile" element={<Profile logOut={logOut} balance={balance} setBalance={setBalance}  />} />
+              <Route path="/payment" element={<Payment currentUser={currentUser} setCurrentUser={setCurrentUser} balance={balance} setBalance={setBalance} />} />
               <Route
                 path="/tickets"
                 element={

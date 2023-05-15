@@ -20,6 +20,7 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
   const [ticket_price, setTicketPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [onSale, setOnSale] = useState(false);
+  const [route_id, setRouteID] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,6 +102,7 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
             ticket_price={ticket_price}
             setTicketPrice={setTicketPrice}
             currentUser={currentUser}
+            route_id={route_id}
           />
         )}
         {loading === true && (
@@ -137,6 +139,7 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
               setTicketID={setTicketID}
               setLeftTicket={setLeftTicket}
               setTicketPrice={setTicketPrice}
+              setRouteID={setRouteID}
             />
           ))}
       </div>

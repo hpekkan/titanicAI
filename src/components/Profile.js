@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReservationService from "../services/reservation.service";
 import Ticket from "./Ticket";
-const Profile = () => {
+const Profile = ({balance,setBalance}) => {
   const [currentUser, setCurrentUser] = useState("");
   const [access_token, setAccessToken] = useState("");
   useEffect(() => {
@@ -52,6 +52,8 @@ const Profile = () => {
     }
     fetchData();
   }, [navigate]);
+  useEffect(() => {
+  }, [currentUser.balance]);
 
   return (
     <div className="d-flex">
@@ -76,7 +78,7 @@ const Profile = () => {
         </p>
         <p>
           <strong className="text-primary">Balance:</strong>{" "}
-          {currentUser.balance}
+          {balance}$
         </p>
         <p>
           <strong className="text-primary">Authorities:</strong>{" "}

@@ -1,27 +1,45 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-const API_URL = "http://127.0.0.1:8000/";
+const API_URL = "http://146.190.176.211/";
 
-/*user_id: int
-    ship_name: str
-    route_id: int
-    ticket_id: int
-    ticket_price: float
-    departure_date: datetime.datetime
-    return_date: str
-    cabin_type: str
-    cabin_number: int
-    payment_id: int */
+
+/*{
+  "user_id": 0,
+  "ship_name": "string",
+  "route_id": 0,
+  "ticket_id": 0,
+  "ticket_price": 0,
+  "departure_date": "2023-05-15T17:24:37.139Z",
+  "return_date": "string",
+  "payment_id": 0,
+  "pclass": 0,
+  "name": "string",
+  "sex": "string",
+  "age": 0,
+  "sibsp": 0,
+  "parch": 0,
+  "ticket": "string",
+  "fare": 0,
+  "cabin": "string",
+  "embarked": "string"
+} */
 const createReservation = async (
-    user_id,
   ship_name,
   route_id,
   ticket_id,
   ticket_price,
   departure_date,
   return_date,
-  cabin_type,
-  cabin_number
+  pclass,
+  name,
+  sex,
+  age,
+  sibsp,
+  parch,
+  ticket,
+  fare,
+  cabin,
+  embarked
 ) => {
   try {
     const response = await axios.post(
@@ -33,11 +51,20 @@ const createReservation = async (
         ticket_price: ticket_price,
         departure_date: departure_date,
         return_date: return_date,
-        cabin_type: cabin_type,
-        cabin_number: cabin_number
+        pclass: pclass,
+        name: name,
+        sex:sex,
+        age: age,
+        sibsp: sibsp,
+        parch: parch,
+        ticket: ticket,
+        fare: fare,
+        cabin: cabin,
+        embarked: embarked
       },
       { headers: authHeader() }
     );
+    
     return response;
   } catch (error) {
     throw new Error(error.response.data.detail);

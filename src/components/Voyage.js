@@ -30,7 +30,8 @@ const Voyage = ({
   ticket_price,
   setTicketPrice,
   setCurrentUser,
-  setBuyPopUp
+  setBuyPopUp,
+  setRouteID
 }) => {
   const _date = new Date(departure_time);
   const utcDate = new Date(
@@ -174,6 +175,7 @@ const Voyage = ({
     setTicketID(_ticket_id);
     setLeftTicket(left_ticket);
     setTicketPrice(localPrice);
+    setRouteID(route_id);
     setBuyPopUp(true);
   };
   const handleEdit = async (e) => {

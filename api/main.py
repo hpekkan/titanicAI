@@ -37,7 +37,7 @@ app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-origins = [
+'''origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
     "http://localhost",
@@ -46,7 +46,8 @@ origins = [
     "http://localhost:3001",
     "146.190.176.211",
     "127.0.0.1:8000"
-]
+]'''
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -472,7 +473,6 @@ async def get_user_voyages(user: UserOut = Depends(get_current_user)):
 #reservation
 @app.post('/reservation', summary='Create reservation')
 async def create_reservation(reservation: Reservation, user: UserOut = Depends(get_current_user)):
-    print(reservation)
     conn = connect()
     if user.balance < reservation.ticket_price:
             raise HTTPException(

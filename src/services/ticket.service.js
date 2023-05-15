@@ -2,7 +2,7 @@ import axios from "axios";
 import authHeader from "./auth-header";
 import AuthService from "./auth.service";
 import VoyageService from "./voyage.service";
-const API_URL = "http://127.0.0.1:8000/";
+const API_URL = "http://146.190.176.211/";
 
 const createTicket = async (
   route_id,
