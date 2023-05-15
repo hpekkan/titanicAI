@@ -542,8 +542,7 @@ async def get_user_reservations(user: UserOut = Depends(get_current_user)):
     
     
      
-    
-print(os.getcwd())
+ 
 # Load the Model
 model = pickle.load(open('model/titanic_model.pkl', 'rb'))
 train = pd.read_csv('data/train.csv')
