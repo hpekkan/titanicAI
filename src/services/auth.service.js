@@ -1,6 +1,6 @@
 import axios from "axios";
 import UserService from "./user.service";
-const API_URL = "/api/";
+const API_URL = "/api";
 
 const register = async (username, email, password) => {
   try {
