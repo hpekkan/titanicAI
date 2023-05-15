@@ -1,1 +1,1 @@
-cd api && uvicorn main:app --reload
+uvicorn main:app --reload --app-dir api/
