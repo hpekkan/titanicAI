@@ -5,7 +5,7 @@ const API_URL = "http://146.190.176.211/";
 const register = async (username, email, password) => {
   try {
     // Send a POST request to register a new user with the provided data
-    const response = await axios.post(API_URL + "signup", {
+    const response = await axios.post(API_URL + "signup?", {
       username:username,
       email:email,
       password:password,
@@ -52,7 +52,7 @@ const login = async (username, password) => {
     formData.append("username", username);
     formData.append("password", password);
     
-    const response = await axios.post(API_URL + "login", formData);
+    const response = await axios.post(API_URL + "login?", formData);
     
     if (response.data.access_token) {
       localStorage.setItem("tokens", JSON.stringify(response.data));
