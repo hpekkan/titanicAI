@@ -24,6 +24,7 @@ const API_URL = "http://146.190.176.211/";
   "embarked": "string"
 } */
 const createReservation = async (
+  user_id,
   ship_name,
   route_id,
   ticket_id,
@@ -45,6 +46,7 @@ const createReservation = async (
     const response = await axios.post(
       API_URL + "reservation",
       {
+        user_id: user_id,
         ship_name: ship_name,
         route_id: route_id,
         ticket_id: ticket_id,

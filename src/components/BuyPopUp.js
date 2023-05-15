@@ -139,7 +139,8 @@ const BuyPopUp = (props) => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-        await ReservationService.createReservation(
+        const response = await ReservationService.createReservation(
+          currentUser.user_id,
           "titanic",
           route_id,
           ticket_id,
@@ -156,6 +157,12 @@ const BuyPopUp = (props) => {
           fare,
           cabin,
           embarked);
+        if (response.status === 200) {
+          setMessage("Reservation successful!");
+          setLocalLoading(false);
+          setBuyPopUp(false);
+          refreshForms();
+        }
     } else {
       setLoading(false);
     }
