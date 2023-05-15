@@ -6,9 +6,10 @@ const register = async (username, email, password) => {
   try {
     // Send a POST request to register a new user with the provided data
     const response = await axios.post(API_URL + "signup", {
-      username,
-      email,
-      password,
+      username:username,
+      email:email,
+      password:password,
+      balance: 100,
     });
     return response;
   } catch (error) {

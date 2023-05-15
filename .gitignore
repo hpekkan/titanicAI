@@ -29,3 +29,6 @@ yarn-error.log*
 
 venv/
 venv
+
+# Local Netlify folder
+.netlify

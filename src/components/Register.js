@@ -112,7 +112,7 @@ const Register = ({setLoading}) => {
             error.response.data.detail !== undefined ||
             error.response.data.detail !== null
           ) {
-            setMessage(error.response.data.detail);
+            setMessage(error);
           } else {
             setMessage(resMessage);
           }
