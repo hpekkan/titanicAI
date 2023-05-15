@@ -2,7 +2,7 @@ import axios from "axios";
 import authHeader from "./auth-header";
 import AuthService from "./auth.service";
 import TicketService from "./ticket.service";
-const API_URL = "http://146.190.176.211/";
+const API_URL = "/api/";
 
 const getVoyages = async () => {
   const response = await axios.get(API_URL + "voyages", {
