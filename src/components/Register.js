@@ -92,6 +92,7 @@ const Register = ({ setLoading }) => {
     if (checkBtn.current.context._errors.length === 0) {
       await AuthService.register(username, email, password).then(
         (response) => {
+          console.log(response);
           setMessage(response.data.message);
           setSuccessful(true);
           setLocalLoading(false);
