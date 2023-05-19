@@ -92,33 +92,15 @@ const Register = ({ setLoading }) => {
     if (checkBtn.current.context._errors.length === 0) {
       await AuthService.register(username, email, password).then(
         (response) => {
-          console.log(response);
+          if(response.contains("Username") ){
+            setMessage("Username or email already exists");
+            setSuccessful(false);
+            setLocalLoading(false);
+            return;
+          }
+          
           setMessage(response.data.message);
           setSuccessful(true);
-          setLocalLoading(false);
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          if (
-            error !== undefined ||
-            error !== null ||
-            error.response !== undefined ||
-            error.response !== null ||
-            error.response.data !== undefined ||
-            error.response.data !== null ||
-            error.response.data.detail !== undefined ||
-            error.response.data.detail !== null
-          ) {
-            setMessage(error);
-          } else {
-            setMessage(resMessage);
-          }
-          setSuccessful(false);
           setLocalLoading(false);
         }
       );
