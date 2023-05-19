@@ -16,7 +16,7 @@ const register = async (username, email, password) => {
   } catch (error) {
     // Handle any errors that occur during the registration process
     console.log(error);
-    throw new Error(error.response.data.detail);
+    return new Error(error.response.data.detail);
   }
 };
 
