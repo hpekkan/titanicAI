@@ -89,22 +89,26 @@ const Register = ({ setLoading }) => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
+      console.log("registering");
       await AuthService.register(username, email, password).then((response) => {
-      
+          console.log(response.data);
           
           setMessage(response.data.message);
           setSuccessful(true);
         
+      },
+      (error) => {
+        if (error.response) {
+          console.log(error.response.data);
+          setMessage("Username or Email already taken!");
+          setSuccessful(false);
+        
+        }
       }
 
-        ).catch((error) => {
-          if(error.response.status === 403)
-            setMessage("Username or Email already taken!");
-          else
-            setMessage(error.response.data.message);
-          setSuccessful(false);
-        });
+        );
     }
+
     setLocalLoading(false);
   };
 
