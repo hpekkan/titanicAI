@@ -1,5 +1,5 @@
-import React, { useState, useRef,useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
@@ -47,11 +47,11 @@ const vpassword = (value) => {
   }
 };
 
-const Register = ({setLoading}) => {
+const Register = ({ setLoading }) => {
   let navigate = useNavigate();
-  useEffect (() => {
+  useEffect(() => {
     setLoading(true);
-    if(localStorage.getItem("currentUser") !== null) {
+    if (localStorage.getItem("currentUser") !== null) {
       navigate("/");
     }
     setLoading(false);
@@ -65,7 +65,7 @@ const Register = ({setLoading}) => {
   const [password, setPassword] = useState("");
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
-
+  const [localLoading, setLocalLoading] = useState(false);
   const onChangeUsername = (e) => {
     const username = e.target.value;
     setUsername(username);
@@ -83,7 +83,7 @@ const Register = ({setLoading}) => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
+    setLocalLoading(true);
     setMessage("");
     setSuccessful(false);
 
@@ -94,6 +94,7 @@ const Register = ({setLoading}) => {
         (response) => {
           setMessage(response.data.message);
           setSuccessful(true);
+          setLocalLoading(false);
         },
         (error) => {
           const resMessage =
@@ -117,6 +118,7 @@ const Register = ({setLoading}) => {
             setMessage(resMessage);
           }
           setSuccessful(false);
+          setLocalLoading(false);
         }
       );
     }
@@ -132,7 +134,7 @@ const Register = ({setLoading}) => {
         />
 
         <Form onSubmit={handleRegister} ref={form}>
-          {!successful && (
+          {
             <div>
               <div className="form-group">
                 <label htmlFor="username">Username</label>
@@ -171,23 +173,25 @@ const Register = ({setLoading}) => {
               </div>
 
               <div className="form-group">
-                <button className="btn btn-primary btn-block">Sign Up</button>
+                <button className="btn btn-primary btn-block">Sign Up {localLoading && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}</button>
               </div>
+              {message && (
+                <div className="form-group">
+                  <div
+                    className={
+                      successful ? "alert alert-success" : "alert alert-danger"
+                    }
+                    role="alert"
+                  >
+                    {message}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          }
 
-          {message && (
-            <div className="form-group">
-              <div
-                className={
-                  successful ? "alert alert-success" : "alert alert-danger"
-                }
-                role="alert"
-              >
-                {message}
-              </div>
-            </div>
-          )}
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
         </Form>
       </div>

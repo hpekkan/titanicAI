@@ -3,6 +3,7 @@ import UserService from "./user.service";
 const API_URL = "http://146.190.176.211/";
 
 const register = async (username, email, password) => {
+  console.log(username, email, password);
   try {
     // Send a POST request to register a new user with the provided data
     const response = await axios.post(API_URL + "signup", {
@@ -14,7 +15,8 @@ const register = async (username, email, password) => {
     return response;
   } catch (error) {
     // Handle any errors that occur during the registration process
-    throw new Error("Failed to register a new user");
+    console.log(error);
+    throw new Error(error.response.data.detail);
   }
 };
 
