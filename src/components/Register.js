@@ -90,31 +90,30 @@ const Register = ({ setLoading }) => {
 
     if (checkBtn.current.context._errors.length === 0) {
       console.log("registering");
-      await AuthService.register(username, email, password).then(
-        (response) => {
-          console.log("success");
-
-          setMessage(response.data.message);
-          setSuccessful(true);
-          setLocalLoading(false);
-
-          return;
-        },
-        (error) => {
-          if (error.response) {
-            console.log("error");
-            setMessage("Username or Email already taken!");
-            setSuccessful(false);
+      let errorMessage = "";
+      await AuthService.register(username, email, password)
+        .then(
+          (response) => {
+            errorMessage = response.data.message;
+            setMessage(response.data.message);
+            setSuccessful(true);
             setLocalLoading(false);
+          },
+          (error) => {
+            if (error.response) {
+              errorMessage = error.response.data.message;
+              setMessage("Username or Email already taken!");
+              setSuccessful(false);
+              setLocalLoading(false);
+            }
           }
-        }
-      ).catch((error) => {
-        console.log(error);
-        setLocalLoading(false);
-      });
-    
+        )
+        .catch((error) => {
+          errorMessage = error;
+          setLocalLoading(false);
+        });
+      setMessage(errorMessage);
     }
-
     setLocalLoading(false);
   };
 
