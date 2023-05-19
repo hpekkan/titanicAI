@@ -92,9 +92,9 @@ const Register = ({ setLoading }) => {
     if (checkBtn.current.context._errors.length === 0) {
       await AuthService.register(username, email, password).then(
         (response) => {
-          if(response.contains("Username") ){
+          if(response.includes("Username") ){
             setMessage("Username or email already exists");
-            setSuccessful(false);
+            setSuccessful(true);
             setLocalLoading(false);
             return;
           }
@@ -105,6 +105,7 @@ const Register = ({ setLoading }) => {
         }
       );
     }
+    setLocalLoading(false);
   };
 
   return (
@@ -160,11 +161,11 @@ const Register = ({ setLoading }) => {
                 <span className="spinner-border spinner-border-sm"></span>
               )}</button>
               </div>
-              {message && (
+              {successful && (
                 <div className="form-group">
                   <div
                     className={
-                      successful ? "alert alert-success" : "alert alert-danger"
+                      !message.includes("Error") ? "alert alert-success" : "alert alert-danger"
                     }
                     role="alert"
                   >
