@@ -6,7 +6,7 @@ import ReactLoading from "react-loading";
 import BuyPopUp from "./BuyPopUp";
 
 import { useNavigate } from "react-router-dom";
-const BoardUser = ({ currentUser,setCurrentUser }) => {
+const BoardUser = ({ currentUser,setCurrentUser, balance, setBalance }) => {
   let navigate = useNavigate();
   const [content, setContent] = useState();
   const [loading, setLoading] = useState(false);
@@ -103,6 +103,8 @@ const BoardUser = ({ currentUser,setCurrentUser }) => {
             setTicketPrice={setTicketPrice}
             currentUser={currentUser}
             route_id={route_id}
+            balance={balance}
+            setBalance={setBalance}
           />
         )}
         {loading === true && (

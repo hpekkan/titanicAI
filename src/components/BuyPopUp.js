@@ -49,7 +49,9 @@ const BuyPopUp = (props) => {
     setOnSale,
     ticket_price,
     setTicketPrice,
-    route_id
+    route_id,
+    balance,
+    setBalance
   } = props;
   const _date = new Date(date);
   const utcDate = new Date(
@@ -161,6 +163,7 @@ const BuyPopUp = (props) => {
           setMessage("Reservation successful!");
           setLocalLoading(false);
           setBuyPopUp(false);
+          setBalance(balance - ticket_price);
           refreshForms();
         }
     } else {

@@ -1,5 +1,5 @@
-import React, { useState, useRef,useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
@@ -47,11 +47,11 @@ const vpassword = (value) => {
   }
 };
 
-const Register = ({setLoading}) => {
+const Register = ({ setLoading }) => {
   let navigate = useNavigate();
-  useEffect (() => {
+  useEffect(() => {
     setLoading(true);
-    if(localStorage.getItem("currentUser") !== null) {
+    if (localStorage.getItem("currentUser") !== null) {
       navigate("/");
     }
     setLoading(false);
@@ -102,20 +102,7 @@ const Register = ({setLoading}) => {
               error.response.data.message) ||
             error.message ||
             error.toString();
-          if (
-            error !== undefined ||
-            error !== null ||
-            error.response !== undefined ||
-            error.response !== null ||
-            error.response.data !== undefined ||
-            error.response.data !== null ||
-            error.response.data.detail !== undefined ||
-            error.response.data.detail !== null
-          ) {
-            setMessage(error);
-          } else {
-            setMessage(resMessage);
-          }
+          setMessage(resMessage);
           setSuccessful(false);
         }
       );
