@@ -108,7 +108,11 @@ const Register = ({ setLoading }) => {
             setLocalLoading(false);
           }
         }
-      );
+      ).catch((error) => {
+        console.log(error);
+        setLocalLoading(false);
+      });
+    
     }
 
     setLocalLoading(false);
