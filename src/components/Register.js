@@ -59,7 +59,7 @@ const Register = ({ setLoading }) => {
 
   const form = useRef();
   const checkBtn = useRef();
-
+  const [localLoading, setLocalLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -83,9 +83,8 @@ const Register = ({ setLoading }) => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
+    setLocalLoading(true);
     setMessage("");
-    setSuccessful(false);
 
     form.current.validateAll();
 
@@ -96,17 +95,17 @@ const Register = ({ setLoading }) => {
           setMessage(response.data.message);
           setSuccessful(true);
         
-      },
-      (error) => {
-        if (error.response) {
-          setMessage("Username or Email already taken!");
-          setSuccessful(false);
-        
-        }
       }
 
-        );
+        ).catch((error) => {
+          if(error.response.status === 403)
+            setMessage("Username or Email already taken!");
+          else
+            setMessage(error.response.data.message);
+          setSuccessful(false);
+        });
     }
+    setLocalLoading(false);
   };
 
   return (
@@ -158,7 +157,9 @@ const Register = ({ setLoading }) => {
               </div>
 
               <div className="form-group">
-                <button className="btn btn-primary btn-block">Sign Up</button>
+                <button className="btn btn-primary btn-block" >Sign Up {localLoading && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}</button>
               </div>
               {message.length > 0 && (
                 <div className="form-group">
