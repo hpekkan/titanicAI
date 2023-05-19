@@ -11,6 +11,7 @@ const register = async (username, email, password) => {
       password:password,
       balance: 100,
     });
+    console.log(response);
     return response.data.message;
   } catch (error) {
     // Handle any errors that occur during the registration process
