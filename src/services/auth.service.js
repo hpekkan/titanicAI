@@ -14,7 +14,7 @@ const register = async (username, email, password) => {
     return response;
   } catch (error) {
     // Handle any errors that occur during the registration process
-   return  Error("Failed to register a new user");
+    throw new Error("Failed to register a new user");
   }
 };
 

@@ -90,23 +90,25 @@ const Register = ({ setLoading }) => {
 
     if (checkBtn.current.context._errors.length === 0) {
       console.log("registering");
-      await AuthService.register(username, email, password).then((response) => {
+      await AuthService.register(username, email, password).then(
+        (response) => {
           console.log("success");
-          
+
           setMessage(response.data.message);
           setSuccessful(true);
-        
-      },
-      (error) => {
-        if (error.response) {
-          console.log("error");
-          setMessage("Username or Email already taken!");
-          setSuccessful(false);
-        
-        }
-      }
+          setLocalLoading(false);
 
-        );
+          return;
+        },
+        (error) => {
+          if (error.response) {
+            console.log("error");
+            setMessage("Username or Email already taken!");
+            setSuccessful(false);
+            setLocalLoading(false);
+          }
+        }
+      );
     }
 
     setLocalLoading(false);
@@ -122,7 +124,7 @@ const Register = ({ setLoading }) => {
         />
 
         <Form onSubmit={handleRegister} ref={form}>
-          { (
+          {
             <div>
               <div className="form-group">
                 <label htmlFor="username">Username</label>
@@ -161,9 +163,12 @@ const Register = ({ setLoading }) => {
               </div>
 
               <div className="form-group">
-                <button className="btn btn-primary btn-block" >Sign Up {localLoading && (
-                <span className="spinner-border spinner-border-sm"></span>
-              )}</button>
+                <button className="btn btn-primary btn-block">
+                  Sign Up{" "}
+                  {localLoading && (
+                    <span className="spinner-border spinner-border-sm"></span>
+                  )}
+                </button>
               </div>
               {message.length > 0 && (
                 <div className="form-group">
@@ -178,7 +183,7 @@ const Register = ({ setLoading }) => {
                 </div>
               )}
             </div>
-          )}
+          }
 
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
         </Form>
