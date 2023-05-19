@@ -91,15 +91,21 @@ const Register = ({ setLoading }) => {
 
     if (checkBtn.current.context._errors.length === 0) {
       await AuthService.register(username, email, password).then((response) => {
-        console.log(response);
-        if (response.data.status === 403) {
-          setMessage("Username or Email already taken!");
-          setSuccessful(false);
-        } else {
+      
+          
           setMessage(response.data.message);
           setSuccessful(true);
+        
+      },
+      (error) => {
+        if (error.response) {
+          setMessage("Username or Email already taken!");
+          setSuccessful(false);
+        
         }
-      });
+      }
+
+        );
     }
   };
 
