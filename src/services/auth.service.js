@@ -11,10 +11,10 @@ const register = async (username, email, password) => {
       password:password,
       balance: 100,
     });
-    return response;
+    return response.data.message;
   } catch (error) {
     // Handle any errors that occur during the registration process
-    return new Error(error.response.data.detail);
+    return error.response.data.detail;
   }
 };
 
