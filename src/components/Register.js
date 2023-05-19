@@ -160,7 +160,7 @@ const Register = ({ setLoading }) => {
               <div className="form-group">
                 <button className="btn btn-primary btn-block">Sign Up</button>
               </div>
-              {message && (
+              {message.length > 0 && (
                 <div className="form-group">
                   <div
                     className={
