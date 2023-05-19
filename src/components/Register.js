@@ -90,22 +90,15 @@ const Register = ({ setLoading }) => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      await AuthService.register(username, email, password).then(
-        (response) => {
+      await AuthService.register(username, email, password).then((response) => {
+        if (response.data.status === 403) {
+          setMessage("Username or Email already taken!");
+          setSuccessful(false);
+        } else {
           setMessage(response.data.message);
           setSuccessful(true);
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          setMessage(resMessage);
-          setSuccessful(false);
         }
-      );
+      });
     }
   };
 
