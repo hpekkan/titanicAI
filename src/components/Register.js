@@ -92,7 +92,6 @@ const Register = ({ setLoading }) => {
     if (checkBtn.current.context._errors.length === 0) {
       await AuthService.register(username, email, password).then(
         (response) => {
-          console.log(response)
           if(response.includes("Username") ){
             setMessage("Username or email already exists");
             setSuccessful(true);
@@ -100,7 +99,7 @@ const Register = ({ setLoading }) => {
             return;
           }
           
-          setMessage(response.data.message);
+          setMessage(response);
           setSuccessful(true);
           setLocalLoading(false);
         }
