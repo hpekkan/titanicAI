@@ -89,19 +89,17 @@ const Register = ({ setLoading }) => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      const response = await AuthService.register(username, email, password)
+      await AuthService.register(username, email, password,setMessage)
         .then(
           (response) => {
             setSuccessful(true);
             setLocalLoading(false);
-            return response;
            
           },
           (error) => {
             if (error.response) {
              
               setLocalLoading(false);
-              return error;
               
             }
           }
@@ -109,7 +107,6 @@ const Register = ({ setLoading }) => {
         .catch((error) => {
           setLocalLoading(false);
         });
-        console.log(response);
     }
     setLocalLoading(false);
   };
