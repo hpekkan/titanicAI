@@ -91,7 +91,7 @@ const Register = ({ setLoading }) => {
     if (checkBtn.current.context._errors.length === 0) {
       console.log("registering");
       await AuthService.register(username, email, password).then((response) => {
-          console.log(response.data);
+          console.log("success");
           
           setMessage(response.data.message);
           setSuccessful(true);
@@ -99,7 +99,7 @@ const Register = ({ setLoading }) => {
       },
       (error) => {
         if (error.response) {
-          console.log(error.response.data);
+          console.log("error");
           setMessage("Username or Email already taken!");
           setSuccessful(false);
         
