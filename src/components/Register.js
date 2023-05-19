@@ -113,7 +113,7 @@ const Register = ({ setLoading }) => {
         />
 
         <Form onSubmit={handleRegister} ref={form}>
-          {!successful && (
+          { (
             <div>
               <div className="form-group">
                 <label htmlFor="username">Username</label>
@@ -154,21 +154,21 @@ const Register = ({ setLoading }) => {
               <div className="form-group">
                 <button className="btn btn-primary btn-block">Sign Up</button>
               </div>
+              {message && (
+                <div className="form-group">
+                  <div
+                    className={
+                      successful ? "alert alert-success" : "alert alert-danger"
+                    }
+                    role="alert"
+                  >
+                    {message}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
-          {message && (
-            <div className="form-group">
-              <div
-                className={
-                  successful ? "alert alert-success" : "alert alert-danger"
-                }
-                role="alert"
-              >
-                {message}
-              </div>
-            </div>
-          )}
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
         </Form>
       </div>
