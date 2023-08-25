@@ -31,6 +31,15 @@ While the web app's full implementation is pending, its underlying logic is func
 
 https://github.com/hpekkan/titanicAI/assets/75019129/d580485f-63c1-46bd-96c1-b43e4429bd20
 
+## <p align="center"> Ticket Booking System and Prediction </p>
+<p align="center">
+You have the ability to enhance your account's balance with a single click! Each click will add $100 to your balance, enabling you to conveniently manage your funds.
+  Kindly note that the balance exhibited on this platform is intended for demonstration purposes exclusively. It does not signify actual monetary transactions and has been artificially generated for illustrative reasons. The displayed balance is not reflective of authentic financial value.
+</p>
+
+![image](https://github.com/hpekkan/titanicAI/assets/75019129/8f567522-b477-4df9-8045-4c084f89ca10)
+
+
 ## <p align="center"> Azure SQL Database Schema </p>
 
 ## **Database Table: passenger**
