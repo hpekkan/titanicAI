@@ -272,15 +272,7 @@ You have the ability to enhance your account's balance with a single click! Each
 - **payment_date**: The date and time when the payment was made. This helps in tracking when the payment occurred.
 
 - **payment_status**: The status of the payment, which could be "paid," "pending," or any other relevant status. This field indicates the state of the payment process.
-
-
-
-<!--# <h3 align="center">🌐 Vercel Web App (lots of bugs):  https://titanic-ai.vercel.app ⚓</h3>
-
-# <h3 align="center">🌐 Netlify Web App (lots of bugs):  https://cute-cupcake-762d4a.netlify.app/ ⚓</h3>  
   
-# <h3 align="center">🛟 Public api (fastapi currently deactive):  https://146.190.176.211 </h3>
-  
-# <h3 align="center">🛟 Public api (fastapi/docs currently deactive):  https://146.190.176.211/docs </h3>
-  -->
+
+### We regret to inform you that the current availability of this project is impacted by financial limitations. Unfortunately, due to ongoing monetary challenges, the hosting and accessibility of this project have been temporarily suspended.
 </div>
