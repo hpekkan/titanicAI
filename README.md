@@ -24,12 +24,16 @@ In the admin panel, admins have control over ticket management, including sales,
 
 https://github.com/hpekkan/titanicAI/assets/75019129/c3bd82b4-0cf3-4a64-ae4d-0ef12e23912f
 
+## <p align="center"> If above video is broken <a hef="https://youtu.be/9kVlb53dDHI"> https://youtu.be/9kVlb53dDHI</a> </p>
+
 ## <p align="center"> Ticket Booking System and Prediction </p>
 <p align="center">
 While the web app's full implementation is pending, its underlying logic is functioning smoothly. This logic calculates survival rates and saves the results to the database. This feature offers users an interactive way to choose tickets based on their preferences and anticipated survival rates.
 </p>
 
 https://github.com/hpekkan/titanicAI/assets/75019129/d580485f-63c1-46bd-96c1-b43e4429bd20
+
+## <p align="center"> If above video is broken <a hef="https://youtu.be/XxCVJZog-fo"> https://youtu.be/XxCVJZog-fo</a> </p>
 
 ## <p align="center"> Ticket Booking System and Prediction </p>
 <p align="center">
