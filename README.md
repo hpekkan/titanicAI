@@ -39,8 +39,36 @@ You have the ability to enhance your account's balance with a single click! Each
 
 ![image](https://github.com/hpekkan/titanicAI/assets/75019129/8f567522-b477-4df9-8045-4c084f89ca10)
 
+# <p align="center"> FASTAPI Schema </p>
 
-## <p align="center"> Azure SQL Database Schema </p>
+
+| HTTP Method | Endpoint                  | Description                                    |
+|-------------|---------------------------|------------------------------------------------|
+| GET         | /                         | Read Root                                      |
+| POST        | /signup                   | Create User                                    |
+| DELETE      | /delete_user              | Delete user                                    |
+| POST        | /login                    | Create access and refresh tokens for user      |
+| GET         | /me                       | Get details of currently logged in user        |
+| GET         | /voyages                  | Get all voyages                                |
+| PUT         | /voyages                  | Update voyage                                 |
+| POST        | /voyages                  | Add voyage                                    |
+| DELETE      | /voyages/{voyage_id}      | Delete voyage                                 |
+| PUT         | /ticket                   | Update ticket                                 |
+| POST        | /ticket                   | Add ticket                                    |
+| GET         | /tickets                  | Get all tickets                                |
+| GET         | /ticket/{ticket_id}       | Get ticket                                    |
+| DELETE      | /ticket/{ticket_id}       | Delete ticket                                 |
+| GET         | /refresh                  | Refresh access token                          |
+| PUT         | /user                     | Update user                                   |
+| POST        | /addBalance/{amount}      | Add balance                                   |
+| GET         | /user/voyages/            | Get users voyages                             |
+| POST        | /reservation              | Create reservation                            |
+| GET         | /user/reservations        | Get users reservations                        |
+| POST        | /prediction               | Get Predict                                   |
+
+
+
+# <p align="center"> Azure SQL Database Schema </p>
 
 ## **Database Table: passenger**
 
