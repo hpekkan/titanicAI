@@ -1,7 +1,24 @@
 
 <div align="center">
-  
+
 # <p align="center">🔱 TitanicAI 👷‍♂️🛳️  </p>
+
+## Used Technologies
+
+## Used Technologies
+
+This project was developed using a variety of technologies:
+
+- **Backend Development:** FastAPI, Python (with venv for virtual environments)
+- **Frontend Development:** React
+- **Authentication:** JWT (JSON Web Tokens)
+- **Machine Learning:** Scikit-learn, XGBoost, SVM, Naive Bayes, K-Nearest Neighbors, Linear Model
+- **Database Management:** Microsoft Azure SQL
+- **Deployment (Frontend):** Netlify, Vercel
+- **Deployment (Backend):** DigitalOcean, Linux Server
+- **Version Control:** Git, GitHub
+
+The project integrates these technologies to create a seamless web application experience. Feel free to explore the codebase to see how these technologies were utilized.
 
 ## <p align="center"> Home Page </p>
 <p align="center">
