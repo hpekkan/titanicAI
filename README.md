@@ -3,7 +3,6 @@
 
 # <p align="center">🔱 TitanicAI 👷‍♂️🛳️  </p>
 
-## Used Technologies
 
 ## Used Technologies
 
@@ -19,6 +18,7 @@ This project was developed using a variety of technologies:
 - **Version Control:** Git, GitHub
 
 The project integrates these technologies to create a seamless web application experience. Feel free to explore the codebase to see how these technologies were utilized.
+
 
 ## <p align="center"> Home Page </p>
 <p align="center">
@@ -59,6 +59,12 @@ You have the ability to enhance your account's balance with a single click! Each
 </p>
 
 ![image](https://github.com/hpekkan/titanicAI/assets/75019129/8f567522-b477-4df9-8045-4c084f89ca10)
+
+## Get in Touch
+
+I'm eager to hear your thoughts, feedback, or ideas! Don't hesitate to reach out by opening an issue here or emailing me at [huseyinpekkan1163@gmail.com](mailto:huseyinpekkan1163@gmail.com).
+ 
+
 
 # <p align="center"> FASTAPI Schema </p>
 
@@ -293,7 +299,12 @@ You have the ability to enhance your account's balance with a single click! Each
 - **payment_date**: The date and time when the payment was made. This helps in tracking when the payment occurred.
 
 - **payment_status**: The status of the payment, which could be "paid," "pending," or any other relevant status. This field indicates the state of the payment process.
-  
+
+## Get in Touch
+
+I'm eager to hear your thoughts, feedback, or ideas! Don't hesitate to reach out by opening an issue here or emailing me at [huseyinpekkan1163@gmail.com](mailto:huseyinpekkan1163@gmail.com).
+ 
+
 
 ### We regret to inform you that the current availability of this project is impacted by financial limitations. Unfortunately, due to ongoing monetary challenges, the hosting and accessibility of this project have been temporarily suspended.
 </div>
